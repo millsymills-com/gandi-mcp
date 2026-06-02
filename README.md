@@ -22,7 +22,7 @@ Production-grade Python MCP server for the [Gandi v5 API](https://api.gandi.net/
 
 ```bash
 # Install from source
-git clone https://github.com/millsmillsymills/gandi-mcp.git
+git clone https://github.com/millsymills-com/gandi-mcp.git
 cd gandi-mcp
 uv sync --extra dev
 

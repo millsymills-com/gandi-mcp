@@ -68,10 +68,10 @@ dev = [
 gandi-mcp = "gandi_mcp.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/millsmillsymills/gandi-mcp"
-Repository = "https://github.com/millsmillsymills/gandi-mcp"
-Issues = "https://github.com/millsmillsymills/gandi-mcp/issues"
-Changelog = "https://github.com/millsmillsymills/gandi-mcp/releases"
+Homepage = "https://github.com/millsymills-com/gandi-mcp"
+Repository = "https://github.com/millsymills-com/gandi-mcp"
+Issues = "https://github.com/millsymills-com/gandi-mcp/issues"
+Changelog = "https://github.com/millsymills-com/gandi-mcp/releases"
 
 # =============================================================================
 # uv — constrain transitive deps (CVE patches)

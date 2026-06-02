@@ -50,7 +50,7 @@ class BaseGandiClient:
             headers={
                 "Authorization": f"Bearer {token}",
                 "Accept": "application/json",
-                "User-Agent": f"gandi-mcp/{__version__} (+https://github.com/millsmillsymills/gandi-mcp)",
+                "User-Agent": f"gandi-mcp/{__version__} (+https://github.com/millsymills-com/gandi-mcp)",
             },
             timeout=httpx.Timeout(timeout),
         )
