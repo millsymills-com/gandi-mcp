@@ -78,13 +78,15 @@ Changelog = "https://github.com/millsymills-com/gandi-mcp/releases"
 # =============================================================================
 [tool.uv]
 # python-multipart < 0.0.27 has CVE-2026-42561 (DoS via multipart parser).
-# fastmcp 3.2.x pins it transitively; lift the floor here so pip-audit is
-# clean without a direct runtime dependency on it.
+# pyjwt < 2.13.0 has PYSEC-2026-175/177/178/179. fastmcp pins both
+# transitively; lift the floors here so pip-audit is clean without a direct
+# runtime dependency on them.
 #
 # vcrpy 8.x intercepts httpx via socket-level patching. vcrpy 9.x may change
 # this. Lock the working range now (pytest-recording is the direct dep).
 constraint-dependencies = [
     "python-multipart>=0.0.27",
+    "pyjwt>=2.13.0",
     "vcrpy>=8.1,<9",
 ]
 
