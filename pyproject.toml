@@ -9,7 +9,7 @@ description = "Production-grade Python MCP server for the Gandi.net v5 API (doma
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.13"
-authors = [{ name = "millsmillsymills" }]
+authors = [{ name = "millsymills-com" }]
 keywords = [
     "gandi",
     "mcp",
