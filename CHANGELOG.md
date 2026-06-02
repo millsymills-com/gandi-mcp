@@ -31,4 +31,4 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `mypy` and the `[tool.mypy]` configuration block.
 - Python 3.11 / 3.12 from the supported runtime classifiers and CI matrix.
 
-[Unreleased]: https://github.com/millsmillsymills/gandi-mcp/compare/HEAD...HEAD
+[Unreleased]: https://github.com/millsymills-com/gandi-mcp/compare/HEAD...HEAD
