@@ -145,7 +145,7 @@ class TestInitHeaders:
             assert b"USER-AGENT" not in raw
             assert b"XXUser-AgentXX" not in raw
             value = raw[b"User-Agent"].decode("ascii")
-            assert value == (f"gandi-mcp/{__version__} (+https://github.com/millsmillsymills/gandi-mcp)")
+            assert value == (f"gandi-mcp/{__version__} (+https://github.com/millsymills-com/gandi-mcp)")
         finally:
             await client.close()
 
