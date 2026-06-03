@@ -5,7 +5,7 @@ not flake on missing credentials. Set the env var locally to exercise:
 
     GANDI_TOKEN=$(pass show gandi/pat) uv run pytest tests/integration/ -v
 
-The tests are read-only by design (PROTO-006 default-safe posture) — none
+The tests are read-only by design (PROTO-006 default-safe posture); none
 of them spend money or mutate registrar state.
 """
 
@@ -20,6 +20,7 @@ from gandi_mcp.config import GandiConfig
 
 pytestmark = [
     pytest.mark.live,
+    pytest.mark.smoke,
     pytest.mark.skipif(
         not os.environ.get("GANDI_TOKEN"),
         reason="GANDI_TOKEN is required for live integration tests",
