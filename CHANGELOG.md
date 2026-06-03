@@ -12,7 +12,7 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `tests/property/` and `tests/integration/` skeleton (PY-013, PY-014, MCP-012, MCP-013).
 - `.github/workflows/codeql.yml` for static security analysis on push/PR + weekly schedule (MCP-015).
 - Stderr-bound JSON logging via `gandi_mcp._logging.configure_logging`, invoked from `__main__.main()` (MCP-021, MCP-022).
-- `GandiConfig.writes_enabled` property — alias of `is_readwrite` using the canonical PROTO-006 vocabulary.
+- `GandiConfig.writes_enabled` property: alias of `is_readwrite` using the canonical PROTO-006 vocabulary.
 - Granular `register_<area>_<tier>_tools` helpers for every tool module plus top-level `register_read_tools` / `register_write_tools` in `gandi_mcp.tools` (PROTO-005).
 
 ### Changed
@@ -30,5 +30,10 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 - `mypy` and the `[tool.mypy]` configuration block.
 - Python 3.11 / 3.12 from the supported runtime classifiers and CI matrix.
+
+### Fixed
+- README: corrected the `GANDI_MAX_RETRIES` description (total attempts including the first), replaced the non-functional `gandi-mcp --help` verification step, documented `gandi_domain_delete` in the safety model, and declared maturity `Stage: S3`.
+- CONTRIBUTING: removed dead `tests/live/README.md` and `RELEASE.md` links and the unused `GANDI_MCP_LIVE_TESTS` env var from the test-tier commands; pointed live/smoke rows at `tests/integration/`.
+- Prose: replaced em-dash separators across README, CONTRIBUTING, SECURITY, and CHANGELOG per the writing-voice standard.
 
 [Unreleased]: https://github.com/millsymills-com/gandi-mcp/compare/HEAD...HEAD
