@@ -12,7 +12,7 @@ are entirely the operator's responsibility:
 
 ### Personal Access Token hygiene
 
-`GANDI_TOKEN` is a Bearer credential with full scope on the owning account —
+`GANDI_TOKEN` is a Bearer credential with full scope on the owning account,
 including read access to account PII (name, address, phone). Treat it like any
 other production secret:
 
@@ -22,14 +22,14 @@ other production secret:
   shared screenshots, transcripts, leaked logs).
 - Gandi's v5 REST API does **not** expose a PAT-revoke endpoint. Revocation
   is UI-only. There is no programmatic way for this server (or any tool) to
-  invalidate a leaked PAT — only the operator can.
+  invalidate a leaked PAT; only the operator can.
 - Prefer scoped PATs over full-access ones when Gandi's UI permits it.
 
 ### Scope gating
 
 The three-tier safety model (`GANDI_MODE`, `GANDI_ALLOW_PURCHASES`) is
 defense-in-depth, not a substitute for hygiene. A `readwrite` PAT in the wrong
-hands is fully exploitable regardless of how this server is configured —
+hands is fully exploitable regardless of how this server is configured,
 because the attacker can simply use the raw API.
 
 ## What the repo guarantees
