@@ -8,7 +8,7 @@ Production-grade Python MCP server for the [Gandi v5 API](https://api.gandi.net/
 
 ## Status
 
-**Stage: S2** (Wrapped). Under active development. See [CLAUDE.md](CLAUDE.md) for the architectural overview.
+**Stage: S3** (Complete). Under active development. See [CLAUDE.md](CLAUDE.md) for the architectural overview.
 
 ## Features
 

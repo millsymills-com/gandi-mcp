@@ -32,7 +32,7 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Python 3.11 / 3.12 from the supported runtime classifiers and CI matrix.
 
 ### Fixed
-- README: corrected the `GANDI_MAX_RETRIES` description (total attempts including the first), replaced the non-functional `gandi-mcp --help` verification step, documented `gandi_domain_delete` in the safety model, and declared maturity `Stage: S2`.
+- README: corrected the `GANDI_MAX_RETRIES` description (total attempts including the first), replaced the non-functional `gandi-mcp --help` verification step, documented `gandi_domain_delete` in the safety model, and declared maturity `Stage: S3`.
 - CONTRIBUTING: removed dead `tests/live/README.md` and `RELEASE.md` links and the unused `GANDI_MCP_LIVE_TESTS` env var from the test-tier commands; pointed live/smoke rows at `tests/integration/`.
 - Prose: replaced em-dash separators across README, CONTRIBUTING, SECURITY, and CHANGELOG per the writing-voice standard.
 
