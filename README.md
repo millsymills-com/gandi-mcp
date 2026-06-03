@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="gandi-mcp logo" width="160" height="160">
+  <img src="docs/assets/logo.svg" alt="gandi-mcp logo" width="160">
 </p>
 
 # gandi-mcp
