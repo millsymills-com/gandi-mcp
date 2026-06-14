@@ -40,7 +40,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "fastmcp>=3.3.1,<4.0.0",
+    "fastmcp>=3.4.2,<4.0.0",
     "httpx>=0.27.0",
     "pydantic>=2.13.3",
     "pydantic-settings>=2.14.1",
@@ -55,10 +55,10 @@ dev = [
     "pytest-recording>=0.13.2",
     "pytest-rerunfailures>=16.3",
     "respx>=0.23.1",
-    "hypothesis>=6.155.1",
-    "mutmut>=3.5.0",
-    "ruff>=0.15.15",
-    "ty>=0.0.40",
+    "hypothesis>=6.155.2",
+    "mutmut>=3.6.0",
+    "ruff>=0.15.16",
+    "ty>=0.0.44",
     "bandit[toml]>=1.9.4",
     "pip-audit>=2.7.3",
     "pre-commit>=4.6.0",
