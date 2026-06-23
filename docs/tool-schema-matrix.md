@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**91 tools** — 54 read, 29 write, 8 purchase.
+**94 tools** — 54 read, 32 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -53,9 +53,11 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | domain | read | `gandi_domain_list_web_redirections` | no | no | `list_web_redirections` | `GET /v5/domain/domains/{fqdn}/webredirs` |
 | domain | write | `gandi_domain_create_dnssec_key` | no | no | `create_dnssec_key` | `POST /v5/domain/domains/{fqdn}/dnskeys` |
 | domain | write | `gandi_domain_create_glue_record` | no | no | `create_glue_record` | `POST /v5/domain/domains/{fqdn}/hosts` |
+| domain | write | `gandi_domain_create_web_redirection` | no | no | `create_web_redirection` | `POST /v5/domain/domains/{fqdn}/webredirs` |
 | domain | write | `gandi_domain_delete` | yes | no | `delete_domain` | `DELETE /v5/domain/domains/{fqdn}` |
 | domain | write | `gandi_domain_delete_dnssec_key` | yes | no | `delete_dnssec_key` | `DELETE /v5/domain/domains/{fqdn}/dnskeys/{key_id}` |
 | domain | write | `gandi_domain_delete_glue_record` | yes | no | `delete_glue_record` | `DELETE /v5/domain/domains/{fqdn}/hosts/{name}` |
+| domain | write | `gandi_domain_delete_web_redirection` | yes | no | `delete_web_redirection` | `DELETE /v5/domain/domains/{fqdn}/webredirs/{host}` |
 | domain | write | `gandi_domain_initiate_ownership_change` | no | no | `initiate_ownership_change` | `POST /v5/domain/changeowner/{fqdn}` |
 | domain | write | `gandi_domain_resend_foa` | no | no | `resend_foa` | `POST /v5/domain/changeowner/{fqdn}/foa` |
 | domain | write | `gandi_domain_reset_authinfo` | no | no | `reset_authinfo` | `PUT /v5/domain/domains/{fqdn}/authinfo` |
@@ -63,6 +65,7 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | domain | write | `gandi_domain_set_nameservers` | no | no | `set_nameservers` | `PUT /v5/domain/domains/{fqdn}/nameservers` |
 | domain | write | `gandi_domain_update_contacts` | no | no | `update_domain_contacts` | `PATCH /v5/domain/domains/{fqdn}/contacts` |
 | domain | write | `gandi_domain_update_glue_record` | no | no | `update_glue_record` | `PUT /v5/domain/domains/{fqdn}/hosts/{name}` |
+| domain | write | `gandi_domain_update_web_redirection` | no | no | `update_web_redirection` | `PATCH /v5/domain/domains/{fqdn}/webredirs/{host}` |
 | domain | purchase | `gandi_domain_register` | no | yes | `register_domain` | `POST /v5/domain/domains` |
 | domain | purchase | `gandi_domain_renew` | no | yes | `renew_domain` | `POST /v5/domain/domains/{fqdn}/renew` |
 | domain | purchase | `gandi_domain_transfer_in` | no | yes | `transfer_in` | `POST /v5/domain/transferin/{fqdn}` |

@@ -301,6 +301,24 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/webredirs/{_seg(host)}")
         return result
 
+    async def create_web_redirection(self, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a web redirection for a domain."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/webredirs", json=data)
+        return result
+
+    async def update_web_redirection(self, fqdn: str, host: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update an existing web redirection (partial update)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/domain/domains/{_seg(fqdn)}/webredirs/{_seg(host)}",
+            json=data,
+        )
+        return result
+
+    async def delete_web_redirection(self, fqdn: str, host: str) -> dict[str, Any]:
+        """Delete a web redirection by host."""
+        result: dict[str, Any] = await self.delete(f"/v5/domain/domains/{_seg(fqdn)}/webredirs/{_seg(host)}")
+        return result
+
     async def get_create_status(self, fqdn: str) -> dict[str, Any]:
         """Status of a pending domain creation."""
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/createstatus")

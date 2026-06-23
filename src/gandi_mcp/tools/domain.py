@@ -738,6 +738,77 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_domain_create_web_redirection(
+        ctx: Context,
+        fqdn: str,
+        data: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Create a web redirection for a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            data: Full redirection object per the Gandi /webredirs schema —
+                typically ``host``, ``type`` (e.g. "http301"), and ``target``.
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "create web redirection")
+            return await get_client(ctx).create_web_redirection(fqdn, data)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_domain_update_web_redirection(
+        ctx: Context,
+        fqdn: str,
+        host: str,
+        data: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Update an existing web redirection (partial update).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            host: Host of the redirection to update.
+            data: Partial redirection object with the fields to change.
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update web redirection")
+            return await get_client(ctx).update_web_redirection(fqdn, host, data)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_domain_delete_web_redirection(ctx: Context, fqdn: str, host: str) -> dict[str, Any]:
+        """Delete a web redirection by host.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            host: Host of the redirection to delete.
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "delete web redirection")
+            return await get_client(ctx).delete_web_redirection(fqdn, host)
+        except Exception as e:
+            handle_client_error(e)
+
 
 def register_domain_purchase_tools(mcp: FastMCP) -> None:
     """Register money-spending domain tools on the server.
