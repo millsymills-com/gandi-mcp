@@ -1,0 +1,90 @@
+# Tool / schema coverage matrix
+
+<!-- GENERATED FILE — do not edit by hand.
+     Regenerate: uv run python tests/unit/test_tool_schema_matrix.py
+     Guarded by: tests/unit/test_tool_schema_matrix.py -->
+
+Every MCP tool this server exposes, mapped to its safety tier, MCP annotation
+hints, the `GandiClient` method it calls, and the Gandi v5 endpoint behind that
+method. `tests/unit/test_tool_schema_matrix.py` fails if this table drifts from
+the registered tool surface.
+
+Tiers follow the three-tier safety model: **read** (always visible), **write**
+(needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
+Destructive and open-world columns reflect the tool's MCP annotation hints.
+
+**71 tools** — 34 read, 29 write, 8 purchase.
+
+| Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
+|------|------|------|:-----------:|:----------:|---------------|-------------------|
+| billing | read | `gandi_billing_get_info` | no | no | `get_billing_info` | `GET /v5/billing/info` |
+| billing | read | `gandi_billing_get_info_for_org` | no | no | `get_billing_info_for_org` | `GET /v5/billing/info/{sharing_id}` |
+| billing | read | `gandi_billing_get_price_catalog` | no | no | `get_price_catalog` | `GET /v5/billing/price/{product_type}` |
+| certificate | read | `gandi_cert_get` | no | no | `cert_get` | `GET /v5/certificate/issued-certs/{cert_id}` |
+| certificate | read | `gandi_cert_list` | no | no | `cert_list` | `GET /v5/certificate/issued-certs` |
+| certificate | write | `gandi_cert_revoke` | yes | no | `cert_revoke` | `DELETE /v5/certificate/issued-certs/{cert_id}` |
+| certificate | purchase | `gandi_cert_issue` | no | yes | `cert_issue` | `POST /v5/certificate/issued-certs` |
+| certificate | purchase | `gandi_cert_renew` | no | yes | `cert_renew` | `POST /v5/certificate/issued-certs/{cert_id}/renew` |
+| domain | read | `gandi_domain_check_availability` | no | no | `check_availability` | `GET /v5/domain/check` |
+| domain | read | `gandi_domain_get_claims` | no | no | `get_domain_claims` | `GET /v5/domain/domains/{fqdn}/claims` |
+| domain | read | `gandi_domain_get_contacts` | no | no | `get_domain_contacts` | `GET /v5/domain/domains/{fqdn}/contacts` |
+| domain | read | `gandi_domain_get_domain` | no | no | `get_domain` | `GET /v5/domain/domains/{fqdn}` |
+| domain | read | `gandi_domain_get_glue_record` | no | no | `get_glue_record` | `GET /v5/domain/domains/{fqdn}/hosts/{name}` |
+| domain | read | `gandi_domain_get_nameservers` | no | no | `get_nameservers` | `GET /v5/domain/domains/{fqdn}/nameservers` |
+| domain | read | `gandi_domain_get_ownership_change_status` | no | no | `get_ownership_change_status` | `GET /v5/domain/changeowner/{fqdn}` |
+| domain | read | `gandi_domain_get_renew_info` | no | no | `get_renew_info` | `GET /v5/domain/domains/{fqdn}/renew` |
+| domain | read | `gandi_domain_get_status` | no | no | `get_domain` | `GET /v5/domain/domains/{fqdn}` |
+| domain | read | `gandi_domain_get_transferin_info` | no | no | `get_transferin_info` | `GET /v5/domain/transferin/{fqdn}` |
+| domain | read | `gandi_domain_list_dnssec_keys` | no | no | `list_dnssec_keys` | `GET /v5/domain/domains/{fqdn}/dnskeys` |
+| domain | read | `gandi_domain_list_domains` | no | no | `list_domains` | `GET /v5/domain/domains` |
+| domain | read | `gandi_domain_list_glue_records` | no | no | `list_glue_records` | `GET /v5/domain/domains/{fqdn}/hosts` |
+| domain | write | `gandi_domain_create_dnssec_key` | no | no | `create_dnssec_key` | `POST /v5/domain/domains/{fqdn}/dnskeys` |
+| domain | write | `gandi_domain_create_glue_record` | no | no | `create_glue_record` | `POST /v5/domain/domains/{fqdn}/hosts` |
+| domain | write | `gandi_domain_delete` | yes | no | `delete_domain` | `DELETE /v5/domain/domains/{fqdn}` |
+| domain | write | `gandi_domain_delete_dnssec_key` | yes | no | `delete_dnssec_key` | `DELETE /v5/domain/domains/{fqdn}/dnskeys/{key_id}` |
+| domain | write | `gandi_domain_delete_glue_record` | yes | no | `delete_glue_record` | `DELETE /v5/domain/domains/{fqdn}/hosts/{name}` |
+| domain | write | `gandi_domain_initiate_ownership_change` | no | no | `initiate_ownership_change` | `POST /v5/domain/changeowner/{fqdn}` |
+| domain | write | `gandi_domain_resend_foa` | no | no | `resend_foa` | `POST /v5/domain/changeowner/{fqdn}/foa` |
+| domain | write | `gandi_domain_reset_authinfo` | no | no | `reset_authinfo` | `PUT /v5/domain/domains/{fqdn}/authinfo` |
+| domain | write | `gandi_domain_set_autorenew` | no | no | `set_autorenew` | `PATCH /v5/domain/domains/{fqdn}/autorenew` |
+| domain | write | `gandi_domain_set_nameservers` | no | no | `set_nameservers` | `PUT /v5/domain/domains/{fqdn}/nameservers` |
+| domain | write | `gandi_domain_update_contacts` | no | no | `update_domain_contacts` | `PATCH /v5/domain/domains/{fqdn}/contacts` |
+| domain | write | `gandi_domain_update_glue_record` | no | no | `update_glue_record` | `PUT /v5/domain/domains/{fqdn}/hosts/{name}` |
+| domain | purchase | `gandi_domain_register` | no | yes | `register_domain` | `POST /v5/domain/domains` |
+| domain | purchase | `gandi_domain_renew` | no | yes | `renew_domain` | `POST /v5/domain/domains/{fqdn}/renew` |
+| domain | purchase | `gandi_domain_transfer_in` | no | yes | `transfer_in` | `POST /v5/domain/transferin/{fqdn}` |
+| email | read | `gandi_email_get_mailbox` | no | no | `email_get_mailbox` | `GET /v5/email/mailboxes/{domain}/{mailbox_id}` |
+| email | read | `gandi_email_get_slot` | no | no | `email_get_slot` | `GET /v5/email/slots/{domain}/{slot_id}` |
+| email | read | `gandi_email_list_forwards` | no | no | `email_list_forwards` | `GET /v5/email/forwards/{domain}` |
+| email | read | `gandi_email_list_mailboxes` | no | no | `email_list_mailboxes` | `GET /v5/email/mailboxes/{domain}` |
+| email | read | `gandi_email_list_slots` | no | no | `email_list_slots` | `GET /v5/email/slots/{domain}` |
+| email | write | `gandi_email_create_forward` | no | no | `email_create_forward` | `POST /v5/email/forwards/{domain}` |
+| email | write | `gandi_email_delete_forward` | yes | no | `email_delete_forward` | `DELETE /v5/email/forwards/{domain}/{source}` |
+| email | write | `gandi_email_delete_mailbox` | yes | no | `email_delete_mailbox` | `DELETE /v5/email/mailboxes/{domain}/{mailbox_id}` |
+| email | write | `gandi_email_purge_mailbox` | yes | no | `email_purge_mailbox` | `DELETE /v5/email/mailboxes/{domain}/{mailbox_id}/contents` |
+| email | write | `gandi_email_refund_slot` | yes | no | `email_refund_slot` | `DELETE /v5/email/slots/{domain}/{slot_id}` |
+| email | write | `gandi_email_update_forward` | no | no | `email_update_forward` | `PUT /v5/email/forwards/{domain}/{source}` |
+| email | write | `gandi_email_update_mailbox` | no | no | `email_update_mailbox` | `PATCH /v5/email/mailboxes/{domain}/{mailbox_id}` |
+| email | purchase | `gandi_email_create_mailbox` | no | yes | `email_create_mailbox` | `POST /v5/email/mailboxes/{domain}` |
+| email | purchase | `gandi_email_create_slot` | no | yes | `email_create_slot` | `POST /v5/email/slots/{domain}` |
+| email | purchase | `gandi_email_renew_mailbox` | no | yes | `email_renew_mailbox` | `POST /v5/email/mailboxes/{domain}/{email}/renew` |
+| livedns | read | `gandi_livedns_get_domain` | no | no | `livedns_get_domain` | `GET /v5/livedns/domains/{fqdn}` |
+| livedns | read | `gandi_livedns_list_dnssec_keys` | no | no | `livedns_list_keys` | `GET /v5/livedns/domains/{fqdn}/keys` |
+| livedns | read | `gandi_livedns_list_domains` | no | no | `livedns_list_domains` | `GET /v5/livedns/domains` |
+| livedns | read | `gandi_livedns_list_nameservers` | no | no | `livedns_list_nameservers` | `GET /v5/livedns/domains/{fqdn}/nameservers` |
+| livedns | read | `gandi_livedns_list_records` | no | no | `livedns_list_records` | `GET /v5/livedns/domains/{fqdn}/records[/{name}[/{rrset_type}]]` |
+| livedns | read | `gandi_livedns_list_rrtypes` | no | no | `livedns_list_rrtypes` | `GET /v5/livedns/dns/rrtypes` |
+| livedns | write | `gandi_livedns_add_domain` | no | no | `livedns_add_domain` | `POST /v5/livedns/domains` |
+| livedns | write | `gandi_livedns_create_dnssec_key` | no | no | `livedns_create_key` | `POST /v5/livedns/domains/{fqdn}/keys` |
+| livedns | write | `gandi_livedns_create_record` | no | no | `livedns_create_record` | `POST /v5/livedns/domains/{fqdn}/records` |
+| livedns | write | `gandi_livedns_delete_all_records` | yes | no | `livedns_delete_all_records` | `DELETE /v5/livedns/domains/{fqdn}/records` |
+| livedns | write | `gandi_livedns_delete_dnssec_key` | yes | no | `livedns_delete_key` | `DELETE /v5/livedns/domains/{fqdn}/keys/{key_id}` |
+| livedns | write | `gandi_livedns_delete_record` | yes | no | `livedns_delete_record` | `DELETE /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
+| livedns | write | `gandi_livedns_replace_record` | no | no | `livedns_replace_record` | `PUT /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
+| livedns | write | `gandi_livedns_replace_zone` | yes | no | `livedns_replace_zone` | `PUT /v5/livedns/domains/{fqdn}/records` |
+| livedns | write | `gandi_livedns_update_domain` | no | no | `livedns_patch_domain` | `PATCH /v5/livedns/domains/{fqdn}` |
+| organization | read | `gandi_org_get_customer` | no | no | `get_customer` | `GET /v5/organization/organizations/{org_id}/customers/{customer_id}` |
+| organization | read | `gandi_org_get_organization` | no | no | `get_organization` | `GET /v5/organization/organizations/{org_id}` |
+| organization | read | `gandi_org_get_user_info` | no | no | `get_user_info` | `GET /v5/organization/user-info` |
+| organization | read | `gandi_org_list_customers` | no | no | `list_customers` | `GET /v5/organization/organizations/{org_id}/customers` |
+| organization | read | `gandi_org_list_organizations` | no | no | `list_organizations` | `GET /v5/organization/organizations` |
