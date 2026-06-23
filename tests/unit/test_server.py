@@ -36,6 +36,9 @@ class TestReadOnlyGate:
         assert "gandi_livedns_create_record" not in tool_names
         assert "gandi_livedns_delete_record" not in tool_names
         assert "gandi_domain_set_nameservers" not in tool_names
+        assert "gandi_domain_create_web_redirection" not in tool_names
+        assert "gandi_domain_update_web_redirection" not in tool_names
+        assert "gandi_domain_delete_web_redirection" not in tool_names
 
         # Read tools must remain visible
         assert "gandi_org_get_user_info" in tool_names
@@ -53,6 +56,9 @@ class TestReadWriteGate:
         assert "gandi_livedns_create_record" in tool_names
         assert "gandi_domain_set_nameservers" in tool_names
         assert "gandi_email_update_mailbox" in tool_names
+        assert "gandi_domain_create_web_redirection" in tool_names
+        assert "gandi_domain_update_web_redirection" in tool_names
+        assert "gandi_domain_delete_web_redirection" in tool_names
 
         # Purchase tools still hidden (requires GANDI_ALLOW_PURCHASES=true)
         assert "gandi_domain_register" not in tool_names

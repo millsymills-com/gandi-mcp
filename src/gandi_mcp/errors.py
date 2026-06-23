@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 
 # HTTP methods that are not idempotent — a timeout mid-request may leave the
 # server in a partially-written state, so retrying could double-execute.
-_NON_IDEMPOTENT_METHODS = frozenset({"POST", "PATCH"})
+# PUT/DELETE are state-changing here (no idempotent PUT tools exist), so a
+# timeout on them also warrants the "check state before retrying" warning.
+_NON_IDEMPOTENT_METHODS = frozenset({"POST", "PATCH", "PUT", "DELETE"})
 
 
 class GandiError(Exception):
@@ -81,9 +83,10 @@ class GandiTimeoutError(GandiConnectionError):
     """Request exceeded the configured timeout.
 
     ``method`` is the HTTP method of the request that timed out. Non-idempotent
-    methods (POST, PATCH) may have been partially processed server-side before
-    the response was lost; the error message surfaced to the agent calls this
-    out so it can check state before retrying a purchase-bearing endpoint.
+    methods (POST, PATCH, PUT, DELETE) may have been partially processed
+    server-side before the response was lost; the error message surfaced to the
+    agent calls this out so it can check state before retrying a state-changing
+    endpoint.
     """
 
     def __init__(self, message: str, method: str | None = None) -> None:
