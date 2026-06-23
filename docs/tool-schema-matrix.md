@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**101 tools** — 54 read, 39 write, 8 purchase.
+**115 tools** — 54 read, 53 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -25,7 +25,11 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | certificate | read | `gandi_cert_list` | no | no | `cert_list` | `GET /v5/certificate/issued-certs` |
 | certificate | read | `gandi_cert_list_packages` | no | no | `cert_list_packages` | `GET /v5/certificate/packages` |
 | certificate | read | `gandi_cert_list_tags` | no | no | `cert_list_tags` | `GET /v5/certificate/issued-certs/{cert_id}/tags` |
+| certificate | write | `gandi_cert_add_tag` | no | no | `cert_add_tag` | `POST /v5/certificate/issued-certs/{cert_id}/tags` |
+| certificate | write | `gandi_cert_delete_tags` | yes | no | `cert_delete_tags` | `DELETE /v5/certificate/issued-certs/{cert_id}/tags` |
+| certificate | write | `gandi_cert_replace_tags` | yes | no | `cert_replace_tags` | `PUT /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | write | `gandi_cert_revoke` | yes | no | `cert_revoke` | `DELETE /v5/certificate/issued-certs/{cert_id}` |
+| certificate | write | `gandi_cert_update_tags` | no | no | `cert_update_tags` | `PATCH /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | purchase | `gandi_cert_issue` | no | yes | `cert_issue` | `POST /v5/certificate/issued-certs` |
 | certificate | purchase | `gandi_cert_renew` | no | yes | `cert_renew` | `POST /v5/certificate/issued-certs/{cert_id}/renew` |
 | domain | read | `gandi_domain_check_availability` | no | no | `check_availability` | `GET /v5/domain/check` |
@@ -106,13 +110,23 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | livedns | read | `gandi_livedns_list_tsig_keys` | no | no | `livedns_list_tsig_keys` | `GET /v5/livedns/axfr/tsig` |
 | livedns | write | `gandi_livedns_add_domain` | no | no | `livedns_add_domain` | `POST /v5/livedns/domains` |
 | livedns | write | `gandi_livedns_create_dnssec_key` | no | no | `livedns_create_key` | `POST /v5/livedns/domains/{fqdn}/keys` |
+| livedns | write | `gandi_livedns_create_named_record` | no | no | `livedns_create_named_record` | `POST /v5/livedns/domains/{fqdn}/records/{name}` |
 | livedns | write | `gandi_livedns_create_record` | no | no | `livedns_create_record` | `POST /v5/livedns/domains/{fqdn}/records` |
+| livedns | write | `gandi_livedns_create_snapshot` | no | no | `livedns_create_snapshot` | `POST /v5/livedns/domains/{fqdn}/snapshots` |
+| livedns | write | `gandi_livedns_create_tsig_key` | no | no | `livedns_create_tsig_key` | `POST /v5/livedns/axfr/tsig` |
+| livedns | write | `gandi_livedns_create_typed_record` | no | no | `livedns_create_typed_record` | `POST /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
 | livedns | write | `gandi_livedns_delete_all_records` | yes | no | `livedns_delete_all_records` | `DELETE /v5/livedns/domains/{fqdn}/records` |
 | livedns | write | `gandi_livedns_delete_dnssec_key` | yes | no | `livedns_delete_key` | `DELETE /v5/livedns/domains/{fqdn}/keys/{key_id}` |
+| livedns | write | `gandi_livedns_delete_named_records` | yes | no | `livedns_delete_named_records` | `DELETE /v5/livedns/domains/{fqdn}/records/{name}` |
 | livedns | write | `gandi_livedns_delete_record` | yes | no | `livedns_delete_record` | `DELETE /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
+| livedns | write | `gandi_livedns_delete_snapshot` | yes | no | `livedns_delete_snapshot` | `DELETE /v5/livedns/domains/{fqdn}/snapshots/{snapshot_id}` |
+| livedns | write | `gandi_livedns_replace_named_records` | yes | no | `livedns_replace_named_records` | `PUT /v5/livedns/domains/{fqdn}/records/{name}` |
 | livedns | write | `gandi_livedns_replace_record` | no | no | `livedns_replace_record` | `PUT /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
 | livedns | write | `gandi_livedns_replace_zone` | yes | no | `livedns_replace_zone` | `PUT /v5/livedns/domains/{fqdn}/records` |
+| livedns | write | `gandi_livedns_restore_dnssec_key` | no | no | `livedns_restore_key` | `PATCH /v5/livedns/domains/{fqdn}/keys/{key_id}` |
 | livedns | write | `gandi_livedns_update_domain` | no | no | `livedns_patch_domain` | `PATCH /v5/livedns/domains/{fqdn}` |
+| livedns | write | `gandi_livedns_update_record` | no | no | `livedns_update_record` | `PATCH /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
+| livedns | write | `gandi_livedns_update_snapshot` | no | no | `livedns_update_snapshot` | `PATCH /v5/livedns/domains/{fqdn}/snapshots/{snapshot_id}` |
 | organization | read | `gandi_org_get_customer` | no | no | `get_customer` | `GET /v5/organization/organizations/{org_id}/customers/{customer_id}` |
 | organization | read | `gandi_org_get_organization` | no | no | `get_organization` | `GET /v5/organization/organizations/{org_id}` |
 | organization | read | `gandi_org_get_user_info` | no | no | `get_user_info` | `GET /v5/organization/user-info` |

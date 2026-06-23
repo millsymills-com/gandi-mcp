@@ -490,6 +490,73 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/records")
         return result
 
+    async def livedns_create_named_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Create a record under a name (POST to the per-name collection)."""
+        payload: dict[str, Any] = {"rrset_type": rrset_type, "rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.post(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}",
+            json=payload,
+        )
+        return result
+
+    async def livedns_replace_named_records(self, fqdn: str, name: str, items: list[dict[str, Any]]) -> dict[str, Any]:
+        """Replace every record under a name (destructive per-name bulk write)."""
+        result: dict[str, Any] = await self.put(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}",
+            json={"items": items},
+        )
+        return result
+
+    async def livedns_delete_named_records(self, fqdn: str, name: str) -> dict[str, Any]:
+        """Delete every record under a name (all types)."""
+        result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}")
+        return result
+
+    async def livedns_create_typed_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Create a record at a specific (name, type) endpoint."""
+        payload: dict[str, Any] = {"rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.post(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}/{_seg(rrset_type)}",
+            json=payload,
+        )
+        return result
+
+    async def livedns_update_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Update a specific (name, type) record set (PATCH)."""
+        payload: dict[str, Any] = {"rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}/{_seg(rrset_type)}",
+            json=payload,
+        )
+        return result
+
     # ── DNSSEC (LiveDNS) ────────────────────────────────────────────────
 
     async def livedns_list_keys(self, fqdn: str) -> list[dict[str, Any]]:
@@ -515,6 +582,14 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}")
         return result
 
+    async def livedns_restore_key(self, fqdn: str, key_id: str) -> dict[str, Any]:
+        """Restore (undelete) a LiveDNS DNSSEC key via PATCH ``deleted=false``."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}",
+            json={"deleted": False},
+        )
+        return result
+
     # ── Snapshots (LiveDNS) ─────────────────────────────────────────────
 
     async def livedns_list_snapshots(self, fqdn: str) -> list[dict[str, Any]]:
@@ -525,6 +600,27 @@ class GandiClient(BaseGandiClient):
     async def livedns_get_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
         """Get a single zone snapshot by id."""
         result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
+        return result
+
+    async def livedns_create_snapshot(self, fqdn: str, name: str | None = None) -> dict[str, Any]:
+        """Create a zone snapshot, optionally naming it."""
+        payload: dict[str, Any] = {}
+        if name is not None:
+            payload["name"] = name
+        result: dict[str, Any] = await self.post(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots", json=payload)
+        return result
+
+    async def livedns_update_snapshot(self, fqdn: str, snapshot_id: str, name: str) -> dict[str, Any]:
+        """Rename a zone snapshot."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}",
+            json={"name": name},
+        )
+        return result
+
+    async def livedns_delete_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Delete a zone snapshot by id."""
+        result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
         return result
 
     # ── Generic nameservers / AXFR TSIG (LiveDNS) ───────────────────────
@@ -542,6 +638,11 @@ class GandiClient(BaseGandiClient):
     async def livedns_get_tsig_key(self, tsig_id: str) -> dict[str, Any]:
         """Get a single AXFR TSIG key by id."""
         result: dict[str, Any] = await self.get(f"/v5/livedns/axfr/tsig/{_seg(tsig_id)}")
+        return result
+
+    async def livedns_create_tsig_key(self) -> dict[str, Any]:
+        """Create a new AXFR TSIG key for the account."""
+        result: dict[str, Any] = await self.post("/v5/livedns/axfr/tsig", json={})
         return result
 
     # ═════════════════════════════════════════════════════════════════════
@@ -670,6 +771,35 @@ class GandiClient(BaseGandiClient):
     async def cert_list_tags(self, cert_id: str) -> list[str]:
         """List the operator-defined tags on a certificate."""
         result: list[str] = await self.get(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
+        return result
+
+    async def cert_add_tag(self, cert_id: str, name: str) -> dict[str, Any]:
+        """Add a single operator-defined tag to a certificate."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"name": name},
+        )
+        return result
+
+    async def cert_replace_tags(self, cert_id: str, tags: list[str]) -> dict[str, Any]:
+        """Replace the full set of tags on a certificate."""
+        result: dict[str, Any] = await self.put(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"tags": tags},
+        )
+        return result
+
+    async def cert_update_tags(self, cert_id: str, tags: list[str]) -> dict[str, Any]:
+        """Add tags to a certificate without removing existing ones."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"tags": tags},
+        )
+        return result
+
+    async def cert_delete_tags(self, cert_id: str) -> dict[str, Any]:
+        """Remove all operator-defined tags from a certificate."""
+        result: dict[str, Any] = await self.delete(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
         return result
 
     async def cert_list_packages(self) -> list[dict[str, Any]]:

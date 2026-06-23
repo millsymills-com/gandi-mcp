@@ -125,6 +125,89 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
+    @mcp.tool(
+        tags={"gandi", "certificate", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_cert_add_tag(ctx: Context, cert_id: str, name: str) -> dict[str, Any]:
+        """Add a single operator-defined tag to a certificate.
+
+        Args:
+            cert_id: Certificate UUID.
+            name: Tag to add.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "add certificate tag")
+            return await get_client(ctx).cert_add_tag(cert_id, name)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "certificate", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_cert_replace_tags(ctx: Context, cert_id: str, tags: list[str]) -> dict[str, Any]:
+        """Replace the full set of tags on a certificate.
+
+        Args:
+            cert_id: Certificate UUID.
+            tags: New full tag list (replaces all existing tags).
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "replace certificate tags")
+            return await get_client(ctx).cert_replace_tags(cert_id, tags)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "certificate", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_cert_update_tags(ctx: Context, cert_id: str, tags: list[str]) -> dict[str, Any]:
+        """Add tags to a certificate without removing existing ones.
+
+        Args:
+            cert_id: Certificate UUID.
+            tags: Tags to add.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update certificate tags")
+            return await get_client(ctx).cert_update_tags(cert_id, tags)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "certificate", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_cert_delete_tags(ctx: Context, cert_id: str) -> dict[str, Any]:
+        """Remove all operator-defined tags from a certificate.
+
+        Args:
+            cert_id: Certificate UUID.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "delete certificate tags")
+            return await get_client(ctx).cert_delete_tags(cert_id)
+        except Exception as e:
+            handle_client_error(e)
+
 
 def register_certificate_purchase_tools(mcp: FastMCP) -> None:
     """Register money-spending certificate tools on the server.
