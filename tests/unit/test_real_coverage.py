@@ -44,7 +44,7 @@ SNAPSHOT = REPO_ROOT / "tests" / "data" / "raml_coverage_snapshot.json"
 
 # Ratchets — see module docstring. Bump together with the snapshot/tool surface.
 EXPECTED_LIVE_TOTAL = 210
-MIN_COVERED_ENDPOINTS = 97
+MIN_COVERED_ENDPOINTS = 176
 
 
 def _load_snapshot() -> dict[str, object]:
