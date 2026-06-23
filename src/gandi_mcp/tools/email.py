@@ -290,6 +290,27 @@ def register_email_write_tools(mcp: FastMCP) -> None:
 
     @mcp.tool(
         tags={"gandi", "email", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_email_update_offer(ctx: Context, domain: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update the email offer (plan) for a domain.
+
+        Args:
+            domain: Fully-qualified domain name.
+            data: Offer update payload (e.g. ``{"mailbox_type": "premium_2023"}``).
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update email offer")
+            return await get_client(ctx).email_update_offer(domain, data)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "email", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
     async def gandi_email_refund_slot(ctx: Context, domain: str, slot_id: str) -> dict[str, Any]:
@@ -411,6 +432,34 @@ def register_email_purchase_tools(mcp: FastMCP) -> None:
             assert_readwrite(ctx, "renew mailbox")
             assert_purchases_allowed(ctx, "renew mailbox")
             return await get_client(ctx).email_renew_mailbox(domain, email, {"duration": duration})
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "email", "write", "purchase"},
+        annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
+    )
+    async def gandi_email_renew_all_mailboxes(
+        ctx: Context,
+        domain: str,
+        duration: int = 1,
+    ) -> dict[str, Any]:
+        """SPENDS MONEY. Renew every mailbox on a domain.
+
+        Requires GANDI_MODE=readwrite AND GANDI_ALLOW_PURCHASES=true.
+
+        Args:
+            domain: Fully-qualified domain name.
+            duration: Renewal duration in years.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "renew all mailboxes")
+            assert_purchases_allowed(ctx, "renew all mailboxes")
+            return await get_client(ctx).email_renew_all_mailboxes(domain, {"duration": duration})
         except Exception as e:
             handle_client_error(e)
 

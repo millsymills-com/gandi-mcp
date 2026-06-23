@@ -138,6 +138,14 @@ class TestEmailWriteErrorPaths:
         with pytest.raises(ToolError):
             await handler(ctx, domain="example.com", source="info")
 
+    async def test_update_offer_maps_400_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        respx_mock.patch("/v5/email/offers/example.com").mock(
+            return_value=httpx.Response(400, json={"cause": "invalid"}),
+        )
+        handler = await _get_handler(server, "gandi_email_update_offer")
+        with pytest.raises(ToolError):
+            await handler(ctx, domain="example.com", data={"mailbox_type": "premium_2023"})
+
     async def test_refund_slot_maps_409_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
         respx_mock.delete("/v5/email/slots/example.com/slot-1").mock(
             return_value=httpx.Response(409, json={"cause": "outside refund window"}),
@@ -174,3 +182,13 @@ class TestEmailPurchaseErrorPaths:
         handler = await _get_handler(server, "gandi_email_renew_mailbox")
         with pytest.raises(ToolError):
             await handler(ctx, domain="example.com", email="info@example.com")
+
+    async def test_renew_all_mailboxes_maps_402_to_tool_error(
+        self, ctx: AsyncMock, respx_mock: Any, server: FastMCP
+    ) -> None:
+        respx_mock.post("/v5/email/mailboxes/example.com/renew").mock(
+            return_value=httpx.Response(402, json={"cause": "payment required"}),
+        )
+        handler = await _get_handler(server, "gandi_email_renew_all_mailboxes")
+        with pytest.raises(ToolError):
+            await handler(ctx, domain="example.com")

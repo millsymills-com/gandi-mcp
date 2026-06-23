@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**177 tools** — 78 read, 86 write, 13 purchase.
+**179 tools** — 78 read, 87 write, 14 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -102,8 +102,10 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | email | write | `gandi_email_refund_slot` | yes | no | `email_refund_slot` | `DELETE /v5/email/slots/{domain}/{slot_id}` |
 | email | write | `gandi_email_update_forward` | no | no | `email_update_forward` | `PUT /v5/email/forwards/{domain}/{source}` |
 | email | write | `gandi_email_update_mailbox` | no | no | `email_update_mailbox` | `PATCH /v5/email/mailboxes/{domain}/{mailbox_id}` |
+| email | write | `gandi_email_update_offer` | no | no | `email_update_offer` | `PATCH /v5/email/offers/{domain}` |
 | email | purchase | `gandi_email_create_mailbox` | no | yes | `email_create_mailbox` | `POST /v5/email/mailboxes/{domain}` |
 | email | purchase | `gandi_email_create_slot` | no | yes | `email_create_slot` | `POST /v5/email/slots/{domain}` |
+| email | purchase | `gandi_email_renew_all_mailboxes` | no | yes | `email_renew_all_mailboxes` | `POST /v5/email/mailboxes/{domain}/renew` |
 | email | purchase | `gandi_email_renew_mailbox` | no | yes | `email_renew_mailbox` | `POST /v5/email/mailboxes/{domain}/{email}/renew` |
 | linkedzone | read | `gandi_linkedzone_get_domain` | no | no | `linkedzone_get_domain` | `GET /v5/linkedzone/domains/{domain}` |
 | linkedzone | read | `gandi_linkedzone_get_task` | no | no | `linkedzone_get_task` | `GET /v5/linkedzone/tasks/{task_id}` |

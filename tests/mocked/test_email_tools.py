@@ -341,6 +341,31 @@ class TestEmailDeleteForward:
 
 
 @pytest.mark.mocked
+class TestEmailUpdateOffer:
+    async def test_patches_offer_payload(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        payload = {"message": "Offer updated"}
+        route = respx_mock.patch("/v5/email/offers/example.com").mock(return_value=httpx.Response(200, json=payload))
+
+        handler = await _get_handler(server, "gandi_email_update_offer")
+        result = await handler(ctx, domain="example.com", data={"mailbox_type": "premium_2023"})
+
+        assert route.called
+        assert route.calls.last.request.method == "PATCH"
+        sent = json.loads(route.calls.last.request.content)
+        assert sent == {"mailbox_type": "premium_2023"}
+        assert result == payload
+
+    async def test_url_encodes_domain(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        route = respx_mock.patch("/v5/email/offers/weird%2Fdom.com").mock(return_value=httpx.Response(200, json={}))
+
+        handler = await _get_handler(server, "gandi_email_update_offer")
+        await handler(ctx, domain="weird/dom.com", data={})
+
+        assert route.called
+        assert route.calls.last.request.url.raw_path == b"/v5/email/offers/weird%2Fdom.com"
+
+
+@pytest.mark.mocked
 class TestEmailRefundSlot:
     async def test_deletes_correct_endpoint(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
         route = respx_mock.delete("/v5/email/slots/example.com/1").mock(return_value=httpx.Response(204))
@@ -472,3 +497,42 @@ class TestEmailRenewMailbox:
         raw = route.calls.last.request.url.raw_path
         assert b"%2F" in raw
         assert raw == b"/v5/email/mailboxes/example.com/user%2Fwith%2Fslash%40example.com/renew"
+
+
+@pytest.mark.mocked
+class TestEmailRenewAllMailboxes:
+    async def test_posts_duration_body(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        payload = {"message": "Renewed"}
+        route = respx_mock.post("/v5/email/mailboxes/example.com/renew").mock(
+            return_value=httpx.Response(202, json=payload)
+        )
+
+        handler = await _get_handler(server, "gandi_email_renew_all_mailboxes")
+        result = await handler(ctx, domain="example.com", duration=3)
+
+        assert route.called
+        assert route.calls.last.request.method == "POST"
+        sent = json.loads(route.calls.last.request.content)
+        assert sent == {"duration": 3}
+        assert result == payload
+
+    async def test_default_duration_is_one(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        route = respx_mock.post("/v5/email/mailboxes/example.com/renew").mock(return_value=httpx.Response(202, json={}))
+
+        handler = await _get_handler(server, "gandi_email_renew_all_mailboxes")
+        await handler(ctx, domain="example.com")
+
+        assert route.called
+        sent = json.loads(route.calls.last.request.content)
+        assert sent == {"duration": 1}
+
+    async def test_url_encodes_domain(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        route = respx_mock.post("/v5/email/mailboxes/weird%2Fdom.com/renew").mock(
+            return_value=httpx.Response(202, json={})
+        )
+
+        handler = await _get_handler(server, "gandi_email_renew_all_mailboxes")
+        await handler(ctx, domain="weird/dom.com")
+
+        assert route.called
+        assert route.calls.last.request.url.raw_path == b"/v5/email/mailboxes/weird%2Fdom.com/renew"
