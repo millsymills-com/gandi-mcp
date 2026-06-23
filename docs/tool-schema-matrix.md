@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**121 tools** — 54 read, 59 write, 8 purchase.
+**125 tools** — 54 read, 63 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -138,3 +138,7 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | organization | read | `gandi_org_get_user_info` | no | no | `get_user_info` | `GET /v5/organization/user-info` |
 | organization | read | `gandi_org_list_customers` | no | no | `list_customers` | `GET /v5/organization/organizations/{org_id}/customers` |
 | organization | read | `gandi_org_list_organizations` | no | no | `list_organizations` | `GET /v5/organization/organizations` |
+| organization | write | `gandi_org_create_customer` | no | no | `create_customer` | `POST /v5/organization/organizations/{org_id}/customers` |
+| organization | write | `gandi_org_renew_access_token` | no | no | `renew_access_token` | `POST /v5/organization/access-tokens` |
+| organization | write | `gandi_org_update_customer` | no | no | `update_customer` | `PATCH /v5/organization/organizations/{org_id}/customers/{customer_id}` |
+| organization | write | `gandi_org_update_organization` | no | no | `update_organization` | `PATCH /v5/organization/organizations/{org_id}` |
