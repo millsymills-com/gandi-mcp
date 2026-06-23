@@ -58,7 +58,9 @@ def register_write_tools(mcp: FastMCP) -> None:
         register_email_write_tools,
     )
     from gandi_mcp.tools.livedns import register_livedns_write_tools
+    from gandi_mcp.tools.organization import register_organization_write_tools
 
+    register_organization_write_tools(mcp)
     register_domain_write_tools(mcp)
     register_domain_purchase_tools(mcp)
     register_livedns_write_tools(mcp)
