@@ -457,6 +457,40 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}")
         return result
 
+    async def livedns_get_key(self, fqdn: str, key_id: str) -> dict[str, Any]:
+        """Get a single LiveDNS DNSSEC key by id."""
+        result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}")
+        return result
+
+    # ── Snapshots (LiveDNS) ─────────────────────────────────────────────
+
+    async def livedns_list_snapshots(self, fqdn: str) -> list[dict[str, Any]]:
+        """List zone snapshots for a domain."""
+        result: list[dict[str, Any]] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots")
+        return result
+
+    async def livedns_get_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Get a single zone snapshot by id."""
+        result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
+        return result
+
+    # ── Generic nameservers / AXFR TSIG (LiveDNS) ───────────────────────
+
+    async def livedns_get_generic_nameservers(self, fqdn: str) -> dict[str, Any]:
+        """Recommended generic LiveDNS nameservers for a domain."""
+        result: dict[str, Any] = await self.get(f"/v5/livedns/nameservers/{_seg(fqdn)}")
+        return result
+
+    async def livedns_list_tsig_keys(self) -> list[dict[str, Any]]:
+        """List AXFR TSIG keys for the account."""
+        result: list[dict[str, Any]] = await self.get("/v5/livedns/axfr/tsig")
+        return result
+
+    async def livedns_get_tsig_key(self, tsig_id: str) -> dict[str, Any]:
+        """Get a single AXFR TSIG key by id."""
+        result: dict[str, Any] = await self.get(f"/v5/livedns/axfr/tsig/{_seg(tsig_id)}")
+        return result
+
     # ═════════════════════════════════════════════════════════════════════
     # Email (/v5/email)
     # ═════════════════════════════════════════════════════════════════════

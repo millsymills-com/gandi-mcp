@@ -114,6 +114,100 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
+    @mcp.tool(tags={"gandi", "livedns"})
+    async def gandi_livedns_get_dnssec_key(ctx: Context, fqdn: str, key_id: str) -> dict[str, Any]:
+        """Get a single LiveDNS DNSSEC key by id.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            key_id: ID of the DNSSEC key.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).livedns_get_key(fqdn, key_id)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "livedns"})
+    async def gandi_livedns_list_snapshots(ctx: Context, fqdn: str) -> list[dict[str, Any]]:
+        """List zone snapshots for a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).livedns_list_snapshots(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "livedns"})
+    async def gandi_livedns_get_snapshot(ctx: Context, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Get a single zone snapshot by id.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            snapshot_id: ID of the snapshot.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).livedns_get_snapshot(fqdn, snapshot_id)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "livedns"})
+    async def gandi_livedns_get_generic_nameservers(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Recommended generic LiveDNS nameservers for a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).livedns_get_generic_nameservers(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "livedns"})
+    async def gandi_livedns_list_tsig_keys(ctx: Context) -> list[dict[str, Any]]:
+        """List AXFR TSIG keys for the account.
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).livedns_list_tsig_keys()
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "livedns"})
+    async def gandi_livedns_get_tsig_key(ctx: Context, tsig_id: str) -> dict[str, Any]:
+        """Get a single AXFR TSIG key by id.
+
+        Args:
+            tsig_id: ID of the TSIG key.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).livedns_get_tsig_key(tsig_id)
+        except Exception as e:
+            handle_client_error(e)
+
 
 def register_livedns_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write livedns tools on the server."""
