@@ -284,6 +284,163 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_list_tags(ctx: Context, fqdn: str) -> list[str]:
+        """List the operator-defined tags on a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).list_domain_tags(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_get_restore_info(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Restore eligibility and price preview for a deleted domain (no charge).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).get_restore_info(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_list_web_redirections(ctx: Context, fqdn: str) -> list[dict[str, Any]]:
+        """List web redirections configured for a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).list_web_redirections(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_get_web_redirection(ctx: Context, fqdn: str, host: str) -> dict[str, Any]:
+        """Get a single web redirection by host.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            host: Source host of the redirection (e.g. "www").
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).get_web_redirection(fqdn, host)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_check_transferin_available(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Check whether a domain is eligible for transfer-in (no charge).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).check_transferin_available(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_get_create_status(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Status of a pending domain creation.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).get_create_status(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_get_livedns(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """LiveDNS enablement state for a domain (registry-side view).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).get_domain_livedns(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_get_livedns_dnssec(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """LiveDNS-managed DNSSEC state for a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).get_domain_livedns_dnssec(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_list_tlds(ctx: Context) -> list[dict[str, Any]]:
+        """List the TLDs Gandi supports.
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).list_tlds()
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "domain"})
+    async def gandi_domain_get_tld(ctx: Context, name: str) -> dict[str, Any]:
+        """Get details and policy for a single TLD.
+
+        Args:
+            name: TLD without a leading dot (e.g. "com").
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).get_tld(name)
+        except Exception as e:
+            handle_client_error(e)
+
 
 def register_domain_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write domain tools on the server."""
