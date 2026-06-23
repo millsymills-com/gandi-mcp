@@ -349,9 +349,24 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/livedns")
         return result
 
+    async def enable_domain_livedns(self, fqdn: str) -> dict[str, Any]:
+        """Switch a domain's nameservers to LiveDNS (registry-side enablement)."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/livedns", json={})
+        return result
+
     async def get_domain_livedns_dnssec(self, fqdn: str) -> dict[str, Any]:
         """LiveDNS-managed DNSSEC state for a domain."""
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/livedns/dnssec")
+        return result
+
+    async def activate_domain_livedns_dnssec(self, fqdn: str) -> dict[str, Any]:
+        """Activate LiveDNS-managed DNSSEC for a domain."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/livedns/dnssec", json={})
+        return result
+
+    async def disable_domain_livedns_dnssec(self, fqdn: str) -> dict[str, Any]:
+        """Disable LiveDNS-managed DNSSEC for a domain."""
+        result: dict[str, Any] = await self.delete(f"/v5/domain/domains/{_seg(fqdn)}/livedns/dnssec")
         return result
 
     async def list_tlds(self) -> list[dict[str, Any]]:
