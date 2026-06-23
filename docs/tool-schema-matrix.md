@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**71 tools** — 34 read, 29 write, 8 purchase.
+**81 tools** — 44 read, 29 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -26,18 +26,28 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | certificate | purchase | `gandi_cert_issue` | no | yes | `cert_issue` | `POST /v5/certificate/issued-certs` |
 | certificate | purchase | `gandi_cert_renew` | no | yes | `cert_renew` | `POST /v5/certificate/issued-certs/{cert_id}/renew` |
 | domain | read | `gandi_domain_check_availability` | no | no | `check_availability` | `GET /v5/domain/check` |
+| domain | read | `gandi_domain_check_transferin_available` | no | no | `check_transferin_available` | `GET /v5/domain/transferin/{fqdn}/available` |
 | domain | read | `gandi_domain_get_claims` | no | no | `get_domain_claims` | `GET /v5/domain/domains/{fqdn}/claims` |
 | domain | read | `gandi_domain_get_contacts` | no | no | `get_domain_contacts` | `GET /v5/domain/domains/{fqdn}/contacts` |
+| domain | read | `gandi_domain_get_create_status` | no | no | `get_create_status` | `GET /v5/domain/domains/{fqdn}/createstatus` |
 | domain | read | `gandi_domain_get_domain` | no | no | `get_domain` | `GET /v5/domain/domains/{fqdn}` |
 | domain | read | `gandi_domain_get_glue_record` | no | no | `get_glue_record` | `GET /v5/domain/domains/{fqdn}/hosts/{name}` |
+| domain | read | `gandi_domain_get_livedns` | no | no | `get_domain_livedns` | `GET /v5/domain/domains/{fqdn}/livedns` |
+| domain | read | `gandi_domain_get_livedns_dnssec` | no | no | `get_domain_livedns_dnssec` | `GET /v5/domain/domains/{fqdn}/livedns/dnssec` |
 | domain | read | `gandi_domain_get_nameservers` | no | no | `get_nameservers` | `GET /v5/domain/domains/{fqdn}/nameservers` |
 | domain | read | `gandi_domain_get_ownership_change_status` | no | no | `get_ownership_change_status` | `GET /v5/domain/changeowner/{fqdn}` |
 | domain | read | `gandi_domain_get_renew_info` | no | no | `get_renew_info` | `GET /v5/domain/domains/{fqdn}/renew` |
+| domain | read | `gandi_domain_get_restore_info` | no | no | `get_restore_info` | `GET /v5/domain/domains/{fqdn}/restore` |
 | domain | read | `gandi_domain_get_status` | no | no | `get_domain` | `GET /v5/domain/domains/{fqdn}` |
+| domain | read | `gandi_domain_get_tld` | no | no | `get_tld` | `GET /v5/domain/tlds/{name}` |
 | domain | read | `gandi_domain_get_transferin_info` | no | no | `get_transferin_info` | `GET /v5/domain/transferin/{fqdn}` |
+| domain | read | `gandi_domain_get_web_redirection` | no | no | `get_web_redirection` | `GET /v5/domain/domains/{fqdn}/webredirs/{host}` |
 | domain | read | `gandi_domain_list_dnssec_keys` | no | no | `list_dnssec_keys` | `GET /v5/domain/domains/{fqdn}/dnskeys` |
 | domain | read | `gandi_domain_list_domains` | no | no | `list_domains` | `GET /v5/domain/domains` |
 | domain | read | `gandi_domain_list_glue_records` | no | no | `list_glue_records` | `GET /v5/domain/domains/{fqdn}/hosts` |
+| domain | read | `gandi_domain_list_tags` | no | no | `list_domain_tags` | `GET /v5/domain/domains/{fqdn}/tags` |
+| domain | read | `gandi_domain_list_tlds` | no | no | `list_tlds` | `GET /v5/domain/tlds` |
+| domain | read | `gandi_domain_list_web_redirections` | no | no | `list_web_redirections` | `GET /v5/domain/domains/{fqdn}/webredirs` |
 | domain | write | `gandi_domain_create_dnssec_key` | no | no | `create_dnssec_key` | `POST /v5/domain/domains/{fqdn}/dnskeys` |
 | domain | write | `gandi_domain_create_glue_record` | no | no | `create_glue_record` | `POST /v5/domain/domains/{fqdn}/hosts` |
 | domain | write | `gandi_domain_delete` | yes | no | `delete_domain` | `DELETE /v5/domain/domains/{fqdn}` |
