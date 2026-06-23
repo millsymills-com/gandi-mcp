@@ -1,7 +1,7 @@
 # Developer-facing make targets. CI doesn't use these — CI uses `uv run pytest`
 # and `uv run python scripts/check_coverage_thresholds.py` directly.
 
-.PHONY: help refresh-cassettes check-cassettes-fresh check-drift
+.PHONY: help refresh-cassettes check-cassettes-fresh check-drift refresh-raml-snapshot
 
 help:
 	@echo "Targets:"
@@ -11,6 +11,15 @@ help:
 	@echo "  check-drift            Re-record to staging dir + structurally diff vs committed."
 	@echo "                         Requires GANDI_TOKEN. Never swaps. Pass"
 	@echo "                         CASSETTE_DRIFT_OPEN_ISSUE=1 to open/append a drift issue."
+	@echo "  refresh-raml-snapshot  Re-pull the live /v5 endpoint set from api.gandi.net/docs"
+	@echo "                         into tests/data/raml_coverage_snapshot.json (no auth needed)."
+	@echo "                         Pass DATE=YYYY-MM-DD to stamp the pull date."
+
+# Re-pull the live RAML endpoint inventory used by tests/unit/test_real_coverage.py.
+# No auth required — the docs are public. If the live total changes, that test
+# trips until the new endpoints are reviewed and the constants/tools updated.
+refresh-raml-snapshot:
+	uv run python scripts/snapshot_raml_coverage.py --date $(or $(DATE),$(shell date +%F))
 
 # Re-record every cassette. Stages to cassettes.new so a mid-run failure
 # never leaves the committed tree in a half-deleted state.
