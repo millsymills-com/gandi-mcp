@@ -981,6 +981,106 @@ class GandiClient(BaseGandiClient):
         return result
 
     # ═════════════════════════════════════════════════════════════════════
+    # Mailbox (/v5/mailbox) — current mailbox product, distinct from /v5/email
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def mailbox_list_domains(self) -> list[dict[str, Any]]:
+        """List domains enabled for the mailbox product."""
+        result: list[dict[str, Any]] = await self.get("/v5/mailbox/domains")
+        return result
+
+    async def mailbox_get_domain(self, domain: str) -> dict[str, Any]:
+        """Get mailbox-product info for a domain."""
+        result: dict[str, Any] = await self.get(f"/v5/mailbox/domains/{_seg(domain)}")
+        return result
+
+    async def mailbox_validate_domain(self, domain: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Validate a domain's mailbox configuration (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/mailbox/domains/{_seg(domain)}/validate", json=data)
+        return result
+
+    async def mailbox_list_mailboxes(self, **params: Any) -> list[dict[str, Any]]:
+        """List mailboxes."""
+        result: list[dict[str, Any]] = await self.get(
+            "/v5/mailbox/mailboxes",
+            params={k: v for k, v in params.items() if v is not None},
+        )
+        return result
+
+    async def mailbox_create_mailbox(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a mailbox (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post("/v5/mailbox/mailboxes", json=data)
+        return result
+
+    async def mailbox_get_mailbox(self, email: str) -> dict[str, Any]:
+        """Get a single mailbox by address."""
+        result: dict[str, Any] = await self.get(f"/v5/mailbox/mailboxes/{_seg(email)}")
+        return result
+
+    async def mailbox_update_mailbox(self, email: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a mailbox (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(f"/v5/mailbox/mailboxes/{_seg(email)}", json=data)
+        return result
+
+    async def mailbox_delete_mailbox(self, email: str) -> dict[str, Any]:
+        """Delete a mailbox."""
+        result: dict[str, Any] = await self.delete(f"/v5/mailbox/mailboxes/{_seg(email)}")
+        return result
+
+    async def mailbox_renew_mailbox(self, email: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Renew a mailbox (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post(f"/v5/mailbox/mailboxes/{_seg(email)}/renew", json=data)
+        return result
+
+    async def mailbox_list_forwards(self, **params: Any) -> list[dict[str, Any]]:
+        """List mailbox forwards."""
+        result: list[dict[str, Any]] = await self.get(
+            "/v5/mailbox/forwards",
+            params={k: v for k, v in params.items() if v is not None},
+        )
+        return result
+
+    async def mailbox_create_forward(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a mailbox forward (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/mailbox/forwards", json=data)
+        return result
+
+    async def mailbox_update_forward(self, source: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a mailbox forward by source address (pass-through payload)."""
+        result: dict[str, Any] = await self.put(f"/v5/mailbox/forwards/{_seg(source)}", json=data)
+        return result
+
+    async def mailbox_delete_forward(self, source: str) -> dict[str, Any]:
+        """Delete a mailbox forward by source address."""
+        result: dict[str, Any] = await self.delete(f"/v5/mailbox/forwards/{_seg(source)}")
+        return result
+
+    async def mailbox_list_slots(self) -> list[dict[str, Any]]:
+        """List mailbox slots."""
+        result: list[dict[str, Any]] = await self.get("/v5/mailbox/slots")
+        return result
+
+    async def mailbox_get_slot(self, slot_id: str) -> dict[str, Any]:
+        """Get a single mailbox slot by id."""
+        result: dict[str, Any] = await self.get(f"/v5/mailbox/slots/{_seg(slot_id)}")
+        return result
+
+    async def mailbox_get_quotas(self) -> dict[str, Any]:
+        """Get mailbox quota usage for the account."""
+        result: dict[str, Any] = await self.get("/v5/mailbox/quotas")
+        return result
+
+    async def mailbox_list_products(self) -> list[dict[str, Any]]:
+        """List mailbox products available for purchase."""
+        result: list[dict[str, Any]] = await self.get("/v5/mailbox/products")
+        return result
+
+    async def mailbox_buy_product(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Buy a mailbox product / slot (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post("/v5/mailbox/products", json=data)
+        return result
+
+    # ═════════════════════════════════════════════════════════════════════
     # Linked zones (/v5/linkedzone)
     # ═════════════════════════════════════════════════════════════════════
 

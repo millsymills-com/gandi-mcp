@@ -101,6 +101,9 @@ class TestTagInvariants:
         "gandi_email_renew_mailbox",
         "gandi_cert_issue",
         "gandi_cert_renew",
+        "gandi_mailbox_create_mailbox",
+        "gandi_mailbox_renew_mailbox",
+        "gandi_mailbox_buy_product",
         "gandi_simplehosting_create_instance",
         "gandi_simplehosting_update_instance",
     }

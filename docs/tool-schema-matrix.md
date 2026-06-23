@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**159 tools** — 69 read, 80 write, 10 purchase.
+**177 tools** — 78 read, 86 write, 13 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -148,6 +148,24 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | livedns | write | `gandi_livedns_update_domain` | no | no | `livedns_patch_domain` | `PATCH /v5/livedns/domains/{fqdn}` |
 | livedns | write | `gandi_livedns_update_record` | no | no | `livedns_update_record` | `PATCH /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
 | livedns | write | `gandi_livedns_update_snapshot` | no | no | `livedns_update_snapshot` | `PATCH /v5/livedns/domains/{fqdn}/snapshots/{snapshot_id}` |
+| mailbox | read | `gandi_mailbox_get_domain` | no | no | `mailbox_get_domain` | `GET /v5/mailbox/domains/{domain}` |
+| mailbox | read | `gandi_mailbox_get_mailbox` | no | no | `mailbox_get_mailbox` | `GET /v5/mailbox/mailboxes/{email}` |
+| mailbox | read | `gandi_mailbox_get_quotas` | no | no | `mailbox_get_quotas` | `GET /v5/mailbox/quotas` |
+| mailbox | read | `gandi_mailbox_get_slot` | no | no | `mailbox_get_slot` | `GET /v5/mailbox/slots/{slot_id}` |
+| mailbox | read | `gandi_mailbox_list_domains` | no | no | `mailbox_list_domains` | `GET /v5/mailbox/domains` |
+| mailbox | read | `gandi_mailbox_list_forwards` | no | no | `mailbox_list_forwards` | `GET /v5/mailbox/forwards` |
+| mailbox | read | `gandi_mailbox_list_mailboxes` | no | no | `mailbox_list_mailboxes` | `GET /v5/mailbox/mailboxes` |
+| mailbox | read | `gandi_mailbox_list_products` | no | no | `mailbox_list_products` | `GET /v5/mailbox/products` |
+| mailbox | read | `gandi_mailbox_list_slots` | no | no | `mailbox_list_slots` | `GET /v5/mailbox/slots` |
+| mailbox | write | `gandi_mailbox_create_forward` | no | no | `mailbox_create_forward` | `POST /v5/mailbox/forwards` |
+| mailbox | write | `gandi_mailbox_delete_forward` | yes | no | `mailbox_delete_forward` | `DELETE /v5/mailbox/forwards/{source}` |
+| mailbox | write | `gandi_mailbox_delete_mailbox` | yes | no | `mailbox_delete_mailbox` | `DELETE /v5/mailbox/mailboxes/{email}` |
+| mailbox | write | `gandi_mailbox_update_forward` | no | no | `mailbox_update_forward` | `PUT /v5/mailbox/forwards/{source}` |
+| mailbox | write | `gandi_mailbox_update_mailbox` | no | no | `mailbox_update_mailbox` | `PATCH /v5/mailbox/mailboxes/{email}` |
+| mailbox | write | `gandi_mailbox_validate_domain` | no | no | `mailbox_validate_domain` | `POST /v5/mailbox/domains/{domain}/validate` |
+| mailbox | purchase | `gandi_mailbox_buy_product` | no | yes | `mailbox_buy_product` | `POST /v5/mailbox/products` |
+| mailbox | purchase | `gandi_mailbox_create_mailbox` | no | yes | `mailbox_create_mailbox` | `POST /v5/mailbox/mailboxes` |
+| mailbox | purchase | `gandi_mailbox_renew_mailbox` | no | yes | `mailbox_renew_mailbox` | `POST /v5/mailbox/mailboxes/{email}/renew` |
 | organization | read | `gandi_org_get_customer` | no | no | `get_customer` | `GET /v5/organization/organizations/{org_id}/customers/{customer_id}` |
 | organization | read | `gandi_org_get_organization` | no | no | `get_organization` | `GET /v5/organization/organizations/{org_id}` |
 | organization | read | `gandi_org_get_user_info` | no | no | `get_user_info` | `GET /v5/organization/user-info` |
