@@ -401,6 +401,148 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         tags={"gandi", "livedns", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
+    async def gandi_livedns_create_named_record(
+        ctx: Context,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Create a record under a name via the per-name records collection.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            name: Record name (e.g. "www", "@").
+            rrset_type: Record type (A, AAAA, CNAME, MX, TXT, etc.).
+            values: Record values — for MX include priority ("10 mail.example.com").
+            ttl: Time-to-live in seconds (300-2592000). Zone default if omitted.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "create named DNS record")
+            return await get_client(ctx).livedns_create_named_record(fqdn, name, rrset_type, values, ttl=ttl)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_livedns_replace_named_records(
+        ctx: Context,
+        fqdn: str,
+        name: str,
+        items: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        """Replace ALL records under a name (destructive per-name bulk write).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            name: Record name whose records are fully replaced.
+            items: Full list of records for the name — each item must have
+                ``rrset_type``, ``rrset_values`` and optionally ``rrset_ttl``.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "replace named DNS records")
+            return await get_client(ctx).livedns_replace_named_records(fqdn, name, items)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_livedns_delete_named_records(ctx: Context, fqdn: str, name: str) -> dict[str, Any]:
+        """Delete ALL records under a name (every type).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            name: Record name whose records are all removed.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "delete named DNS records")
+            return await get_client(ctx).livedns_delete_named_records(fqdn, name)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_livedns_create_typed_record(
+        ctx: Context,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Create a record at a specific (name, type) endpoint.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            name: Record name.
+            rrset_type: Record type.
+            values: Record values.
+            ttl: Time-to-live in seconds. Zone default if omitted.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "create typed DNS record")
+            return await get_client(ctx).livedns_create_typed_record(fqdn, name, rrset_type, values, ttl=ttl)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_livedns_update_record(
+        ctx: Context,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Update a specific (name, type) record set (PATCH).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            name: Record name.
+            rrset_type: Record type.
+            values: New values for the record set.
+            ttl: New TTL. Zone default if omitted.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update DNS record")
+            return await get_client(ctx).livedns_update_record(fqdn, name, rrset_type, values, ttl=ttl)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
     async def gandi_livedns_create_dnssec_key(
         ctx: Context,
         fqdn: str,
@@ -447,13 +589,85 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         tags={"gandi", "livedns", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
+    async def gandi_livedns_create_snapshot(
+        ctx: Context,
+        fqdn: str,
+        name: str | None = None,
+    ) -> dict[str, Any]:
+        """Create a zone snapshot (point-in-time copy of all records).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            name: Optional label for the snapshot. Gandi auto-names it if omitted.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "create zone snapshot")
+            return await get_client(ctx).livedns_create_snapshot(fqdn, name=name)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_livedns_update_snapshot(
+        ctx: Context,
+        fqdn: str,
+        snapshot_id: str,
+        name: str,
+    ) -> dict[str, Any]:
+        """Rename a zone snapshot.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            snapshot_id: ID of the snapshot to rename.
+            name: New label for the snapshot.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "rename zone snapshot")
+            return await get_client(ctx).livedns_update_snapshot(fqdn, snapshot_id, name)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_livedns_delete_snapshot(ctx: Context, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Delete a zone snapshot.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            snapshot_id: ID of the snapshot to delete.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "delete zone snapshot")
+            return await get_client(ctx).livedns_delete_snapshot(fqdn, snapshot_id)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
     async def gandi_livedns_restore_dnssec_key(ctx: Context, fqdn: str, key_id: str) -> dict[str, Any]:
         """Restore (undelete) a previously deleted LiveDNS DNSSEC key.
 
         Args:
             fqdn: Fully-qualified domain name.
             key_id: ID of the DNSSEC key to restore.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -470,9 +684,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
     )
     async def gandi_livedns_create_tsig_key(ctx: Context) -> dict[str, Any]:
         """Create a new AXFR TSIG key for the account.
-
-        Args:
-            ctx: FastMCP request context.
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

@@ -475,6 +475,73 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/records")
         return result
 
+    async def livedns_create_named_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Create a record under a name (POST to the per-name collection)."""
+        payload: dict[str, Any] = {"rrset_type": rrset_type, "rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.post(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}",
+            json=payload,
+        )
+        return result
+
+    async def livedns_replace_named_records(self, fqdn: str, name: str, items: list[dict[str, Any]]) -> dict[str, Any]:
+        """Replace every record under a name (destructive per-name bulk write)."""
+        result: dict[str, Any] = await self.put(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}",
+            json={"items": items},
+        )
+        return result
+
+    async def livedns_delete_named_records(self, fqdn: str, name: str) -> dict[str, Any]:
+        """Delete every record under a name (all types)."""
+        result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}")
+        return result
+
+    async def livedns_create_typed_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Create a record at a specific (name, type) endpoint."""
+        payload: dict[str, Any] = {"rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.post(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}/{_seg(rrset_type)}",
+            json=payload,
+        )
+        return result
+
+    async def livedns_update_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Update a specific (name, type) record set (PATCH)."""
+        payload: dict[str, Any] = {"rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}/{_seg(rrset_type)}",
+            json=payload,
+        )
+        return result
+
     # ── DNSSEC (LiveDNS) ────────────────────────────────────────────────
 
     async def livedns_list_keys(self, fqdn: str) -> list[dict[str, Any]]:
@@ -518,6 +585,27 @@ class GandiClient(BaseGandiClient):
     async def livedns_get_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
         """Get a single zone snapshot by id."""
         result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
+        return result
+
+    async def livedns_create_snapshot(self, fqdn: str, name: str | None = None) -> dict[str, Any]:
+        """Create a zone snapshot, optionally naming it."""
+        payload: dict[str, Any] = {}
+        if name is not None:
+            payload["name"] = name
+        result: dict[str, Any] = await self.post(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots", json=payload)
+        return result
+
+    async def livedns_update_snapshot(self, fqdn: str, snapshot_id: str, name: str) -> dict[str, Any]:
+        """Rename a zone snapshot."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}",
+            json={"name": name},
+        )
+        return result
+
+    async def livedns_delete_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Delete a zone snapshot by id."""
+        result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
         return result
 
     # ── Generic nameservers / AXFR TSIG (LiveDNS) ───────────────────────
