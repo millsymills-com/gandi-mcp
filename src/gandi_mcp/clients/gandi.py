@@ -896,6 +896,91 @@ class GandiClient(BaseGandiClient):
         return result
 
     # ═════════════════════════════════════════════════════════════════════
+    # Simple Hosting (/v5/simplehosting)
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def simplehosting_list_instances(self, **params: Any) -> list[dict[str, Any]]:
+        """List Simple Hosting instances."""
+        result: list[dict[str, Any]] = await self.get(
+            "/v5/simplehosting/instances",
+            params={k: v for k, v in params.items() if v is not None},
+        )
+        return result
+
+    async def simplehosting_get_instance(self, instance_id: str) -> dict[str, Any]:
+        """Get a single Simple Hosting instance by id."""
+        result: dict[str, Any] = await self.get(f"/v5/simplehosting/instances/{_seg(instance_id)}")
+        return result
+
+    async def simplehosting_list_vhosts(self, instance_id: str) -> list[dict[str, Any]]:
+        """List vhosts on a Simple Hosting instance."""
+        result: list[dict[str, Any]] = await self.get(f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts")
+        return result
+
+    async def simplehosting_get_vhost(self, instance_id: str, fqdn: str) -> dict[str, Any]:
+        """Get a single vhost on a Simple Hosting instance."""
+        result: dict[str, Any] = await self.get(f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts/{_seg(fqdn)}")
+        return result
+
+    async def simplehosting_get_instance_usage(self, instance_id: str) -> dict[str, Any]:
+        """Get resource-usage metrics for a Simple Hosting instance."""
+        result: dict[str, Any] = await self.get(f"/v5/simplehosting/instances/{_seg(instance_id)}/usage")
+        return result
+
+    async def simplehosting_delete_instance(self, instance_id: str) -> dict[str, Any]:
+        """Delete a Simple Hosting instance."""
+        result: dict[str, Any] = await self.delete(f"/v5/simplehosting/instances/{_seg(instance_id)}")
+        return result
+
+    async def simplehosting_instance_action(self, instance_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Perform an action on a Simple Hosting instance (pass-through payload)."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/action",
+            json=data,
+        )
+        return result
+
+    async def simplehosting_create_vhost(self, instance_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a vhost on a Simple Hosting instance (pass-through payload)."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts",
+            json=data,
+        )
+        return result
+
+    async def simplehosting_delete_vhost(self, instance_id: str, fqdn: str) -> dict[str, Any]:
+        """Delete a vhost from a Simple Hosting instance."""
+        result: dict[str, Any] = await self.delete(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts/{_seg(fqdn)}"
+        )
+        return result
+
+    async def simplehosting_update_vhost(self, instance_id: str, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a vhost on a Simple Hosting instance (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts/{_seg(fqdn)}",
+            json=data,
+        )
+        return result
+
+    async def simplehosting_purge_vhost_cache(self, instance_id: str, fqdn: str) -> dict[str, Any]:
+        """Purge the cache of a vhost on a Simple Hosting instance."""
+        result: dict[str, Any] = await self.delete(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts/{_seg(fqdn)}/cache"
+        )
+        return result
+
+    async def simplehosting_create_instance(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a Simple Hosting instance (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post("/v5/simplehosting/instances", json=data)
+        return result
+
+    async def simplehosting_update_instance(self, instance_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a Simple Hosting instance — plan/size changes may bill (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.patch(f"/v5/simplehosting/instances/{_seg(instance_id)}", json=data)
+        return result
+
+    # ═════════════════════════════════════════════════════════════════════
     # Linked zones (/v5/linkedzone)
     # ═════════════════════════════════════════════════════════════════════
 

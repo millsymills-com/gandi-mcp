@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**146 tools** — 64 read, 74 write, 8 purchase.
+**159 tools** — 69 read, 80 write, 10 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -157,6 +157,19 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | organization | write | `gandi_org_renew_access_token` | no | no | `renew_access_token` | `POST /v5/organization/access-tokens` |
 | organization | write | `gandi_org_update_customer` | no | no | `update_customer` | `PATCH /v5/organization/organizations/{org_id}/customers/{customer_id}` |
 | organization | write | `gandi_org_update_organization` | no | no | `update_organization` | `PATCH /v5/organization/organizations/{org_id}` |
+| simplehosting | read | `gandi_simplehosting_get_instance` | no | no | `simplehosting_get_instance` | `GET /v5/simplehosting/instances/{instance_id}` |
+| simplehosting | read | `gandi_simplehosting_get_instance_usage` | no | no | `simplehosting_get_instance_usage` | `GET /v5/simplehosting/instances/{instance_id}/usage` |
+| simplehosting | read | `gandi_simplehosting_get_vhost` | no | no | `simplehosting_get_vhost` | `GET /v5/simplehosting/instances/{instance_id}/vhosts/{fqdn}` |
+| simplehosting | read | `gandi_simplehosting_list_instances` | no | no | `simplehosting_list_instances` | `GET /v5/simplehosting/instances` |
+| simplehosting | read | `gandi_simplehosting_list_vhosts` | no | no | `simplehosting_list_vhosts` | `GET /v5/simplehosting/instances/{instance_id}/vhosts` |
+| simplehosting | write | `gandi_simplehosting_create_vhost` | no | no | `simplehosting_create_vhost` | `POST /v5/simplehosting/instances/{instance_id}/vhosts` |
+| simplehosting | write | `gandi_simplehosting_delete_instance` | yes | no | `simplehosting_delete_instance` | `DELETE /v5/simplehosting/instances/{instance_id}` |
+| simplehosting | write | `gandi_simplehosting_delete_vhost` | yes | no | `simplehosting_delete_vhost` | `DELETE /v5/simplehosting/instances/{instance_id}/vhosts/{fqdn}` |
+| simplehosting | write | `gandi_simplehosting_perform_instance_action` | no | no | `simplehosting_instance_action` | `POST /v5/simplehosting/instances/{instance_id}/action` |
+| simplehosting | write | `gandi_simplehosting_purge_vhost_cache` | yes | no | `simplehosting_purge_vhost_cache` | `DELETE /v5/simplehosting/instances/{instance_id}/vhosts/{fqdn}/cache` |
+| simplehosting | write | `gandi_simplehosting_update_vhost` | no | no | `simplehosting_update_vhost` | `PATCH /v5/simplehosting/instances/{instance_id}/vhosts/{fqdn}` |
+| simplehosting | purchase | `gandi_simplehosting_create_instance` | no | yes | `simplehosting_create_instance` | `POST /v5/simplehosting/instances` |
+| simplehosting | purchase | `gandi_simplehosting_update_instance` | no | yes | `simplehosting_update_instance` | `PATCH /v5/simplehosting/instances/{instance_id}` |
 | template | read | `gandi_template_get_dispatch` | no | no | `template_get_dispatch` | `GET /v5/template/dispatch/{dispatch_id}` |
 | template | read | `gandi_template_get_template` | no | no | `template_get_template` | `GET /v5/template/templates/{template_id}` |
 | template | read | `gandi_template_list_templates` | no | no | `template_list_templates` | `GET /v5/template/templates` |
