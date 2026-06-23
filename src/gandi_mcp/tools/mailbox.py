@@ -48,14 +48,18 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(tags={"gandi", "mailbox"})
-    async def gandi_mailbox_list_mailboxes(ctx: Context) -> list[dict[str, Any]]:
+    async def gandi_mailbox_list_mailboxes(ctx: Context, per_page: int = 100, page: int = 1) -> list[dict[str, Any]]:
         """List mailboxes on the current mailbox product (not legacy email).
+
+        Args:
+            per_page: Page size.
+            page: Page number.
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
         try:
-            return await get_client(ctx).mailbox_list_mailboxes()
+            return await get_client(ctx).mailbox_list_mailboxes(per_page=per_page, page=page)
         except Exception as e:
             handle_client_error(e)
 
@@ -76,14 +80,18 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(tags={"gandi", "mailbox"})
-    async def gandi_mailbox_list_forwards(ctx: Context) -> list[dict[str, Any]]:
+    async def gandi_mailbox_list_forwards(ctx: Context, per_page: int = 100, page: int = 1) -> list[dict[str, Any]]:
         """List mailbox forwards (current mailbox product).
+
+        Args:
+            per_page: Page size.
+            page: Page number.
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
         try:
-            return await get_client(ctx).mailbox_list_forwards()
+            return await get_client(ctx).mailbox_list_forwards(per_page=per_page, page=page)
         except Exception as e:
             handle_client_error(e)
 
