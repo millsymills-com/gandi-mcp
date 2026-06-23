@@ -1,4 +1,4 @@
-"""Organization tools (/v5/organization) — read-only surface."""
+"""Organization tools (/v5/organization)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from typing import Any
 from fastmcp import Context, FastMCP
 
 from gandi_mcp.errors import handle_client_error
-from gandi_mcp.tools._common import get_client
+from gandi_mcp.tools._common import assert_readwrite, get_client
 
 
 def register_organization_read_tools(mcp: FastMCP) -> None:
@@ -113,6 +113,100 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
 
+def register_organization_write_tools(mcp: FastMCP) -> None:
+    """Register non-purchasing write organization tools on the server."""
+
+    @mcp.tool(
+        tags={"gandi", "organization", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_org_create_customer(ctx: Context, org_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a customer under a reseller organization.
+
+        Args:
+            org_id: Reseller organization UUID.
+            data: Customer payload per the Gandi organization schema.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "create customer")
+            return await get_client(ctx).create_customer(org_id, data)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "organization", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_org_update_customer(
+        ctx: Context,
+        org_id: str,
+        customer_id: str,
+        data: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Update a customer of a reseller organization.
+
+        Args:
+            org_id: Reseller organization UUID.
+            customer_id: Customer UUID.
+            data: Partial customer payload (fields to update).
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update customer")
+            return await get_client(ctx).update_customer(org_id, customer_id, data)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "organization", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_org_update_organization(ctx: Context, org_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update an organization's profile.
+
+        Args:
+            org_id: Organization UUID.
+            data: Partial organization payload (fields to update).
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update organization")
+            return await get_client(ctx).update_organization(org_id, data)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "organization", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_org_renew_access_token(ctx: Context, data: dict[str, Any]) -> dict[str, Any]:
+        """Renew an organization access token.
+
+        Args:
+            data: Token-renewal payload per the Gandi access-token schema.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "renew access token")
+            return await get_client(ctx).renew_access_token(data)
+        except Exception as e:
+            handle_client_error(e)
+
+
 def register_organization_tools(mcp: FastMCP) -> None:
-    """Register every organization tool (read-only — organization has no writes)."""
+    """Register every organization tool (read + write)."""
     register_organization_read_tools(mcp)
+    register_organization_write_tools(mcp)

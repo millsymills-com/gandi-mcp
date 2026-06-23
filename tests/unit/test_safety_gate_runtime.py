@@ -104,6 +104,8 @@ class TestTagInvariants:
         "gandi_mailbox_create_mailbox",
         "gandi_mailbox_renew_mailbox",
         "gandi_mailbox_buy_product",
+        "gandi_simplehosting_create_instance",
+        "gandi_simplehosting_update_instance",
     }
 
     async def test_expected_purchase_tools_carry_purchase_tag(self) -> None:
