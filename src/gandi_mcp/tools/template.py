@@ -104,7 +104,7 @@ def register_template_write_tools(mcp: FastMCP) -> None:
 
     @mcp.tool(
         tags={"gandi", "template", "write"},
-        annotations={"readOnlyHint": False, "destructiveHint": False},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
     )
     async def gandi_template_apply_template(ctx: Context, template_id: str, data: dict[str, Any]) -> dict[str, Any]:
         """Apply a template to one or more domains.

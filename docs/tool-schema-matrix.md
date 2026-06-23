@@ -118,6 +118,6 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | template | read | `gandi_template_get_dispatch` | no | no | `template_get_dispatch` | `GET /v5/template/dispatch/{dispatch_id}` |
 | template | read | `gandi_template_get_template` | no | no | `template_get_template` | `GET /v5/template/templates/{template_id}` |
 | template | read | `gandi_template_list_templates` | no | no | `template_list_templates` | `GET /v5/template/templates` |
-| template | write | `gandi_template_apply_template` | no | no | `template_apply_template` | `POST /v5/template/templates/{template_id}` |
+| template | write | `gandi_template_apply_template` | yes | no | `template_apply_template` | `POST /v5/template/templates/{template_id}` |
 | template | write | `gandi_template_create_template` | no | no | `template_create_template` | `POST /v5/template/templates` |
 | template | write | `gandi_template_update_template` | no | no | `template_update_template` | `PATCH /v5/template/templates/{template_id}` |
