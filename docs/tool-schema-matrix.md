@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**98 tools** — 54 read, 36 write, 8 purchase.
+**104 tools** — 57 read, 39 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -115,3 +115,9 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | organization | read | `gandi_org_get_user_info` | no | no | `get_user_info` | `GET /v5/organization/user-info` |
 | organization | read | `gandi_org_list_customers` | no | no | `list_customers` | `GET /v5/organization/organizations/{org_id}/customers` |
 | organization | read | `gandi_org_list_organizations` | no | no | `list_organizations` | `GET /v5/organization/organizations` |
+| template | read | `gandi_template_get_dispatch` | no | no | `template_get_dispatch` | `GET /v5/template/dispatch/{dispatch_id}` |
+| template | read | `gandi_template_get_template` | no | no | `template_get_template` | `GET /v5/template/templates/{template_id}` |
+| template | read | `gandi_template_list_templates` | no | no | `template_list_templates` | `GET /v5/template/templates` |
+| template | write | `gandi_template_apply_template` | no | no | `template_apply_template` | `POST /v5/template/templates/{template_id}` |
+| template | write | `gandi_template_create_template` | no | no | `template_create_template` | `POST /v5/template/templates` |
+| template | write | `gandi_template_update_template` | no | no | `template_update_template` | `PATCH /v5/template/templates/{template_id}` |

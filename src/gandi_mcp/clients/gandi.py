@@ -684,3 +684,37 @@ class GandiClient(BaseGandiClient):
             json=data,
         )
         return result
+
+    # ═════════════════════════════════════════════════════════════════════
+    # Template (/v5/template)
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def template_list_templates(self) -> list[dict[str, Any]]:
+        """List domain-configuration templates."""
+        result: list[dict[str, Any]] = await self.get("/v5/template/templates")
+        return result
+
+    async def template_get_template(self, template_id: str) -> dict[str, Any]:
+        """Get a single template by id."""
+        result: dict[str, Any] = await self.get(f"/v5/template/templates/{_seg(template_id)}")
+        return result
+
+    async def template_get_dispatch(self, dispatch_id: str) -> dict[str, Any]:
+        """Get the status of a template dispatch (application) operation."""
+        result: dict[str, Any] = await self.get(f"/v5/template/dispatch/{_seg(dispatch_id)}")
+        return result
+
+    async def template_create_template(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a domain-configuration template (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/template/templates", json=data)
+        return result
+
+    async def template_update_template(self, template_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a template (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(f"/v5/template/templates/{_seg(template_id)}", json=data)
+        return result
+
+    async def template_apply_template(self, template_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Apply a template to one or more domains (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/template/templates/{_seg(template_id)}", json=data)
+        return result
