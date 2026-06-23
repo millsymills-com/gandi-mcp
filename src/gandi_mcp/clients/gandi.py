@@ -512,6 +512,27 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
         return result
 
+    async def livedns_create_snapshot(self, fqdn: str, name: str | None = None) -> dict[str, Any]:
+        """Create a zone snapshot, optionally naming it."""
+        payload: dict[str, Any] = {}
+        if name is not None:
+            payload["name"] = name
+        result: dict[str, Any] = await self.post(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots", json=payload)
+        return result
+
+    async def livedns_update_snapshot(self, fqdn: str, snapshot_id: str, name: str) -> dict[str, Any]:
+        """Rename a zone snapshot."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}",
+            json={"name": name},
+        )
+        return result
+
+    async def livedns_delete_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Delete a zone snapshot by id."""
+        result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
+        return result
+
     # ── Generic nameservers / AXFR TSIG (LiveDNS) ───────────────────────
 
     async def livedns_get_generic_nameservers(self, fqdn: str) -> dict[str, Any]:
