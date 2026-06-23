@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**98 tools** — 54 read, 36 write, 8 purchase.
+**100 tools** — 54 read, 38 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -104,11 +104,13 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | livedns | write | `gandi_livedns_add_domain` | no | no | `livedns_add_domain` | `POST /v5/livedns/domains` |
 | livedns | write | `gandi_livedns_create_dnssec_key` | no | no | `livedns_create_key` | `POST /v5/livedns/domains/{fqdn}/keys` |
 | livedns | write | `gandi_livedns_create_record` | no | no | `livedns_create_record` | `POST /v5/livedns/domains/{fqdn}/records` |
+| livedns | write | `gandi_livedns_create_tsig_key` | no | no | `livedns_create_tsig_key` | `POST /v5/livedns/axfr/tsig` |
 | livedns | write | `gandi_livedns_delete_all_records` | yes | no | `livedns_delete_all_records` | `DELETE /v5/livedns/domains/{fqdn}/records` |
 | livedns | write | `gandi_livedns_delete_dnssec_key` | yes | no | `livedns_delete_key` | `DELETE /v5/livedns/domains/{fqdn}/keys/{key_id}` |
 | livedns | write | `gandi_livedns_delete_record` | yes | no | `livedns_delete_record` | `DELETE /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
 | livedns | write | `gandi_livedns_replace_record` | no | no | `livedns_replace_record` | `PUT /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
 | livedns | write | `gandi_livedns_replace_zone` | yes | no | `livedns_replace_zone` | `PUT /v5/livedns/domains/{fqdn}/records` |
+| livedns | write | `gandi_livedns_restore_dnssec_key` | no | no | `livedns_restore_key` | `PATCH /v5/livedns/domains/{fqdn}/keys/{key_id}` |
 | livedns | write | `gandi_livedns_update_domain` | no | no | `livedns_patch_domain` | `PATCH /v5/livedns/domains/{fqdn}` |
 | organization | read | `gandi_org_get_customer` | no | no | `get_customer` | `GET /v5/organization/organizations/{org_id}/customers/{customer_id}` |
 | organization | read | `gandi_org_get_organization` | no | no | `get_organization` | `GET /v5/organization/organizations/{org_id}` |
