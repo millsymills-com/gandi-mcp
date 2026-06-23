@@ -658,6 +658,42 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_livedns_restore_dnssec_key(ctx: Context, fqdn: str, key_id: str) -> dict[str, Any]:
+        """Restore (undelete) a previously deleted LiveDNS DNSSEC key.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            key_id: ID of the DNSSEC key to restore.
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "restore LiveDNS DNSSEC key")
+            return await get_client(ctx).livedns_restore_key(fqdn, key_id)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_livedns_create_tsig_key(ctx: Context) -> dict[str, Any]:
+        """Create a new AXFR TSIG key for the account.
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "create AXFR TSIG key")
+            return await get_client(ctx).livedns_create_tsig_key()
+        except Exception as e:
+            handle_client_error(e)
+
 
 def register_livedns_tools(mcp: FastMCP) -> None:
     """Register every livedns tool (read + write).

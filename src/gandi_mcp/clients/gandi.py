@@ -567,6 +567,14 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}")
         return result
 
+    async def livedns_restore_key(self, fqdn: str, key_id: str) -> dict[str, Any]:
+        """Restore (undelete) a LiveDNS DNSSEC key via PATCH ``deleted=false``."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}",
+            json={"deleted": False},
+        )
+        return result
+
     # ── Snapshots (LiveDNS) ─────────────────────────────────────────────
 
     async def livedns_list_snapshots(self, fqdn: str) -> list[dict[str, Any]]:
@@ -615,6 +623,11 @@ class GandiClient(BaseGandiClient):
     async def livedns_get_tsig_key(self, tsig_id: str) -> dict[str, Any]:
         """Get a single AXFR TSIG key by id."""
         result: dict[str, Any] = await self.get(f"/v5/livedns/axfr/tsig/{_seg(tsig_id)}")
+        return result
+
+    async def livedns_create_tsig_key(self) -> dict[str, Any]:
+        """Create a new AXFR TSIG key for the account."""
+        result: dict[str, Any] = await self.post("/v5/livedns/axfr/tsig", json={})
         return result
 
     # ═════════════════════════════════════════════════════════════════════

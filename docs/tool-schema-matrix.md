@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**106 tools** — 54 read, 44 write, 8 purchase.
+**108 tools** — 54 read, 46 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -106,6 +106,7 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | livedns | write | `gandi_livedns_create_named_record` | no | no | `livedns_create_named_record` | `POST /v5/livedns/domains/{fqdn}/records/{name}` |
 | livedns | write | `gandi_livedns_create_record` | no | no | `livedns_create_record` | `POST /v5/livedns/domains/{fqdn}/records` |
 | livedns | write | `gandi_livedns_create_snapshot` | no | no | `livedns_create_snapshot` | `POST /v5/livedns/domains/{fqdn}/snapshots` |
+| livedns | write | `gandi_livedns_create_tsig_key` | no | no | `livedns_create_tsig_key` | `POST /v5/livedns/axfr/tsig` |
 | livedns | write | `gandi_livedns_create_typed_record` | no | no | `livedns_create_typed_record` | `POST /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
 | livedns | write | `gandi_livedns_delete_all_records` | yes | no | `livedns_delete_all_records` | `DELETE /v5/livedns/domains/{fqdn}/records` |
 | livedns | write | `gandi_livedns_delete_dnssec_key` | yes | no | `livedns_delete_key` | `DELETE /v5/livedns/domains/{fqdn}/keys/{key_id}` |
@@ -115,6 +116,7 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | livedns | write | `gandi_livedns_replace_named_records` | yes | no | `livedns_replace_named_records` | `PUT /v5/livedns/domains/{fqdn}/records/{name}` |
 | livedns | write | `gandi_livedns_replace_record` | no | no | `livedns_replace_record` | `PUT /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
 | livedns | write | `gandi_livedns_replace_zone` | yes | no | `livedns_replace_zone` | `PUT /v5/livedns/domains/{fqdn}/records` |
+| livedns | write | `gandi_livedns_restore_dnssec_key` | no | no | `livedns_restore_key` | `PATCH /v5/livedns/domains/{fqdn}/keys/{key_id}` |
 | livedns | write | `gandi_livedns_update_domain` | no | no | `livedns_patch_domain` | `PATCH /v5/livedns/domains/{fqdn}` |
 | livedns | write | `gandi_livedns_update_record` | no | no | `livedns_update_record` | `PATCH /v5/livedns/domains/{fqdn}/records/{name}/{rrset_type}` |
 | livedns | write | `gandi_livedns_update_snapshot` | no | no | `livedns_update_snapshot` | `PATCH /v5/livedns/domains/{fqdn}/snapshots/{snapshot_id}` |
