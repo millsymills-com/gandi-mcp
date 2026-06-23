@@ -224,6 +224,26 @@ class BaseGandiClient:
         response = await self._request("GET", path, **kwargs)
         return self._parse_json(response)
 
+    async def get_text(self, path: str, **kwargs: Any) -> str:
+        """HTTP GET that returns the raw response body as text.
+
+        For endpoints that serve a non-JSON document (e.g. a PEM-encoded
+        certificate at ``.../crt``), which ``_parse_json`` would reject. The
+        global ``Accept: application/json`` header is overridden to
+        ``text/plain`` so the upstream returns the raw document rather than a
+        JSON envelope. An empty body on a 2xx is surfaced as an error, matching
+        ``_parse_json``'s contract (a stripped/truncated response must not look
+        like a valid empty document).
+        """
+        headers = {"Accept": "text/plain", **kwargs.pop("headers", {})}
+        response = await self._request("GET", path, headers=headers, **kwargs)
+        if not response.content:
+            raise GandiError(
+                f"Empty response body from HTTP {response.status_code}",
+                status_code=response.status_code,
+            )
+        return response.text
+
     async def post(self, path: str, **kwargs: Any) -> Any:
         """HTTP POST, returns parsed JSON."""
         response = await self._request("POST", path, **kwargs)

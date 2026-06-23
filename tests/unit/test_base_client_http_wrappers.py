@@ -29,6 +29,7 @@ import pytest
 import respx
 
 from gandi_mcp.clients.base import BaseGandiClient
+from gandi_mcp.errors import GandiError
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator
@@ -176,6 +177,40 @@ class TestParseJsonResponseIsForwarded:
             )
             result = await client.delete("/v5/domain/domains/example.com")
             assert result == {"message": "deleted"}
+
+
+class TestGetText:
+    """``get_text`` returns the raw body and overrides the Accept header.
+
+    Used for endpoints serving a non-JSON document (e.g. the PEM certificate
+    at ``.../crt``) that ``_parse_json`` would reject.
+    """
+
+    @pytest.mark.asyncio
+    async def test_returns_raw_text_body(self) -> None:
+        pem = "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----\n"
+        async with make_client() as client, respx.mock(base_url="https://api.gandi.net") as mock:
+            mock.get("/v5/certificate/issued-certs/c1/crt").mock(
+                return_value=httpx.Response(200, text=pem, headers={"content-type": "text/plain"}),
+            )
+            result = await client.get_text("/v5/certificate/issued-certs/c1/crt")
+            assert result == pem
+
+    @pytest.mark.asyncio
+    async def test_overrides_accept_header(self) -> None:
+        async with make_client() as client, respx.mock(base_url="https://api.gandi.net") as mock:
+            route = mock.get("/v5/certificate/issued-certs/c1/crt").mock(
+                return_value=httpx.Response(200, text="x"),
+            )
+            await client.get_text("/v5/certificate/issued-certs/c1/crt")
+            assert route.calls.last.request.headers["accept"] == "text/plain"
+
+    @pytest.mark.asyncio
+    async def test_empty_body_raises(self) -> None:
+        async with make_client() as client, respx.mock(base_url="https://api.gandi.net") as mock:
+            mock.get("/v5/certificate/issued-certs/c1/crt").mock(return_value=httpx.Response(200, text=""))
+            with pytest.raises(GandiError):
+                await client.get_text("/v5/certificate/issued-certs/c1/crt")
 
 
 class TestMethodOnTheWire:

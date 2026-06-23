@@ -48,7 +48,11 @@ MATRIX_DOC = REPO_ROOT / "docs" / "tool-schema-matrix.md"
 
 SKIP_FILES = frozenset({"__init__.py", "_common.py"})
 STRUCTURAL_TAGS = frozenset({"gandi", "write", "purchase"})
-HTTP_VERBS = frozenset({"get", "post", "put", "patch", "delete"})
+HTTP_VERBS = frozenset({"get", "get_text", "post", "put", "patch", "delete"})
+
+# Client-method helpers whose name is not the bare HTTP verb. ``get_text`` is a
+# GET that returns a raw (non-JSON) body — see ``BaseGandiClient.get_text``.
+VERB_ALIASES = {"get_text": "GET"}
 TIER_ORDER = {"read": 0, "write": 1, "purchase": 2}
 
 # Client methods whose path is assembled at runtime rather than a single string
@@ -202,7 +206,8 @@ def _client_endpoints() -> dict[str, tuple[str, str]]:
             ):
                 path = _render_path(node.args[0])
                 if path is not None:
-                    endpoints[method.name] = (node.func.attr.upper(), path)
+                    verb = VERB_ALIASES.get(node.func.attr, node.func.attr.upper())
+                    endpoints[method.name] = (verb, path)
                 break
     return endpoints
 

@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**177 tools** — 78 read, 86 write, 13 purchase.
+**183 tools** — 79 read, 91 write, 13 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -21,14 +21,20 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | billing | read | `gandi_billing_get_info_for_org` | no | no | `get_billing_info_for_org` | `GET /v5/billing/info/{sharing_id}` |
 | billing | read | `gandi_billing_get_price_catalog` | no | no | `get_price_catalog` | `GET /v5/billing/price/{product_type}` |
 | certificate | read | `gandi_cert_get` | no | no | `cert_get` | `GET /v5/certificate/issued-certs/{cert_id}` |
+| certificate | read | `gandi_cert_get_crt` | no | no | `cert_get_crt` | `GET /v5/certificate/issued-certs/{cert_id}/crt` |
 | certificate | read | `gandi_cert_get_package` | no | no | `cert_get_package` | `GET /v5/certificate/packages/{name}` |
 | certificate | read | `gandi_cert_list` | no | no | `cert_list` | `GET /v5/certificate/issued-certs` |
 | certificate | read | `gandi_cert_list_packages` | no | no | `cert_list_packages` | `GET /v5/certificate/packages` |
 | certificate | read | `gandi_cert_list_tags` | no | no | `cert_list_tags` | `GET /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | write | `gandi_cert_add_tag` | no | no | `cert_add_tag` | `POST /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | write | `gandi_cert_delete_tags` | yes | no | `cert_delete_tags` | `DELETE /v5/certificate/issued-certs/{cert_id}/tags` |
+| certificate | write | `gandi_cert_get_cert_dcv_params` | no | no | `cert_get_cert_dcv_params` | `POST /v5/certificate/issued-certs/{cert_id}/dcv_params` |
+| certificate | write | `gandi_cert_get_dcv_params` | no | no | `cert_get_dcv_params` | `POST /v5/certificate/dcv_params` |
 | certificate | write | `gandi_cert_replace_tags` | yes | no | `cert_replace_tags` | `PUT /v5/certificate/issued-certs/{cert_id}/tags` |
+| certificate | write | `gandi_cert_resend_dcv` | no | no | `cert_resend_dcv` | `PUT /v5/certificate/issued-certs/{cert_id}/dcv` |
 | certificate | write | `gandi_cert_revoke` | yes | no | `cert_revoke` | `DELETE /v5/certificate/issued-certs/{cert_id}` |
+| certificate | write | `gandi_cert_update` | no | no | `cert_update` | `PATCH /v5/certificate/issued-certs/{cert_id}` |
+| certificate | write | `gandi_cert_update_dcv_method` | no | no | `cert_update_dcv_method` | `PATCH /v5/certificate/issued-certs/{cert_id}/dcv` |
 | certificate | write | `gandi_cert_update_tags` | no | no | `cert_update_tags` | `PATCH /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | purchase | `gandi_cert_issue` | no | yes | `cert_issue` | `POST /v5/certificate/issued-certs` |
 | certificate | purchase | `gandi_cert_renew` | no | yes | `cert_renew` | `POST /v5/certificate/issued-certs/{cert_id}/renew` |
