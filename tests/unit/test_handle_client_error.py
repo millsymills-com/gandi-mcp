@@ -135,6 +135,22 @@ class TestTimeoutMessage:
         err = GandiTimeoutError("server did not respond", method="PATCH")
         assert "may or may not have taken effect on the server" in str(_raise(err))
 
+    def test_timeout_on_put_also_warns(self) -> None:
+        """PUT is state-changing (replace_tags, set_nameservers) — same hint required."""
+        err = GandiTimeoutError("server did not respond", method="PUT")
+        message = str(_raise(err))
+        assert "Request timed out during PUT" in message
+        assert "may or may not have taken effect on the server" in message
+        assert "check state before retrying." in message
+
+    def test_timeout_on_delete_also_warns(self) -> None:
+        """DELETE is destructive (delete_tags, delete_web_redirection) — same hint required."""
+        err = GandiTimeoutError("server did not respond", method="DELETE")
+        message = str(_raise(err))
+        assert "Request timed out during DELETE" in message
+        assert "may or may not have taken effect on the server" in message
+        assert "check state before retrying." in message
+
     def test_timeout_on_get_uses_generic_message(self) -> None:
         """GET is idempotent — the partial-write warning is absent on this branch."""
         err = GandiTimeoutError("server did not respond", method="GET")
