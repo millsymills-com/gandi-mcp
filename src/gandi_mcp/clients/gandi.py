@@ -657,6 +657,35 @@ class GandiClient(BaseGandiClient):
         result: list[str] = await self.get(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
         return result
 
+    async def cert_add_tag(self, cert_id: str, name: str) -> dict[str, Any]:
+        """Add a single operator-defined tag to a certificate."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"name": name},
+        )
+        return result
+
+    async def cert_replace_tags(self, cert_id: str, tags: list[str]) -> dict[str, Any]:
+        """Replace the full set of tags on a certificate."""
+        result: dict[str, Any] = await self.put(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"tags": tags},
+        )
+        return result
+
+    async def cert_update_tags(self, cert_id: str, tags: list[str]) -> dict[str, Any]:
+        """Add tags to a certificate without removing existing ones."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"tags": tags},
+        )
+        return result
+
+    async def cert_delete_tags(self, cert_id: str) -> dict[str, Any]:
+        """Remove all operator-defined tags from a certificate."""
+        result: dict[str, Any] = await self.delete(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
+        return result
+
     async def cert_list_packages(self) -> list[dict[str, Any]]:
         """List available certificate packages."""
         result: list[dict[str, Any]] = await self.get("/v5/certificate/packages")
