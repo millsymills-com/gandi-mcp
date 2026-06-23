@@ -48,7 +48,9 @@ class TestRelaunchTransferIn:
         result = await handler(ctx, fqdn="example.com")
 
         assert route.called
-        assert route.calls.last.request.method == "PUT"
+        request = route.calls.last.request
+        assert request.method == "PUT"
+        assert json.loads(request.content) == {}
         assert result == payload
 
     async def test_url_encodes_fqdn(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
@@ -57,7 +59,9 @@ class TestRelaunchTransferIn:
         handler = await _get_handler(server, "gandi_domain_relaunch_transferin")
         await handler(ctx, fqdn="ex/weird")
 
-        assert route.calls.last.request.url.raw_path == b"/v5/domain/transferin/ex%2Fweird"
+        request = route.calls.last.request
+        assert request.url.raw_path == b"/v5/domain/transferin/ex%2Fweird"
+        assert json.loads(request.content) == {}
 
     async def test_maps_404_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
         respx_mock.put("/v5/domain/transferin/missing.com").mock(return_value=httpx.Response(404, json={}))
@@ -162,7 +166,9 @@ class TestRelaunchReachability:
         result = await handler(ctx, fqdn="example.com")
 
         assert route.called
-        assert route.calls.last.request.method == "PATCH"
+        request = route.calls.last.request
+        assert request.method == "PATCH"
+        assert json.loads(request.content) == {}
         assert result == payload
 
     async def test_maps_404_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
