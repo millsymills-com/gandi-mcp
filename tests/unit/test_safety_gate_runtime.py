@@ -101,6 +101,9 @@ class TestTagInvariants:
         "gandi_email_renew_mailbox",
         "gandi_cert_issue",
         "gandi_cert_renew",
+        "gandi_mailbox_create_mailbox",
+        "gandi_mailbox_renew_mailbox",
+        "gandi_mailbox_buy_product",
     }
 
     async def test_expected_purchase_tools_carry_purchase_tag(self) -> None:
