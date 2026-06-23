@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**71 tools** — 34 read, 29 write, 8 purchase.
+**77 tools** — 40 read, 29 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -68,12 +68,18 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | email | purchase | `gandi_email_create_mailbox` | no | yes | `email_create_mailbox` | `POST /v5/email/mailboxes/{domain}` |
 | email | purchase | `gandi_email_create_slot` | no | yes | `email_create_slot` | `POST /v5/email/slots/{domain}` |
 | email | purchase | `gandi_email_renew_mailbox` | no | yes | `email_renew_mailbox` | `POST /v5/email/mailboxes/{domain}/{email}/renew` |
+| livedns | read | `gandi_livedns_get_dnssec_key` | no | no | `livedns_get_key` | `GET /v5/livedns/domains/{fqdn}/keys/{key_id}` |
 | livedns | read | `gandi_livedns_get_domain` | no | no | `livedns_get_domain` | `GET /v5/livedns/domains/{fqdn}` |
+| livedns | read | `gandi_livedns_get_generic_nameservers` | no | no | `livedns_get_generic_nameservers` | `GET /v5/livedns/nameservers/{fqdn}` |
+| livedns | read | `gandi_livedns_get_snapshot` | no | no | `livedns_get_snapshot` | `GET /v5/livedns/domains/{fqdn}/snapshots/{snapshot_id}` |
+| livedns | read | `gandi_livedns_get_tsig_key` | no | no | `livedns_get_tsig_key` | `GET /v5/livedns/axfr/tsig/{tsig_id}` |
 | livedns | read | `gandi_livedns_list_dnssec_keys` | no | no | `livedns_list_keys` | `GET /v5/livedns/domains/{fqdn}/keys` |
 | livedns | read | `gandi_livedns_list_domains` | no | no | `livedns_list_domains` | `GET /v5/livedns/domains` |
 | livedns | read | `gandi_livedns_list_nameservers` | no | no | `livedns_list_nameservers` | `GET /v5/livedns/domains/{fqdn}/nameservers` |
 | livedns | read | `gandi_livedns_list_records` | no | no | `livedns_list_records` | `GET /v5/livedns/domains/{fqdn}/records[/{name}[/{rrset_type}]]` |
 | livedns | read | `gandi_livedns_list_rrtypes` | no | no | `livedns_list_rrtypes` | `GET /v5/livedns/dns/rrtypes` |
+| livedns | read | `gandi_livedns_list_snapshots` | no | no | `livedns_list_snapshots` | `GET /v5/livedns/domains/{fqdn}/snapshots` |
+| livedns | read | `gandi_livedns_list_tsig_keys` | no | no | `livedns_list_tsig_keys` | `GET /v5/livedns/axfr/tsig` |
 | livedns | write | `gandi_livedns_add_domain` | no | no | `livedns_add_domain` | `POST /v5/livedns/domains` |
 | livedns | write | `gandi_livedns_create_dnssec_key` | no | no | `livedns_create_key` | `POST /v5/livedns/domains/{fqdn}/keys` |
 | livedns | write | `gandi_livedns_create_record` | no | no | `livedns_create_record` | `POST /v5/livedns/domains/{fqdn}/records` |
