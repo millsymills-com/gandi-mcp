@@ -286,6 +286,26 @@ class GandiClient(BaseGandiClient):
         result: list[str] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/tags")
         return result
 
+    async def create_domain_tag(self, fqdn: str, name: str) -> dict[str, Any]:
+        """Add a single operator-defined tag to a domain."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/tags", json={"name": name})
+        return result
+
+    async def replace_domain_tags(self, fqdn: str, tags: list[str]) -> dict[str, Any]:
+        """Replace the full set of tags on a domain."""
+        result: dict[str, Any] = await self.put(f"/v5/domain/domains/{_seg(fqdn)}/tags", json={"tags": tags})
+        return result
+
+    async def update_domain_tags(self, fqdn: str, tags: list[str]) -> dict[str, Any]:
+        """Add tags to a domain without removing existing ones."""
+        result: dict[str, Any] = await self.patch(f"/v5/domain/domains/{_seg(fqdn)}/tags", json={"tags": tags})
+        return result
+
+    async def delete_domain_tags(self, fqdn: str) -> dict[str, Any]:
+        """Remove all operator-defined tags from a domain."""
+        result: dict[str, Any] = await self.delete(f"/v5/domain/domains/{_seg(fqdn)}/tags")
+        return result
+
     async def get_restore_info(self, fqdn: str) -> dict[str, Any]:
         """Restore eligibility / price preview for a deleted domain (no charge)."""
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/restore")
@@ -637,12 +657,9 @@ class GandiClient(BaseGandiClient):
         result: list[str] = await self.get(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
         return result
 
-    async def cert_list_packages(self, **params: Any) -> list[dict[str, Any]]:
+    async def cert_list_packages(self) -> list[dict[str, Any]]:
         """List available certificate packages."""
-        result: list[dict[str, Any]] = await self.get(
-            "/v5/certificate/packages",
-            params={k: v for k, v in params.items() if v is not None},
-        )
+        result: list[dict[str, Any]] = await self.get("/v5/certificate/packages")
         return result
 
     async def cert_get_package(self, name: str) -> dict[str, Any]:

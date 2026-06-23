@@ -449,6 +449,89 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
+    async def gandi_domain_create_tag(ctx: Context, fqdn: str, name: str) -> dict[str, Any]:
+        """Add a single operator-defined tag to a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            name: Tag to add.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "create domain tag")
+            return await get_client(ctx).create_domain_tag(fqdn, name)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_domain_replace_tags(ctx: Context, fqdn: str, tags: list[str]) -> dict[str, Any]:
+        """Replace the full set of tags on a domain (overwrites any existing tags).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            tags: Full list of tags to set (replaces the existing set).
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "replace domain tags")
+            return await get_client(ctx).replace_domain_tags(fqdn, tags)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_domain_update_tags(ctx: Context, fqdn: str, tags: list[str]) -> dict[str, Any]:
+        """Add tags to a domain without removing existing ones.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            tags: Tags to add to the existing set.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update domain tags")
+            return await get_client(ctx).update_domain_tags(fqdn, tags)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_domain_delete_tags(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Remove all operator-defined tags from a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "delete domain tags")
+            return await get_client(ctx).delete_domain_tags(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
     async def gandi_domain_set_autorenew(
         ctx: Context,
         fqdn: str,
