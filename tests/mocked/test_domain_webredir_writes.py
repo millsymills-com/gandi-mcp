@@ -137,6 +137,15 @@ class TestDeleteWebRedirection:
         assert route.called
         assert route.calls.last.request.url.raw_path == b"/v5/domain/domains/example.com/webredirs/a%2Fb"
 
+    async def test_deletes_204_returns_empty_dict(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        """Gandi returns 204 No Content on webredir delete — client maps it to ``{}``."""
+        respx_mock.delete("/v5/domain/domains/example.com/webredirs/www").mock(return_value=httpx.Response(204))
+
+        handler = await _get_handler(server, "gandi_domain_delete_web_redirection")
+        result = await handler(ctx, fqdn="example.com", host="www")
+
+        assert result == {}
+
     async def test_maps_404_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
         respx_mock.delete("/v5/domain/domains/example.com/webredirs/www").mock(
             return_value=httpx.Response(404, json={"cause": "not found"})
