@@ -113,6 +113,22 @@ def register_email_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
+    @mcp.tool(tags={"gandi", "email"})
+    async def gandi_email_get_offer(ctx: Context, domain: str) -> dict[str, Any]:
+        """Get the email offer (plan and quotas) for a domain.
+
+        Args:
+            domain: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).email_get_offer(domain)
+        except Exception as e:
+            handle_client_error(e)
+
 
 def register_email_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write email tools on the server."""

@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**87 tools** — 50 read, 29 write, 8 purchase.
+**91 tools** — 54 read, 29 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -21,7 +21,10 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | billing | read | `gandi_billing_get_info_for_org` | no | no | `get_billing_info_for_org` | `GET /v5/billing/info/{sharing_id}` |
 | billing | read | `gandi_billing_get_price_catalog` | no | no | `get_price_catalog` | `GET /v5/billing/price/{product_type}` |
 | certificate | read | `gandi_cert_get` | no | no | `cert_get` | `GET /v5/certificate/issued-certs/{cert_id}` |
+| certificate | read | `gandi_cert_get_package` | no | no | `cert_get_package` | `GET /v5/certificate/packages/{name}` |
 | certificate | read | `gandi_cert_list` | no | no | `cert_list` | `GET /v5/certificate/issued-certs` |
+| certificate | read | `gandi_cert_list_packages` | no | no | `cert_list_packages` | `GET /v5/certificate/packages` |
+| certificate | read | `gandi_cert_list_tags` | no | no | `cert_list_tags` | `GET /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | write | `gandi_cert_revoke` | yes | no | `cert_revoke` | `DELETE /v5/certificate/issued-certs/{cert_id}` |
 | certificate | purchase | `gandi_cert_issue` | no | yes | `cert_issue` | `POST /v5/certificate/issued-certs` |
 | certificate | purchase | `gandi_cert_renew` | no | yes | `cert_renew` | `POST /v5/certificate/issued-certs/{cert_id}/renew` |
@@ -64,6 +67,7 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | domain | purchase | `gandi_domain_renew` | no | yes | `renew_domain` | `POST /v5/domain/domains/{fqdn}/renew` |
 | domain | purchase | `gandi_domain_transfer_in` | no | yes | `transfer_in` | `POST /v5/domain/transferin/{fqdn}` |
 | email | read | `gandi_email_get_mailbox` | no | no | `email_get_mailbox` | `GET /v5/email/mailboxes/{domain}/{mailbox_id}` |
+| email | read | `gandi_email_get_offer` | no | no | `email_get_offer` | `GET /v5/email/offers/{domain}` |
 | email | read | `gandi_email_get_slot` | no | no | `email_get_slot` | `GET /v5/email/slots/{domain}/{slot_id}` |
 | email | read | `gandi_email_list_forwards` | no | no | `email_list_forwards` | `GET /v5/email/forwards/{domain}` |
 | email | read | `gandi_email_list_mailboxes` | no | no | `email_list_mailboxes` | `GET /v5/email/mailboxes/{domain}` |

@@ -57,6 +57,50 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
+    @mcp.tool(tags={"gandi", "certificate"})
+    async def gandi_cert_list_tags(ctx: Context, cert_id: str) -> list[str]:
+        """List the operator-defined tags on a certificate.
+
+        Args:
+            cert_id: Certificate UUID.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).cert_list_tags(cert_id)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "certificate"})
+    async def gandi_cert_list_packages(ctx: Context) -> list[dict[str, Any]]:
+        """List available certificate packages (product offerings).
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).cert_list_packages()
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(tags={"gandi", "certificate"})
+    async def gandi_cert_get_package(ctx: Context, name: str) -> dict[str, Any]:
+        """Get a single certificate package by name.
+
+        Args:
+            name: Package identifier (e.g. "cert_std_1_0_0").
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            return await get_client(ctx).cert_get_package(name)
+        except Exception as e:
+            handle_client_error(e)
+
 
 def register_certificate_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write certificate tools on the server."""
