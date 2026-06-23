@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**98 tools** — 54 read, 36 write, 8 purchase.
+**101 tools** — 54 read, 39 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -51,6 +51,7 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | domain | read | `gandi_domain_list_tags` | no | no | `list_domain_tags` | `GET /v5/domain/domains/{fqdn}/tags` |
 | domain | read | `gandi_domain_list_tlds` | no | no | `list_tlds` | `GET /v5/domain/tlds` |
 | domain | read | `gandi_domain_list_web_redirections` | no | no | `list_web_redirections` | `GET /v5/domain/domains/{fqdn}/webredirs` |
+| domain | write | `gandi_domain_activate_livedns_dnssec` | no | no | `activate_domain_livedns_dnssec` | `POST /v5/domain/domains/{fqdn}/livedns/dnssec` |
 | domain | write | `gandi_domain_create_dnssec_key` | no | no | `create_dnssec_key` | `POST /v5/domain/domains/{fqdn}/dnskeys` |
 | domain | write | `gandi_domain_create_glue_record` | no | no | `create_glue_record` | `POST /v5/domain/domains/{fqdn}/hosts` |
 | domain | write | `gandi_domain_create_tag` | no | no | `create_domain_tag` | `POST /v5/domain/domains/{fqdn}/tags` |
@@ -60,6 +61,8 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | domain | write | `gandi_domain_delete_glue_record` | yes | no | `delete_glue_record` | `DELETE /v5/domain/domains/{fqdn}/hosts/{name}` |
 | domain | write | `gandi_domain_delete_tags` | yes | no | `delete_domain_tags` | `DELETE /v5/domain/domains/{fqdn}/tags` |
 | domain | write | `gandi_domain_delete_web_redirection` | yes | no | `delete_web_redirection` | `DELETE /v5/domain/domains/{fqdn}/webredirs/{host}` |
+| domain | write | `gandi_domain_disable_livedns_dnssec` | yes | no | `disable_domain_livedns_dnssec` | `DELETE /v5/domain/domains/{fqdn}/livedns/dnssec` |
+| domain | write | `gandi_domain_enable_livedns` | no | no | `enable_domain_livedns` | `POST /v5/domain/domains/{fqdn}/livedns` |
 | domain | write | `gandi_domain_initiate_ownership_change` | no | no | `initiate_ownership_change` | `POST /v5/domain/changeowner/{fqdn}` |
 | domain | write | `gandi_domain_replace_tags` | yes | no | `replace_domain_tags` | `PUT /v5/domain/domains/{fqdn}/tags` |
 | domain | write | `gandi_domain_resend_foa` | no | no | `resend_foa` | `POST /v5/domain/changeowner/{fqdn}/foa` |

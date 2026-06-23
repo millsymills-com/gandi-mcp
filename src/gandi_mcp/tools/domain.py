@@ -449,6 +449,66 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
+    async def gandi_domain_enable_livedns(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Switch a domain's nameservers to LiveDNS (registry-side enablement).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "enable LiveDNS for domain")
+            return await get_client(ctx).enable_domain_livedns(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_domain_activate_livedns_dnssec(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Activate LiveDNS-managed DNSSEC for a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "activate LiveDNS DNSSEC")
+            return await get_client(ctx).activate_domain_livedns_dnssec(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_domain_disable_livedns_dnssec(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Disable LiveDNS-managed DNSSEC for a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "disable LiveDNS DNSSEC")
+            return await get_client(ctx).disable_domain_livedns_dnssec(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
     async def gandi_domain_create_tag(ctx: Context, fqdn: str, name: str) -> dict[str, Any]:
         """Add a single operator-defined tag to a domain.
 
