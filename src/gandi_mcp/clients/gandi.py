@@ -77,6 +77,35 @@ class GandiClient(BaseGandiClient):
         )
         return result
 
+    async def create_customer(self, org_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a customer under a reseller organization (pass-through payload)."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/organization/organizations/{_seg(org_id)}/customers",
+            json=data,
+        )
+        return result
+
+    async def update_customer(self, org_id: str, customer_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a customer of a reseller organization (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/organization/organizations/{_seg(org_id)}/customers/{_seg(customer_id)}",
+            json=data,
+        )
+        return result
+
+    async def update_organization(self, org_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update an organization's profile (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/organization/organizations/{_seg(org_id)}",
+            json=data,
+        )
+        return result
+
+    async def renew_access_token(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Renew an organization access token (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/organization/access-tokens", json=data)
+        return result
+
     # ═════════════════════════════════════════════════════════════════════
     # Billing (/v5/billing)
     # ═════════════════════════════════════════════════════════════════════
