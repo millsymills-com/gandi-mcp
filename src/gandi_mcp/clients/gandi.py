@@ -506,6 +506,11 @@ class GandiClient(BaseGandiClient):
         )
         return result
 
+    async def email_get_offer(self, domain: str) -> dict[str, Any]:
+        """Get the email offer (plan / quotas) for a domain."""
+        result: dict[str, Any] = await self.get(f"/v5/email/offers/{_seg(domain)}")
+        return result
+
     # ═════════════════════════════════════════════════════════════════════
     # Certificates (/v5/certificate)
     # ═════════════════════════════════════════════════════════════════════
@@ -521,6 +526,24 @@ class GandiClient(BaseGandiClient):
     async def cert_get(self, cert_id: str) -> dict[str, Any]:
         """Get a specific certificate."""
         result: dict[str, Any] = await self.get(f"/v5/certificate/issued-certs/{_seg(cert_id)}")
+        return result
+
+    async def cert_list_tags(self, cert_id: str) -> list[str]:
+        """List the operator-defined tags on a certificate."""
+        result: list[str] = await self.get(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
+        return result
+
+    async def cert_list_packages(self, **params: Any) -> list[dict[str, Any]]:
+        """List available certificate packages."""
+        result: list[dict[str, Any]] = await self.get(
+            "/v5/certificate/packages",
+            params={k: v for k, v in params.items() if v is not None},
+        )
+        return result
+
+    async def cert_get_package(self, name: str) -> dict[str, Any]:
+        """Get a single certificate package by name."""
+        result: dict[str, Any] = await self.get(f"/v5/certificate/packages/{_seg(name)}")
         return result
 
     async def cert_issue(self, data: dict[str, Any]) -> dict[str, Any]:
