@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**125 tools** — 54 read, 63 write, 8 purchase.
+**128 tools** — 55 read, 65 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -32,6 +32,9 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | certificate | write | `gandi_cert_update_tags` | no | no | `cert_update_tags` | `PATCH /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | purchase | `gandi_cert_issue` | no | yes | `cert_issue` | `POST /v5/certificate/issued-certs` |
 | certificate | purchase | `gandi_cert_renew` | no | yes | `cert_renew` | `POST /v5/certificate/issued-certs/{cert_id}/renew` |
+| comment | read | `gandi_comment_get` | no | no | `get_comment` | `GET /v5/comment/comments/{comment_id}` |
+| comment | write | `gandi_comment_delete` | yes | no | `delete_comment` | `DELETE /v5/comment/comments/{comment_id}` |
+| comment | write | `gandi_comment_set` | no | no | `set_comment` | `POST /v5/comment/comments/{comment_id}` |
 | domain | read | `gandi_domain_check_availability` | no | no | `check_availability` | `GET /v5/domain/check` |
 | domain | read | `gandi_domain_check_transferin_available` | no | no | `check_transferin_available` | `GET /v5/domain/transferin/{fqdn}/available` |
 | domain | read | `gandi_domain_get_claims` | no | no | `get_domain_claims` | `GET /v5/domain/domains/{fqdn}/claims` |

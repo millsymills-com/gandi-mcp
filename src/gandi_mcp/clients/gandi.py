@@ -894,3 +894,22 @@ class GandiClient(BaseGandiClient):
             json=data,
         )
         return result
+
+    # ═════════════════════════════════════════════════════════════════════
+    # Comment (/v5/comment)
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def get_comment(self, comment_id: str) -> dict[str, Any]:
+        """Get the comment attached to a Gandi object."""
+        result: dict[str, Any] = await self.get(f"/v5/comment/comments/{_seg(comment_id)}")
+        return result
+
+    async def set_comment(self, comment_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Set (create or overwrite) the comment on a Gandi object (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/comment/comments/{_seg(comment_id)}", json=data)
+        return result
+
+    async def delete_comment(self, comment_id: str) -> dict[str, Any]:
+        """Delete the comment on a Gandi object."""
+        result: dict[str, Any] = await self.delete(f"/v5/comment/comments/{_seg(comment_id)}")
+        return result
