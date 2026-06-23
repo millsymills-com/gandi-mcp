@@ -449,6 +449,131 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
+    async def gandi_domain_relaunch_transferin(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Relaunch a stalled transfer-in operation (no new charge).
+
+        Args:
+            fqdn: Fully-qualified domain name being transferred in.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "relaunch transfer-in")
+            return await get_client(ctx).relaunch_transferin(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_domain_update_transferin_authinfo(ctx: Context, fqdn: str, authinfo: str) -> dict[str, Any]:
+        """Update the authinfo (transfer code) on a pending transfer-in.
+
+        Args:
+            fqdn: Fully-qualified domain name being transferred in.
+            authinfo: New authorization/transfer code from the losing registrar.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update transfer-in authinfo")
+            return await get_client(ctx).update_transferin_authinfo(fqdn, authinfo)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_domain_resend_transferin_foa(ctx: Context, fqdn: str, email: str) -> dict[str, Any]:
+        """Resend the Form Of Authorization email for a pending transfer-in.
+
+        Args:
+            fqdn: Fully-qualified domain name being transferred in.
+            email: Address to resend the FOA confirmation to.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "resend transfer-in FOA")
+            return await get_client(ctx).resend_transferin_foa(fqdn, email)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_domain_replace_dnssec_keys(ctx: Context, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Replace the full set of registry DS records for a domain.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            data: Full DS-record payload per the Gandi dnskeys schema (replaces
+                the existing set).
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "replace DNSSEC keys")
+            return await get_client(ctx).replace_dnssec_keys(fqdn, data)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_domain_accept_claim(ctx: Context, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Accept the TMCH trademark claim for a candidate domain.
+
+        Args:
+            fqdn: Candidate domain name.
+            data: Claim-acceptance payload per the Gandi claims schema.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "accept trademark claim")
+            return await get_client(ctx).accept_claim(fqdn, data)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_domain_relaunch_reachability(ctx: Context, fqdn: str) -> dict[str, Any]:
+        """Relaunch the registrant reachability (contact-validation) check.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "relaunch reachability check")
+            return await get_client(ctx).relaunch_reachability(fqdn)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
     async def gandi_domain_enable_livedns(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Switch a domain's nameservers to LiveDNS (registry-side enablement).
 

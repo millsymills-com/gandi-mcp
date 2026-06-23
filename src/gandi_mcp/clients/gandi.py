@@ -137,6 +137,16 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/claims")
         return result
 
+    async def accept_claim(self, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Accept the TMCH trademark claim for a domain (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/claims", json=data)
+        return result
+
+    async def relaunch_reachability(self, fqdn: str) -> dict[str, Any]:
+        """Relaunch the registrant reachability (contact-validation) check."""
+        result: dict[str, Any] = await self.patch(f"/v5/domain/domains/{_seg(fqdn)}/reachability", json={})
+        return result
+
     async def register_domain(self, data: dict[str, Any]) -> dict[str, Any]:
         """Register a new domain (SPENDS MONEY).
 
@@ -252,6 +262,11 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.delete(f"/v5/domain/domains/{_seg(fqdn)}/dnskeys/{_seg(key_id)}")
         return result
 
+    async def replace_dnssec_keys(self, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Replace the full set of registry DS records (PUT, pass-through payload)."""
+        result: dict[str, Any] = await self.put(f"/v5/domain/domains/{_seg(fqdn)}/dnskeys", json=data)
+        return result
+
     # ── Renewal / Transfer (purchases) ──────────────────────────────────
 
     async def get_renew_info(self, fqdn: str) -> dict[str, Any]:
@@ -277,6 +292,27 @@ class GandiClient(BaseGandiClient):
     async def check_transferin_available(self, fqdn: str) -> dict[str, Any]:
         """Check whether a domain is eligible for transfer-in."""
         result: dict[str, Any] = await self.get(f"/v5/domain/transferin/{_seg(fqdn)}/available")
+        return result
+
+    async def relaunch_transferin(self, fqdn: str) -> dict[str, Any]:
+        """Relaunch a stalled transfer-in operation (no new charge)."""
+        result: dict[str, Any] = await self.put(f"/v5/domain/transferin/{_seg(fqdn)}", json={})
+        return result
+
+    async def update_transferin_authinfo(self, fqdn: str, authinfo: str) -> dict[str, Any]:
+        """Update the authinfo (transfer code) on a pending transfer-in."""
+        result: dict[str, Any] = await self.put(
+            f"/v5/domain/transferin/{_seg(fqdn)}/authinfo",
+            json={"authinfo": authinfo},
+        )
+        return result
+
+    async def resend_transferin_foa(self, fqdn: str, email: str) -> dict[str, Any]:
+        """Resend the Form Of Authorization email for a pending transfer-in."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/domain/transferin/{_seg(fqdn)}/foa",
+            json={"email": email},
+        )
         return result
 
     # ── Reads (coverage backfill) ───────────────────────────────────────
