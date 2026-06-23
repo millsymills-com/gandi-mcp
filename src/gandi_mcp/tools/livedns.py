@@ -585,6 +585,79 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_livedns_create_snapshot(
+        ctx: Context,
+        fqdn: str,
+        name: str | None = None,
+    ) -> dict[str, Any]:
+        """Create a zone snapshot (point-in-time copy of all records).
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            name: Optional label for the snapshot. Gandi auto-names it if omitted.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "create zone snapshot")
+            return await get_client(ctx).livedns_create_snapshot(fqdn, name=name)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )
+    async def gandi_livedns_update_snapshot(
+        ctx: Context,
+        fqdn: str,
+        snapshot_id: str,
+        name: str,
+    ) -> dict[str, Any]:
+        """Rename a zone snapshot.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            snapshot_id: ID of the snapshot to rename.
+            name: New label for the snapshot.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "rename zone snapshot")
+            return await get_client(ctx).livedns_update_snapshot(fqdn, snapshot_id, name)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "livedns", "write"},
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
+    async def gandi_livedns_delete_snapshot(ctx: Context, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Delete a zone snapshot.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            snapshot_id: ID of the snapshot to delete.
+
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "delete zone snapshot")
+            return await get_client(ctx).livedns_delete_snapshot(fqdn, snapshot_id)
+        except Exception as e:
+            handle_client_error(e)
+
 
 def register_livedns_tools(mcp: FastMCP) -> None:
     """Register every livedns tool (read + write).
