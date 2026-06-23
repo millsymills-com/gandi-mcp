@@ -274,6 +274,58 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.post(f"/v5/domain/transferin/{_seg(fqdn)}", json=data)
         return result
 
+    async def check_transferin_available(self, fqdn: str) -> dict[str, Any]:
+        """Check whether a domain is eligible for transfer-in."""
+        result: dict[str, Any] = await self.get(f"/v5/domain/transferin/{_seg(fqdn)}/available")
+        return result
+
+    # ── Reads (coverage backfill) ───────────────────────────────────────
+
+    async def list_domain_tags(self, fqdn: str) -> list[str]:
+        """List the operator-defined tags on a domain."""
+        result: list[str] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/tags")
+        return result
+
+    async def get_restore_info(self, fqdn: str) -> dict[str, Any]:
+        """Restore eligibility / price preview for a deleted domain (no charge)."""
+        result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/restore")
+        return result
+
+    async def list_web_redirections(self, fqdn: str) -> list[dict[str, Any]]:
+        """List web redirections configured for a domain."""
+        result: list[dict[str, Any]] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/webredirs")
+        return result
+
+    async def get_web_redirection(self, fqdn: str, host: str) -> dict[str, Any]:
+        """Get a single web redirection by host."""
+        result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/webredirs/{_seg(host)}")
+        return result
+
+    async def get_create_status(self, fqdn: str) -> dict[str, Any]:
+        """Status of a pending domain creation."""
+        result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/createstatus")
+        return result
+
+    async def get_domain_livedns(self, fqdn: str) -> dict[str, Any]:
+        """LiveDNS enablement state for a domain (registry-side view)."""
+        result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/livedns")
+        return result
+
+    async def get_domain_livedns_dnssec(self, fqdn: str) -> dict[str, Any]:
+        """LiveDNS-managed DNSSEC state for a domain."""
+        result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/livedns/dnssec")
+        return result
+
+    async def list_tlds(self) -> list[dict[str, Any]]:
+        """List the TLDs Gandi supports."""
+        result: list[dict[str, Any]] = await self.get("/v5/domain/tlds")
+        return result
+
+    async def get_tld(self, name: str) -> dict[str, Any]:
+        """Get details / policy for a single TLD."""
+        result: dict[str, Any] = await self.get(f"/v5/domain/tlds/{_seg(name)}")
+        return result
+
     # ═════════════════════════════════════════════════════════════════════
     # LiveDNS (/v5/livedns)
     # ═════════════════════════════════════════════════════════════════════
@@ -403,6 +455,40 @@ class GandiClient(BaseGandiClient):
     async def livedns_delete_key(self, fqdn: str, key_id: str) -> dict[str, Any]:
         """Delete a LiveDNS DNSSEC key."""
         result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}")
+        return result
+
+    async def livedns_get_key(self, fqdn: str, key_id: str) -> dict[str, Any]:
+        """Get a single LiveDNS DNSSEC key by id."""
+        result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}")
+        return result
+
+    # ── Snapshots (LiveDNS) ─────────────────────────────────────────────
+
+    async def livedns_list_snapshots(self, fqdn: str) -> list[dict[str, Any]]:
+        """List zone snapshots for a domain."""
+        result: list[dict[str, Any]] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots")
+        return result
+
+    async def livedns_get_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Get a single zone snapshot by id."""
+        result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
+        return result
+
+    # ── Generic nameservers / AXFR TSIG (LiveDNS) ───────────────────────
+
+    async def livedns_get_generic_nameservers(self, fqdn: str) -> dict[str, Any]:
+        """Recommended generic LiveDNS nameservers for a domain."""
+        result: dict[str, Any] = await self.get(f"/v5/livedns/nameservers/{_seg(fqdn)}")
+        return result
+
+    async def livedns_list_tsig_keys(self) -> list[dict[str, Any]]:
+        """List AXFR TSIG keys for the account."""
+        result: list[dict[str, Any]] = await self.get("/v5/livedns/axfr/tsig")
+        return result
+
+    async def livedns_get_tsig_key(self, tsig_id: str) -> dict[str, Any]:
+        """Get a single AXFR TSIG key by id."""
+        result: dict[str, Any] = await self.get(f"/v5/livedns/axfr/tsig/{_seg(tsig_id)}")
         return result
 
     # ═════════════════════════════════════════════════════════════════════
