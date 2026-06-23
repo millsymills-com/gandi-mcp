@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**108 tools** — 54 read, 46 write, 8 purchase.
+**112 tools** — 54 read, 50 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -25,7 +25,11 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | certificate | read | `gandi_cert_list` | no | no | `cert_list` | `GET /v5/certificate/issued-certs` |
 | certificate | read | `gandi_cert_list_packages` | no | no | `cert_list_packages` | `GET /v5/certificate/packages` |
 | certificate | read | `gandi_cert_list_tags` | no | no | `cert_list_tags` | `GET /v5/certificate/issued-certs/{cert_id}/tags` |
+| certificate | write | `gandi_cert_add_tag` | no | no | `cert_add_tag` | `POST /v5/certificate/issued-certs/{cert_id}/tags` |
+| certificate | write | `gandi_cert_delete_tags` | yes | no | `cert_delete_tags` | `DELETE /v5/certificate/issued-certs/{cert_id}/tags` |
+| certificate | write | `gandi_cert_replace_tags` | yes | no | `cert_replace_tags` | `PUT /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | write | `gandi_cert_revoke` | yes | no | `cert_revoke` | `DELETE /v5/certificate/issued-certs/{cert_id}` |
+| certificate | write | `gandi_cert_update_tags` | no | no | `cert_update_tags` | `PATCH /v5/certificate/issued-certs/{cert_id}/tags` |
 | certificate | purchase | `gandi_cert_issue` | no | yes | `cert_issue` | `POST /v5/certificate/issued-certs` |
 | certificate | purchase | `gandi_cert_renew` | no | yes | `cert_renew` | `POST /v5/certificate/issued-certs/{cert_id}/renew` |
 | domain | read | `gandi_domain_check_availability` | no | no | `check_availability` | `GET /v5/domain/check` |
