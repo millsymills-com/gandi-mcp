@@ -80,6 +80,15 @@ class TestDomainReplaceTags:
         assert json.loads(request.content) == {"tags": ["prod", "billing"]}
         assert result == payload
 
+    async def test_replace_tags_handles_204(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        """Gandi returns 204 No Content on tag replace — client maps it to ``{}``."""
+        respx_mock.put("/v5/domain/domains/example.com/tags").mock(return_value=httpx.Response(204))
+
+        handler = await _get_handler(server, "gandi_domain_replace_tags")
+        result = await handler(ctx, fqdn="example.com", tags=["prod"])
+
+        assert result == {}
+
 
 @pytest.mark.mocked
 class TestDomainUpdateTags:
@@ -113,6 +122,15 @@ class TestDomainDeleteTags:
         assert route.calls.last.request.method == "DELETE"
         assert result == {"message": "Tags removed"}
 
+    async def test_delete_tags_handles_204(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        """Gandi returns 204 No Content on tag delete — client maps it to ``{}``."""
+        respx_mock.delete("/v5/domain/domains/example.com/tags").mock(return_value=httpx.Response(204))
+
+        handler = await _get_handler(server, "gandi_domain_delete_tags")
+        result = await handler(ctx, fqdn="example.com")
+
+        assert result == {}
+
 
 @pytest.mark.mocked
 class TestDomainTagWriteErrorPaths:
@@ -129,3 +147,17 @@ class TestDomainTagWriteErrorPaths:
         handler = await _get_handler(server, "gandi_domain_delete_tags")
         with pytest.raises(ToolError):
             await handler(ctx, fqdn="missing.com")
+
+    async def test_replace_tags_maps_404_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        respx_mock.put("/v5/domain/domains/missing.com/tags").mock(return_value=httpx.Response(404, json={}))
+
+        handler = await _get_handler(server, "gandi_domain_replace_tags")
+        with pytest.raises(ToolError):
+            await handler(ctx, fqdn="missing.com", tags=["prod"])
+
+    async def test_update_tags_maps_404_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        respx_mock.patch("/v5/domain/domains/missing.com/tags").mock(return_value=httpx.Response(404, json={}))
+
+        handler = await _get_handler(server, "gandi_domain_update_tags")
+        with pytest.raises(ToolError):
+            await handler(ctx, fqdn="missing.com", tags=["staging"])

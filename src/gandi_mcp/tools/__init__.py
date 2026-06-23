@@ -20,10 +20,15 @@ def register_read_tools(mcp: FastMCP) -> None:
     """
     from gandi_mcp.tools.billing import register_billing_read_tools
     from gandi_mcp.tools.certificate import register_certificate_read_tools
+    from gandi_mcp.tools.comment import register_comment_read_tools
     from gandi_mcp.tools.domain import register_domain_read_tools
     from gandi_mcp.tools.email import register_email_read_tools
+    from gandi_mcp.tools.linkedzone import register_linkedzone_read_tools
     from gandi_mcp.tools.livedns import register_livedns_read_tools
+    from gandi_mcp.tools.mailbox import register_mailbox_read_tools
     from gandi_mcp.tools.organization import register_organization_read_tools
+    from gandi_mcp.tools.simplehosting import register_simplehosting_read_tools
+    from gandi_mcp.tools.template import register_template_read_tools
 
     register_organization_read_tools(mcp)
     register_billing_read_tools(mcp)
@@ -31,6 +36,11 @@ def register_read_tools(mcp: FastMCP) -> None:
     register_livedns_read_tools(mcp)
     register_email_read_tools(mcp)
     register_certificate_read_tools(mcp)
+    register_comment_read_tools(mcp)
+    register_linkedzone_read_tools(mcp)
+    register_mailbox_read_tools(mcp)
+    register_simplehosting_read_tools(mcp)
+    register_template_read_tools(mcp)
 
 
 def register_write_tools(mcp: FastMCP) -> None:
@@ -46,6 +56,7 @@ def register_write_tools(mcp: FastMCP) -> None:
         register_certificate_purchase_tools,
         register_certificate_write_tools,
     )
+    from gandi_mcp.tools.comment import register_comment_write_tools
     from gandi_mcp.tools.domain import (
         register_domain_purchase_tools,
         register_domain_write_tools,
@@ -54,8 +65,20 @@ def register_write_tools(mcp: FastMCP) -> None:
         register_email_purchase_tools,
         register_email_write_tools,
     )
+    from gandi_mcp.tools.linkedzone import register_linkedzone_write_tools
     from gandi_mcp.tools.livedns import register_livedns_write_tools
+    from gandi_mcp.tools.mailbox import (
+        register_mailbox_purchase_tools,
+        register_mailbox_write_tools,
+    )
+    from gandi_mcp.tools.organization import register_organization_write_tools
+    from gandi_mcp.tools.simplehosting import (
+        register_simplehosting_purchase_tools,
+        register_simplehosting_write_tools,
+    )
+    from gandi_mcp.tools.template import register_template_write_tools
 
+    register_organization_write_tools(mcp)
     register_domain_write_tools(mcp)
     register_domain_purchase_tools(mcp)
     register_livedns_write_tools(mcp)
@@ -63,6 +86,13 @@ def register_write_tools(mcp: FastMCP) -> None:
     register_email_purchase_tools(mcp)
     register_certificate_write_tools(mcp)
     register_certificate_purchase_tools(mcp)
+    register_comment_write_tools(mcp)
+    register_linkedzone_write_tools(mcp)
+    register_mailbox_write_tools(mcp)
+    register_mailbox_purchase_tools(mcp)
+    register_simplehosting_write_tools(mcp)
+    register_simplehosting_purchase_tools(mcp)
+    register_template_write_tools(mcp)
 
 
 def register_all_tools(mcp: FastMCP) -> None:

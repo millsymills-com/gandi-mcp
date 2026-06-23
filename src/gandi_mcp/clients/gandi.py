@@ -77,6 +77,35 @@ class GandiClient(BaseGandiClient):
         )
         return result
 
+    async def create_customer(self, org_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a customer under a reseller organization (pass-through payload)."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/organization/organizations/{_seg(org_id)}/customers",
+            json=data,
+        )
+        return result
+
+    async def update_customer(self, org_id: str, customer_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a customer of a reseller organization (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/organization/organizations/{_seg(org_id)}/customers/{_seg(customer_id)}",
+            json=data,
+        )
+        return result
+
+    async def update_organization(self, org_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update an organization's profile (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/organization/organizations/{_seg(org_id)}",
+            json=data,
+        )
+        return result
+
+    async def renew_access_token(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Renew an organization access token (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/organization/access-tokens", json=data)
+        return result
+
     # ═════════════════════════════════════════════════════════════════════
     # Billing (/v5/billing)
     # ═════════════════════════════════════════════════════════════════════
@@ -135,6 +164,16 @@ class GandiClient(BaseGandiClient):
     async def get_domain_claims(self, fqdn: str) -> dict[str, Any]:
         """TMCH trademark claims for a candidate registration."""
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/claims")
+        return result
+
+    async def accept_claim(self, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Accept the TMCH trademark claim for a domain (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/claims", json=data)
+        return result
+
+    async def relaunch_reachability(self, fqdn: str) -> dict[str, Any]:
+        """Relaunch the registrant reachability (contact-validation) check."""
+        result: dict[str, Any] = await self.patch(f"/v5/domain/domains/{_seg(fqdn)}/reachability", json={})
         return result
 
     async def register_domain(self, data: dict[str, Any]) -> dict[str, Any]:
@@ -252,6 +291,11 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.delete(f"/v5/domain/domains/{_seg(fqdn)}/dnskeys/{_seg(key_id)}")
         return result
 
+    async def replace_dnssec_keys(self, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Replace the full set of registry DS records (PUT, pass-through payload)."""
+        result: dict[str, Any] = await self.put(f"/v5/domain/domains/{_seg(fqdn)}/dnskeys", json=data)
+        return result
+
     # ── Renewal / Transfer (purchases) ──────────────────────────────────
 
     async def get_renew_info(self, fqdn: str) -> dict[str, Any]:
@@ -277,6 +321,27 @@ class GandiClient(BaseGandiClient):
     async def check_transferin_available(self, fqdn: str) -> dict[str, Any]:
         """Check whether a domain is eligible for transfer-in."""
         result: dict[str, Any] = await self.get(f"/v5/domain/transferin/{_seg(fqdn)}/available")
+        return result
+
+    async def relaunch_transferin(self, fqdn: str) -> dict[str, Any]:
+        """Relaunch a stalled transfer-in operation (no new charge)."""
+        result: dict[str, Any] = await self.put(f"/v5/domain/transferin/{_seg(fqdn)}", json={})
+        return result
+
+    async def update_transferin_authinfo(self, fqdn: str, authinfo: str) -> dict[str, Any]:
+        """Update the authinfo (transfer code) on a pending transfer-in."""
+        result: dict[str, Any] = await self.put(
+            f"/v5/domain/transferin/{_seg(fqdn)}/authinfo",
+            json={"authinfo": authinfo},
+        )
+        return result
+
+    async def resend_transferin_foa(self, fqdn: str, email: str) -> dict[str, Any]:
+        """Resend the Form Of Authorization email for a pending transfer-in."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/domain/transferin/{_seg(fqdn)}/foa",
+            json={"email": email},
+        )
         return result
 
     # ── Reads (coverage backfill) ───────────────────────────────────────
@@ -349,9 +414,24 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/livedns")
         return result
 
+    async def enable_domain_livedns(self, fqdn: str) -> dict[str, Any]:
+        """Switch a domain's nameservers to LiveDNS (registry-side enablement)."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/livedns", json={})
+        return result
+
     async def get_domain_livedns_dnssec(self, fqdn: str) -> dict[str, Any]:
         """LiveDNS-managed DNSSEC state for a domain."""
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/livedns/dnssec")
+        return result
+
+    async def activate_domain_livedns_dnssec(self, fqdn: str) -> dict[str, Any]:
+        """Activate LiveDNS-managed DNSSEC for a domain."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/livedns/dnssec", json={})
+        return result
+
+    async def disable_domain_livedns_dnssec(self, fqdn: str) -> dict[str, Any]:
+        """Disable LiveDNS-managed DNSSEC for a domain."""
+        result: dict[str, Any] = await self.delete(f"/v5/domain/domains/{_seg(fqdn)}/livedns/dnssec")
         return result
 
     async def list_tlds(self) -> list[dict[str, Any]]:
@@ -475,6 +555,73 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/records")
         return result
 
+    async def livedns_create_named_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Create a record under a name (POST to the per-name collection)."""
+        payload: dict[str, Any] = {"rrset_type": rrset_type, "rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.post(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}",
+            json=payload,
+        )
+        return result
+
+    async def livedns_replace_named_records(self, fqdn: str, name: str, items: list[dict[str, Any]]) -> dict[str, Any]:
+        """Replace every record under a name (destructive per-name bulk write)."""
+        result: dict[str, Any] = await self.put(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}",
+            json={"items": items},
+        )
+        return result
+
+    async def livedns_delete_named_records(self, fqdn: str, name: str) -> dict[str, Any]:
+        """Delete every record under a name (all types)."""
+        result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}")
+        return result
+
+    async def livedns_create_typed_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Create a record at a specific (name, type) endpoint."""
+        payload: dict[str, Any] = {"rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.post(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}/{_seg(rrset_type)}",
+            json=payload,
+        )
+        return result
+
+    async def livedns_update_record(
+        self,
+        fqdn: str,
+        name: str,
+        rrset_type: str,
+        values: list[str],
+        ttl: int | None = None,
+    ) -> dict[str, Any]:
+        """Update a specific (name, type) record set (PATCH)."""
+        payload: dict[str, Any] = {"rrset_values": values}
+        if ttl is not None:
+            payload["rrset_ttl"] = ttl
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/records/{_seg(name)}/{_seg(rrset_type)}",
+            json=payload,
+        )
+        return result
+
     # ── DNSSEC (LiveDNS) ────────────────────────────────────────────────
 
     async def livedns_list_keys(self, fqdn: str) -> list[dict[str, Any]]:
@@ -500,6 +647,14 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}")
         return result
 
+    async def livedns_restore_key(self, fqdn: str, key_id: str) -> dict[str, Any]:
+        """Restore (undelete) a LiveDNS DNSSEC key via PATCH ``deleted=false``."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/keys/{_seg(key_id)}",
+            json={"deleted": False},
+        )
+        return result
+
     # ── Snapshots (LiveDNS) ─────────────────────────────────────────────
 
     async def livedns_list_snapshots(self, fqdn: str) -> list[dict[str, Any]]:
@@ -510,6 +665,27 @@ class GandiClient(BaseGandiClient):
     async def livedns_get_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
         """Get a single zone snapshot by id."""
         result: dict[str, Any] = await self.get(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
+        return result
+
+    async def livedns_create_snapshot(self, fqdn: str, name: str | None = None) -> dict[str, Any]:
+        """Create a zone snapshot, optionally naming it."""
+        payload: dict[str, Any] = {}
+        if name is not None:
+            payload["name"] = name
+        result: dict[str, Any] = await self.post(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots", json=payload)
+        return result
+
+    async def livedns_update_snapshot(self, fqdn: str, snapshot_id: str, name: str) -> dict[str, Any]:
+        """Rename a zone snapshot."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}",
+            json={"name": name},
+        )
+        return result
+
+    async def livedns_delete_snapshot(self, fqdn: str, snapshot_id: str) -> dict[str, Any]:
+        """Delete a zone snapshot by id."""
+        result: dict[str, Any] = await self.delete(f"/v5/livedns/domains/{_seg(fqdn)}/snapshots/{_seg(snapshot_id)}")
         return result
 
     # ── Generic nameservers / AXFR TSIG (LiveDNS) ───────────────────────
@@ -527,6 +703,11 @@ class GandiClient(BaseGandiClient):
     async def livedns_get_tsig_key(self, tsig_id: str) -> dict[str, Any]:
         """Get a single AXFR TSIG key by id."""
         result: dict[str, Any] = await self.get(f"/v5/livedns/axfr/tsig/{_seg(tsig_id)}")
+        return result
+
+    async def livedns_create_tsig_key(self) -> dict[str, Any]:
+        """Create a new AXFR TSIG key for the account."""
+        result: dict[str, Any] = await self.post("/v5/livedns/axfr/tsig", json={})
         return result
 
     # ═════════════════════════════════════════════════════════════════════
@@ -657,6 +838,35 @@ class GandiClient(BaseGandiClient):
         result: list[str] = await self.get(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
         return result
 
+    async def cert_add_tag(self, cert_id: str, name: str) -> dict[str, Any]:
+        """Add a single operator-defined tag to a certificate."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"name": name},
+        )
+        return result
+
+    async def cert_replace_tags(self, cert_id: str, tags: list[str]) -> dict[str, Any]:
+        """Replace the full set of tags on a certificate."""
+        result: dict[str, Any] = await self.put(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"tags": tags},
+        )
+        return result
+
+    async def cert_update_tags(self, cert_id: str, tags: list[str]) -> dict[str, Any]:
+        """Add tags to a certificate without removing existing ones."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags",
+            json={"tags": tags},
+        )
+        return result
+
+    async def cert_delete_tags(self, cert_id: str) -> dict[str, Any]:
+        """Remove all operator-defined tags from a certificate."""
+        result: dict[str, Any] = await self.delete(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
+        return result
+
     async def cert_list_packages(self) -> list[dict[str, Any]]:
         """List available certificate packages."""
         result: list[dict[str, Any]] = await self.get("/v5/certificate/packages")
@@ -683,4 +893,309 @@ class GandiClient(BaseGandiClient):
             f"/v5/certificate/issued-certs/{_seg(cert_id)}/renew",
             json=data,
         )
+        return result
+
+    # ═════════════════════════════════════════════════════════════════════
+    # Simple Hosting (/v5/simplehosting)
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def simplehosting_list_instances(self, **params: Any) -> list[dict[str, Any]]:
+        """List Simple Hosting instances."""
+        result: list[dict[str, Any]] = await self.get(
+            "/v5/simplehosting/instances",
+            params={k: v for k, v in params.items() if v is not None},
+        )
+        return result
+
+    async def simplehosting_get_instance(self, instance_id: str) -> dict[str, Any]:
+        """Get a single Simple Hosting instance by id."""
+        result: dict[str, Any] = await self.get(f"/v5/simplehosting/instances/{_seg(instance_id)}")
+        return result
+
+    async def simplehosting_list_vhosts(self, instance_id: str) -> list[dict[str, Any]]:
+        """List vhosts on a Simple Hosting instance."""
+        result: list[dict[str, Any]] = await self.get(f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts")
+        return result
+
+    async def simplehosting_get_vhost(self, instance_id: str, fqdn: str) -> dict[str, Any]:
+        """Get a single vhost on a Simple Hosting instance."""
+        result: dict[str, Any] = await self.get(f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts/{_seg(fqdn)}")
+        return result
+
+    async def simplehosting_get_instance_usage(self, instance_id: str) -> dict[str, Any]:
+        """Get resource-usage metrics for a Simple Hosting instance."""
+        result: dict[str, Any] = await self.get(f"/v5/simplehosting/instances/{_seg(instance_id)}/usage")
+        return result
+
+    async def simplehosting_delete_instance(self, instance_id: str) -> dict[str, Any]:
+        """Delete a Simple Hosting instance."""
+        result: dict[str, Any] = await self.delete(f"/v5/simplehosting/instances/{_seg(instance_id)}")
+        return result
+
+    async def simplehosting_instance_action(self, instance_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Perform an action on a Simple Hosting instance (pass-through payload)."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/action",
+            json=data,
+        )
+        return result
+
+    async def simplehosting_create_vhost(self, instance_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a vhost on a Simple Hosting instance (pass-through payload)."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts",
+            json=data,
+        )
+        return result
+
+    async def simplehosting_delete_vhost(self, instance_id: str, fqdn: str) -> dict[str, Any]:
+        """Delete a vhost from a Simple Hosting instance."""
+        result: dict[str, Any] = await self.delete(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts/{_seg(fqdn)}"
+        )
+        return result
+
+    async def simplehosting_update_vhost(self, instance_id: str, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a vhost on a Simple Hosting instance (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts/{_seg(fqdn)}",
+            json=data,
+        )
+        return result
+
+    async def simplehosting_purge_vhost_cache(self, instance_id: str, fqdn: str) -> dict[str, Any]:
+        """Purge the cache of a vhost on a Simple Hosting instance."""
+        result: dict[str, Any] = await self.delete(
+            f"/v5/simplehosting/instances/{_seg(instance_id)}/vhosts/{_seg(fqdn)}/cache"
+        )
+        return result
+
+    async def simplehosting_create_instance(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a Simple Hosting instance (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post("/v5/simplehosting/instances", json=data)
+        return result
+
+    async def simplehosting_update_instance(self, instance_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a Simple Hosting instance — plan/size changes may bill (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.patch(f"/v5/simplehosting/instances/{_seg(instance_id)}", json=data)
+        return result
+
+    # ═════════════════════════════════════════════════════════════════════
+    # Mailbox (/v5/mailbox) — current mailbox product, distinct from /v5/email
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def mailbox_list_domains(self) -> list[dict[str, Any]]:
+        """List domains enabled for the mailbox product."""
+        result: list[dict[str, Any]] = await self.get("/v5/mailbox/domains")
+        return result
+
+    async def mailbox_get_domain(self, domain: str) -> dict[str, Any]:
+        """Get mailbox-product info for a domain."""
+        result: dict[str, Any] = await self.get(f"/v5/mailbox/domains/{_seg(domain)}")
+        return result
+
+    async def mailbox_validate_domain(self, domain: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Validate a domain's mailbox configuration (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/mailbox/domains/{_seg(domain)}/validate", json=data)
+        return result
+
+    async def mailbox_list_mailboxes(self, **params: Any) -> list[dict[str, Any]]:
+        """List mailboxes."""
+        result: list[dict[str, Any]] = await self.get(
+            "/v5/mailbox/mailboxes",
+            params={k: v for k, v in params.items() if v is not None},
+        )
+        return result
+
+    async def mailbox_create_mailbox(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a mailbox (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post("/v5/mailbox/mailboxes", json=data)
+        return result
+
+    async def mailbox_get_mailbox(self, email: str) -> dict[str, Any]:
+        """Get a single mailbox by address."""
+        result: dict[str, Any] = await self.get(f"/v5/mailbox/mailboxes/{_seg(email)}")
+        return result
+
+    async def mailbox_update_mailbox(self, email: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a mailbox (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(f"/v5/mailbox/mailboxes/{_seg(email)}", json=data)
+        return result
+
+    async def mailbox_delete_mailbox(self, email: str) -> dict[str, Any]:
+        """Delete a mailbox."""
+        result: dict[str, Any] = await self.delete(f"/v5/mailbox/mailboxes/{_seg(email)}")
+        return result
+
+    async def mailbox_renew_mailbox(self, email: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Renew a mailbox (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post(f"/v5/mailbox/mailboxes/{_seg(email)}/renew", json=data)
+        return result
+
+    async def mailbox_list_forwards(self, **params: Any) -> list[dict[str, Any]]:
+        """List mailbox forwards."""
+        result: list[dict[str, Any]] = await self.get(
+            "/v5/mailbox/forwards",
+            params={k: v for k, v in params.items() if v is not None},
+        )
+        return result
+
+    async def mailbox_create_forward(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a mailbox forward (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/mailbox/forwards", json=data)
+        return result
+
+    async def mailbox_update_forward(self, source: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a mailbox forward by source address (pass-through payload)."""
+        result: dict[str, Any] = await self.put(f"/v5/mailbox/forwards/{_seg(source)}", json=data)
+        return result
+
+    async def mailbox_delete_forward(self, source: str) -> dict[str, Any]:
+        """Delete a mailbox forward by source address."""
+        result: dict[str, Any] = await self.delete(f"/v5/mailbox/forwards/{_seg(source)}")
+        return result
+
+    async def mailbox_list_slots(self) -> list[dict[str, Any]]:
+        """List mailbox slots."""
+        result: list[dict[str, Any]] = await self.get("/v5/mailbox/slots")
+        return result
+
+    async def mailbox_get_slot(self, slot_id: str) -> dict[str, Any]:
+        """Get a single mailbox slot by id."""
+        result: dict[str, Any] = await self.get(f"/v5/mailbox/slots/{_seg(slot_id)}")
+        return result
+
+    async def mailbox_get_quotas(self) -> dict[str, Any]:
+        """Get mailbox quota usage for the account."""
+        result: dict[str, Any] = await self.get("/v5/mailbox/quotas")
+        return result
+
+    async def mailbox_list_products(self) -> list[dict[str, Any]]:
+        """List mailbox products available for purchase."""
+        result: list[dict[str, Any]] = await self.get("/v5/mailbox/products")
+        return result
+
+    async def mailbox_buy_product(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Buy a mailbox product / slot (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post("/v5/mailbox/products", json=data)
+        return result
+
+    # ═════════════════════════════════════════════════════════════════════
+    # Linked zones (/v5/linkedzone)
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def linkedzone_list_domains(self) -> list[dict[str, Any]]:
+        """List domains that can use linked zones."""
+        result: list[dict[str, Any]] = await self.get("/v5/linkedzone/domains")
+        return result
+
+    async def linkedzone_get_domain(self, domain: str) -> dict[str, Any]:
+        """Get linked-zone info for a single domain."""
+        result: dict[str, Any] = await self.get(f"/v5/linkedzone/domains/{_seg(domain)}")
+        return result
+
+    async def linkedzone_list_zones(self) -> list[dict[str, Any]]:
+        """List linked zones."""
+        result: list[dict[str, Any]] = await self.get("/v5/linkedzone/zones")
+        return result
+
+    async def linkedzone_get_zone(self, zone_id: str) -> dict[str, Any]:
+        """Get a single linked zone by id."""
+        result: dict[str, Any] = await self.get(f"/v5/linkedzone/zones/{_seg(zone_id)}")
+        return result
+
+    async def linkedzone_list_tasks(self) -> list[dict[str, Any]]:
+        """List linked-zone background tasks."""
+        result: list[dict[str, Any]] = await self.get("/v5/linkedzone/tasks")
+        return result
+
+    async def linkedzone_get_task(self, task_id: str) -> dict[str, Any]:
+        """Get a single linked-zone task by id."""
+        result: dict[str, Any] = await self.get(f"/v5/linkedzone/tasks/{_seg(task_id)}")
+        return result
+
+    async def linkedzone_create_zone(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a linked zone (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/linkedzone/zones", json=data)
+        return result
+
+    async def linkedzone_attach_domain(self, zone_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Attach a domain to a linked zone (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/linkedzone/zones/{_seg(zone_id)}", json=data)
+        return result
+
+    async def linkedzone_update_zone(self, zone_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a linked zone (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(f"/v5/linkedzone/zones/{_seg(zone_id)}", json=data)
+        return result
+
+    async def linkedzone_delete_zone(self, zone_id: str) -> dict[str, Any]:
+        """Delete a linked zone."""
+        result: dict[str, Any] = await self.delete(f"/v5/linkedzone/zones/{_seg(zone_id)}")
+        return result
+
+    async def linkedzone_link_domains(self, zone_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Link domains to a zone (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/linkedzone/zones/{_seg(zone_id)}/link/domains",
+            json=data,
+        )
+        return result
+
+    async def linkedzone_unlink_domains(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Unlink domains from their linked zone (pass-through payload)."""
+        result: dict[str, Any] = await self.patch("/v5/linkedzone/unlink/domains", json=data)
+        return result
+
+    # ═════════════════════════════════════════════════════════════════════
+    # Template (/v5/template)
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def template_list_templates(self) -> list[dict[str, Any]]:
+        """List domain-configuration templates."""
+        result: list[dict[str, Any]] = await self.get("/v5/template/templates")
+        return result
+
+    async def template_get_template(self, template_id: str) -> dict[str, Any]:
+        """Get a single template by id."""
+        result: dict[str, Any] = await self.get(f"/v5/template/templates/{_seg(template_id)}")
+        return result
+
+    async def template_get_dispatch(self, dispatch_id: str) -> dict[str, Any]:
+        """Get the status of a template dispatch (application) operation."""
+        result: dict[str, Any] = await self.get(f"/v5/template/dispatch/{_seg(dispatch_id)}")
+        return result
+
+    async def template_create_template(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a domain-configuration template (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/template/templates", json=data)
+        return result
+
+    async def template_update_template(self, template_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a template (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(f"/v5/template/templates/{_seg(template_id)}", json=data)
+        return result
+
+    async def template_apply_template(self, template_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Apply a template to one or more domains (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/template/templates/{_seg(template_id)}", json=data)
+        return result
+
+    # ═════════════════════════════════════════════════════════════════════
+    # Comment (/v5/comment)
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def get_comment(self, comment_id: str) -> dict[str, Any]:
+        """Get the comment attached to a Gandi object."""
+        result: dict[str, Any] = await self.get(f"/v5/comment/comments/{_seg(comment_id)}")
+        return result
+
+    async def set_comment(self, comment_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Set (create or overwrite) the comment on a Gandi object (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/comment/comments/{_seg(comment_id)}", json=data)
+        return result
+
+    async def delete_comment(self, comment_id: str) -> dict[str, Any]:
+        """Delete the comment on a Gandi object."""
+        result: dict[str, Any] = await self.delete(f"/v5/comment/comments/{_seg(comment_id)}")
         return result
