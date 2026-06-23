@@ -30,8 +30,11 @@ from __future__ import annotations
 
 import ast
 import pathlib
+import textwrap
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
+
+import pytest
 
 from gandi_mcp.server import create_server
 
@@ -74,9 +77,20 @@ class ToolRow:
 
 
 def _tool_decorator(func: ast.AsyncFunctionDef) -> ast.Call | None:
-    """The ``@mcp.tool(...)`` decorator call on ``func``, or ``None``."""
+    """The ``@mcp.tool(...)`` decorator call on ``func``, or ``None``.
+
+    Matched as ``mcp.tool`` specifically, not any ``<x>.tool(...)``: a future
+    helper carrying a differently-scoped ``.tool``-named decorator would
+    otherwise inject a phantom row.
+    """
     for dec in func.decorator_list:
-        if isinstance(dec, ast.Call) and isinstance(dec.func, ast.Attribute) and dec.func.attr == "tool":
+        if (
+            isinstance(dec, ast.Call)
+            and isinstance(dec.func, ast.Attribute)
+            and dec.func.attr == "tool"
+            and isinstance(dec.func.value, ast.Name)
+            and dec.func.value.id == "mcp"
+        ):
             return dec
     return None
 
@@ -97,28 +111,46 @@ def _tag_set(decorator: ast.Call) -> set[str]:
 
 
 def _annotation_flag(decorator: ast.Call, key: str) -> bool:
-    """Boolean ``annotations={...}`` hint; absent or non-bool reads as ``False``."""
+    """Boolean ``annotations={...}`` hint; absent reads as ``False``.
+
+    A non-literal value (``destructiveHint=SOME_CONST``) is rejected rather
+    than coerced: silently reading it as ``False`` could let the matrix assert
+    a destructive tool is non-destructive with no test failure.
+    """
     value = _decorator_kw(decorator, "annotations")
     if not isinstance(value, ast.Dict):
         return False
     for k, v in zip(value.keys, value.values, strict=True):
-        if isinstance(k, ast.Constant) and k.value == key and isinstance(v, ast.Constant):
-            return bool(v.value)
+        if isinstance(k, ast.Constant) and k.value == key:
+            if not isinstance(v, ast.Constant) or not isinstance(v.value, bool):
+                raise ValueError(f"annotation {key!r} must be a literal bool, got {ast.dump(v)}")
+            return v.value
     return False
 
 
-def _client_method(func: ast.AsyncFunctionDef) -> str | None:
-    """The ``<method>`` in the handler's ``get_client(ctx).<method>(...)`` call."""
-    for node in ast.walk(func):
+def _client_method(func: ast.AsyncFunctionDef) -> str:
+    """The ``<method>`` in the handler's ``get_client(ctx).<method>(...)`` call.
+
+    ``ast.walk`` order is not source order, so a handler making two
+    ``get_client`` calls would have one picked arbitrarily and the other
+    silently dropped — the row would document a real but possibly wrong
+    endpoint while every oracle stayed green. Today the surface is strictly
+    one client call per handler; we raise on any other count to pin that.
+    """
+    methods = [
+        node.func.attr
+        for node in ast.walk(func)
         if (
             isinstance(node, ast.Call)
             and isinstance(node.func, ast.Attribute)
             and isinstance(node.func.value, ast.Call)
             and isinstance(node.func.value.func, ast.Name)
             and node.func.value.func.id == "get_client"
-        ):
-            return node.func.attr
-    return None
+        )
+    ]
+    if len(methods) != 1:
+        raise ValueError(f"{func.name}: expected exactly one get_client(ctx).<method> call, found {len(methods)}")
+    return methods[0]
 
 
 def _format_field_name(node: ast.expr) -> str:
@@ -193,7 +225,7 @@ def build_rows() -> list[ToolRow]:
             area = sorted(tags - STRUCTURAL_TAGS)
             tier = "purchase" if "purchase" in tags else "write" if "write" in tags else "read"
             method = _client_method(func)
-            verb, endpoint = endpoints.get(method or "", ("?", "?"))
+            verb, endpoint = endpoints.get(method, ("?", "?"))
             rows.append(
                 ToolRow(
                     area="/".join(area) if area else "?",
@@ -201,7 +233,7 @@ def build_rows() -> list[ToolRow]:
                     name=func.name,
                     destructive=_annotation_flag(decorator, "destructiveHint"),
                     open_world=_annotation_flag(decorator, "openWorldHint"),
-                    client_method=method or "?",
+                    client_method=method,
                     verb=verb,
                     endpoint=endpoint,
                 )
@@ -275,6 +307,56 @@ def test_matrix_doc_in_sync() -> None:
         "docs/tool-schema-matrix.md is stale — regenerate with:\n"
         "    uv run python tests/unit/test_tool_schema_matrix.py"
     )
+
+
+def _parse_func(source: str) -> ast.AsyncFunctionDef:
+    """Parse one ``async def`` from a source snippet for guard unit tests."""
+    func = ast.parse(textwrap.dedent(source)).body[0]
+    assert isinstance(func, ast.AsyncFunctionDef)
+    return func
+
+
+def test_client_method_rejects_multiple_get_client_calls() -> None:
+    """Two client calls in one handler is wrong-but-valid drift — must raise."""
+    func = _parse_func("""
+        async def h(ctx):
+            await get_client(ctx).read_it(x)
+            return await get_client(ctx).write_it(x)
+    """)
+    with pytest.raises(ValueError, match="exactly one get_client"):
+        _client_method(func)
+
+
+def test_client_method_rejects_zero_get_client_calls() -> None:
+    """A handler with no client call can't be mapped to an endpoint — must raise."""
+    func = _parse_func("""
+        async def h(ctx):
+            return {}
+    """)
+    with pytest.raises(ValueError, match="found 0"):
+        _client_method(func)
+
+
+def test_tool_decorator_ignores_non_mcp_tool() -> None:
+    """A ``.tool``-named decorator that isn't ``mcp.tool`` injects no phantom row."""
+    func = _parse_func("""
+        @helper.tool(tags={"gandi"})
+        async def h(ctx):
+            return await get_client(ctx).read_it(x)
+    """)
+    assert _tool_decorator(func) is None
+
+
+def test_annotation_flag_rejects_non_literal() -> None:
+    """A non-literal hint must fail loudly, not silently read as ``False``."""
+    decorator = _parse_func("""
+        @mcp.tool(annotations={"destructiveHint": SOME_CONST})
+        async def h(ctx):
+            return await get_client(ctx).write_it(x)
+    """).decorator_list[0]
+    assert isinstance(decorator, ast.Call)
+    with pytest.raises(ValueError, match="must be a literal bool"):
+        _annotation_flag(decorator, "destructiveHint")
 
 
 async def test_matrix_matches_registered_surface(readwrite_with_purchases_config: GandiConfig) -> None:
