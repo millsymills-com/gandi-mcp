@@ -34,7 +34,6 @@ import argparse
 import json
 import pathlib
 import re
-import sys
 
 import httpx
 
@@ -81,8 +80,11 @@ def build_snapshot(date: str) -> dict[str, object]:
             try:
                 page = _fetch(client, f"{DOCS_ROOT}{slug}/")
             except httpx.HTTPError as exc:
-                print(f"  ! skipped {slug}: {exc}", file=sys.stderr)  # noqa: T201
-                continue
+                raise SystemExit(
+                    f"FATAL: failed to fetch area page {slug!r} ({exc}). Refusing to write an under-counted "
+                    f"snapshot — a partial fetch would silently ratchet EXPECTED_LIVE_TOTAL down and mask "
+                    f"endpoints. Re-run once the docs are reachable."
+                ) from exc
             for area, endpoints in extract_endpoints(page).items():
                 areas.setdefault(area, set()).update(endpoints)
 
