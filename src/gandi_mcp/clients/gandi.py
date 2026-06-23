@@ -619,12 +619,9 @@ class GandiClient(BaseGandiClient):
         result: list[str] = await self.get(f"/v5/certificate/issued-certs/{_seg(cert_id)}/tags")
         return result
 
-    async def cert_list_packages(self, **params: Any) -> list[dict[str, Any]]:
+    async def cert_list_packages(self) -> list[dict[str, Any]]:
         """List available certificate packages."""
-        result: list[dict[str, Any]] = await self.get(
-            "/v5/certificate/packages",
-            params={k: v for k, v in params.items() if v is not None},
-        )
+        result: list[dict[str, Any]] = await self.get("/v5/certificate/packages")
         return result
 
     async def cert_get_package(self, name: str) -> dict[str, Any]:
