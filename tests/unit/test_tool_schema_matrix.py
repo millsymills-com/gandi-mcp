@@ -359,6 +359,18 @@ def test_annotation_flag_rejects_non_literal() -> None:
         _annotation_flag(decorator, "destructiveHint")
 
 
+def test_annotation_flag_rejects_wrong_typed_literal() -> None:
+    """A literal of the wrong type (str/int) must fail like a non-literal does."""
+    decorator = _parse_func("""
+        @mcp.tool(annotations={"destructiveHint": "yes"})
+        async def h(ctx):
+            return await get_client(ctx).write_it(x)
+    """).decorator_list[0]
+    assert isinstance(decorator, ast.Call)
+    with pytest.raises(ValueError, match="must be a literal bool"):
+        _annotation_flag(decorator, "destructiveHint")
+
+
 async def test_matrix_matches_registered_surface(readwrite_with_purchases_config: GandiConfig) -> None:
     """Documented tool names must equal what the full-access server registers.
 
