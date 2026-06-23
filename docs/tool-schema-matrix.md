@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**98 tools** — 54 read, 36 write, 8 purchase.
+**110 tools** — 60 read, 42 write, 8 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -89,6 +89,18 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | email | purchase | `gandi_email_create_mailbox` | no | yes | `email_create_mailbox` | `POST /v5/email/mailboxes/{domain}` |
 | email | purchase | `gandi_email_create_slot` | no | yes | `email_create_slot` | `POST /v5/email/slots/{domain}` |
 | email | purchase | `gandi_email_renew_mailbox` | no | yes | `email_renew_mailbox` | `POST /v5/email/mailboxes/{domain}/{email}/renew` |
+| linkedzone | read | `gandi_linkedzone_get_domain` | no | no | `linkedzone_get_domain` | `GET /v5/linkedzone/domains/{domain}` |
+| linkedzone | read | `gandi_linkedzone_get_task` | no | no | `linkedzone_get_task` | `GET /v5/linkedzone/tasks/{task_id}` |
+| linkedzone | read | `gandi_linkedzone_get_zone` | no | no | `linkedzone_get_zone` | `GET /v5/linkedzone/zones/{zone_id}` |
+| linkedzone | read | `gandi_linkedzone_list_domains` | no | no | `linkedzone_list_domains` | `GET /v5/linkedzone/domains` |
+| linkedzone | read | `gandi_linkedzone_list_tasks` | no | no | `linkedzone_list_tasks` | `GET /v5/linkedzone/tasks` |
+| linkedzone | read | `gandi_linkedzone_list_zones` | no | no | `linkedzone_list_zones` | `GET /v5/linkedzone/zones` |
+| linkedzone | write | `gandi_linkedzone_attach_domain` | no | no | `linkedzone_attach_domain` | `POST /v5/linkedzone/zones/{zone_id}` |
+| linkedzone | write | `gandi_linkedzone_create_zone` | no | no | `linkedzone_create_zone` | `POST /v5/linkedzone/zones` |
+| linkedzone | write | `gandi_linkedzone_delete_zone` | yes | no | `linkedzone_delete_zone` | `DELETE /v5/linkedzone/zones/{zone_id}` |
+| linkedzone | write | `gandi_linkedzone_link_domains` | no | no | `linkedzone_link_domains` | `PATCH /v5/linkedzone/zones/{zone_id}/link/domains` |
+| linkedzone | write | `gandi_linkedzone_unlink_domains` | yes | no | `linkedzone_unlink_domains` | `PATCH /v5/linkedzone/unlink/domains` |
+| linkedzone | write | `gandi_linkedzone_update_zone` | no | no | `linkedzone_update_zone` | `PATCH /v5/linkedzone/zones/{zone_id}` |
 | livedns | read | `gandi_livedns_get_dnssec_key` | no | no | `livedns_get_key` | `GET /v5/livedns/domains/{fqdn}/keys/{key_id}` |
 | livedns | read | `gandi_livedns_get_domain` | no | no | `livedns_get_domain` | `GET /v5/livedns/domains/{fqdn}` |
 | livedns | read | `gandi_livedns_get_generic_nameservers` | no | no | `livedns_get_generic_nameservers` | `GET /v5/livedns/nameservers/{fqdn}` |

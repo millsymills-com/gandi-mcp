@@ -684,3 +684,70 @@ class GandiClient(BaseGandiClient):
             json=data,
         )
         return result
+
+    # ═════════════════════════════════════════════════════════════════════
+    # Linked zones (/v5/linkedzone)
+    # ═════════════════════════════════════════════════════════════════════
+
+    async def linkedzone_list_domains(self) -> list[dict[str, Any]]:
+        """List domains that can use linked zones."""
+        result: list[dict[str, Any]] = await self.get("/v5/linkedzone/domains")
+        return result
+
+    async def linkedzone_get_domain(self, domain: str) -> dict[str, Any]:
+        """Get linked-zone info for a single domain."""
+        result: dict[str, Any] = await self.get(f"/v5/linkedzone/domains/{_seg(domain)}")
+        return result
+
+    async def linkedzone_list_zones(self) -> list[dict[str, Any]]:
+        """List linked zones."""
+        result: list[dict[str, Any]] = await self.get("/v5/linkedzone/zones")
+        return result
+
+    async def linkedzone_get_zone(self, zone_id: str) -> dict[str, Any]:
+        """Get a single linked zone by id."""
+        result: dict[str, Any] = await self.get(f"/v5/linkedzone/zones/{_seg(zone_id)}")
+        return result
+
+    async def linkedzone_list_tasks(self) -> list[dict[str, Any]]:
+        """List linked-zone background tasks."""
+        result: list[dict[str, Any]] = await self.get("/v5/linkedzone/tasks")
+        return result
+
+    async def linkedzone_get_task(self, task_id: str) -> dict[str, Any]:
+        """Get a single linked-zone task by id."""
+        result: dict[str, Any] = await self.get(f"/v5/linkedzone/tasks/{_seg(task_id)}")
+        return result
+
+    async def linkedzone_create_zone(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Create a linked zone (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/linkedzone/zones", json=data)
+        return result
+
+    async def linkedzone_attach_domain(self, zone_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Attach a domain to a linked zone (pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/linkedzone/zones/{_seg(zone_id)}", json=data)
+        return result
+
+    async def linkedzone_update_zone(self, zone_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update a linked zone (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(f"/v5/linkedzone/zones/{_seg(zone_id)}", json=data)
+        return result
+
+    async def linkedzone_delete_zone(self, zone_id: str) -> dict[str, Any]:
+        """Delete a linked zone."""
+        result: dict[str, Any] = await self.delete(f"/v5/linkedzone/zones/{_seg(zone_id)}")
+        return result
+
+    async def linkedzone_link_domains(self, zone_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Link domains to a zone (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/linkedzone/zones/{_seg(zone_id)}/link/domains",
+            json=data,
+        )
+        return result
+
+    async def linkedzone_unlink_domains(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Unlink domains from their linked zone (pass-through payload)."""
+        result: dict[str, Any] = await self.patch("/v5/linkedzone/unlink/domains", json=data)
+        return result
