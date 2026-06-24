@@ -915,6 +915,44 @@ class GandiClient(BaseGandiClient):
         )
         return result
 
+    async def cert_get_dcv_params(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Compute DCV parameters for a not-yet-ordered certificate (pass-through payload)."""
+        result: dict[str, Any] = await self.post("/v5/certificate/dcv_params", json=data)
+        return result
+
+    async def cert_get_cert_dcv_params(self, cert_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Compute DCV parameters for an issued certificate (pass-through payload)."""
+        result: dict[str, Any] = await self.post(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/dcv_params",
+            json=data,
+        )
+        return result
+
+    async def cert_resend_dcv(self, cert_id: str) -> dict[str, Any]:
+        """Resend the DCV (domain-control-validation) request for a certificate."""
+        result: dict[str, Any] = await self.put(f"/v5/certificate/issued-certs/{_seg(cert_id)}/dcv", json={})
+        return result
+
+    async def cert_update_dcv_method(self, cert_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Change the DCV method for a pending certificate (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}/dcv",
+            json=data,
+        )
+        return result
+
+    async def cert_get_crt(self, cert_id: str) -> str:
+        """Fetch the raw issued certificate (PEM). Returns the document as text."""
+        return await self.get_text(f"/v5/certificate/issued-certs/{_seg(cert_id)}/crt")
+
+    async def cert_update(self, cert_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update an issued certificate's metadata (pass-through payload)."""
+        result: dict[str, Any] = await self.patch(
+            f"/v5/certificate/issued-certs/{_seg(cert_id)}",
+            json=data,
+        )
+        return result
+
     # ═════════════════════════════════════════════════════════════════════
     # Simple Hosting (/v5/simplehosting)
     # ═════════════════════════════════════════════════════════════════════
