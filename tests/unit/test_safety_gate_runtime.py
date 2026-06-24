@@ -155,6 +155,7 @@ class TestTagInvariants:
         "gandi_email_create_mailbox",
         "gandi_email_create_slot",
         "gandi_email_renew_mailbox",
+        "gandi_email_renew_all_mailboxes",
         "gandi_cert_issue",
         "gandi_cert_renew",
         "gandi_mailbox_create_mailbox",

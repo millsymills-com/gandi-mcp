@@ -826,6 +826,16 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.get(f"/v5/email/offers/{_seg(domain)}")
         return result
 
+    async def email_update_offer(self, domain: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update the email offer for a domain (pass-through payload, e.g. ``mailbox_type``)."""
+        result: dict[str, Any] = await self.patch(f"/v5/email/offers/{_seg(domain)}", json=data)
+        return result
+
+    async def email_renew_all_mailboxes(self, domain: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Renew every mailbox on a domain (SPENDS MONEY, pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/email/mailboxes/{_seg(domain)}/renew", json=data)
+        return result
+
     # ═════════════════════════════════════════════════════════════════════
     # Certificates (/v5/certificate)
     # ═════════════════════════════════════════════════════════════════════
