@@ -83,7 +83,9 @@ class TestCreateTSIGKey:
         result = await handler(ctx)
 
         assert route.called
-        assert route.calls.last.request.method == "POST"
+        request = route.calls.last.request
+        assert request.method == "POST"
+        assert json.loads(request.content) == {}
         assert result == payload
 
     async def test_maps_403_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:

@@ -15,6 +15,9 @@ from unittest.mock import MagicMock
 import httpx
 import pytest
 import respx
+from fastmcp import FastMCP
+from fastmcp.exceptions import ToolError
+from fastmcp.tools.function_tool import FunctionTool
 
 from gandi_mcp.clients.base import BaseGandiClient
 from gandi_mcp.config import GandiConfig, GandiMode
@@ -25,6 +28,8 @@ from gandi_mcp.errors import (
 )
 from gandi_mcp.server import ServerContext, create_server
 from gandi_mcp.tools._common import assert_purchases_allowed, assert_readwrite
+from gandi_mcp.tools.comment import register_comment_tools
+from gandi_mcp.tools.organization import register_organization_tools
 
 
 def _ctx(config: GandiConfig) -> Any:
@@ -84,6 +89,55 @@ class TestAssertPurchasesAllowed:
 
     def test_full_passes(self, full_ctx: Any) -> None:
         assert_purchases_allowed(full_ctx, "register domain")  # no raise
+
+
+async def _get_handler(server: FastMCP, name: str) -> Any:
+    """Pull a registered tool's underlying async handler by name."""
+    tool = await server.get_tool(name)
+    assert tool is not None, f"tool {name!r} not registered"
+    assert isinstance(tool, FunctionTool), f"tool {name!r} is not a FunctionTool"
+    return tool.fn
+
+
+# (tool name, handler kwargs) for every non-purchasing write tool whose
+# runtime gate isn't otherwise exercised. The kwargs only need to satisfy the
+# signature — the readonly gate fires before any client call, so values are
+# never sent over the wire.
+_COMMENT_WRITE_TOOLS: list[tuple[str, dict[str, Any]]] = [
+    ("gandi_comment_set", {"comment_id": "c1", "data": {}}),
+    ("gandi_comment_delete", {"comment_id": "c1"}),
+]
+_ORG_WRITE_TOOLS: list[tuple[str, dict[str, Any]]] = [
+    ("gandi_org_create_customer", {"org_id": "o1", "data": {}}),
+    ("gandi_org_update_customer", {"org_id": "o1", "customer_id": "k1", "data": {}}),
+    ("gandi_org_update_organization", {"org_id": "o1", "data": {}}),
+    ("gandi_org_renew_access_token", {"data": {}}),
+]
+
+
+class TestWriteToolRuntimeGate:
+    """Each merged write tool must refuse to run in readonly mode at runtime.
+
+    Belt-and-suspenders for the comment (#192) and organization (#191) write
+    tools: visibility gating hides them, but a stale tool cache could still
+    invoke a handler. The handler's ``assert_readwrite`` raises
+    ``GandiReadOnlyError``, which ``handle_client_error`` surfaces as a
+    ``ToolError`` mentioning read-only mode.
+    """
+
+    @pytest.mark.parametrize(
+        ("register", "name", "kwargs"),
+        [(register_comment_tools, n, k) for n, k in _COMMENT_WRITE_TOOLS]
+        + [(register_organization_tools, n, k) for n, k in _ORG_WRITE_TOOLS],
+    )
+    async def test_readonly_handler_raises(
+        self, readonly_ctx: Any, register: Any, name: str, kwargs: dict[str, Any]
+    ) -> None:
+        server = FastMCP(name="t")
+        register(server)
+        handler = await _get_handler(server, name)
+        with pytest.raises(ToolError, match="read-only mode"):
+            await handler(readonly_ctx, **kwargs)
 
 
 class TestTagInvariants:
