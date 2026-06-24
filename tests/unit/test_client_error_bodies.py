@@ -77,6 +77,19 @@ class TestStructuredErrorBody:
         await client.close()
 
     @pytest.mark.asyncio
+    async def test_non_dict_json_falls_back_to_raw_text(self, client: BaseGandiClient) -> None:
+        """A JSON body that isn't an object (array/string) can't be scrubbed; raw text is surfaced, details None."""
+        with respx.mock(base_url="https://api.gandi.net") as mock:
+            mock.get("/v5/domain/domains").mock(
+                return_value=httpx.Response(400, json=["err"], headers={"content-type": "application/json"}),
+            )
+            with pytest.raises(GandiBadRequestError) as exc_info:
+                await client.get("/v5/domain/domains")
+            assert '["err"]' in str(exc_info.value)
+            assert exc_info.value.details is None
+        await client.close()
+
+    @pytest.mark.asyncio
     async def test_malformed_json_falls_back_cleanly(self, client: BaseGandiClient) -> None:
         with respx.mock(base_url="https://api.gandi.net") as mock:
             mock.get("/v5/domain/domains").mock(
