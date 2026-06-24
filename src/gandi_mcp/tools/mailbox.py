@@ -50,6 +50,9 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
     async def gandi_mailbox_list_mailboxes(ctx: Context, per_page: int = 100, page: int = 1) -> list[dict[str, Any]]:
         """List mailboxes on the current mailbox product (not legacy email).
 
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
+
         Args:
             per_page: Page size.
             page: Page number.
@@ -80,6 +83,9 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
     @mcp.tool(tags={"gandi", "mailbox"})
     async def gandi_mailbox_list_forwards(ctx: Context, per_page: int = 100, page: int = 1) -> list[dict[str, Any]]:
         """List mailbox forwards (current mailbox product).
+
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
 
         Args:
             per_page: Page size.

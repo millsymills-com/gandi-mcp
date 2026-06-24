@@ -26,6 +26,9 @@ def register_email_read_tools(mcp: FastMCP) -> None:
     ) -> list[dict[str, Any]]:
         """List mailboxes for a domain.
 
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
+
         Args:
             domain: Fully-qualified domain name.
             per_page: Page size.
@@ -63,6 +66,9 @@ def register_email_read_tools(mcp: FastMCP) -> None:
         page: int = 1,
     ) -> list[dict[str, Any]]:
         """List forwarding addresses for a domain.
+
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
 
         Args:
             domain: Fully-qualified domain name.

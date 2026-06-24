@@ -26,6 +26,9 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
     ) -> list[dict[str, Any]]:
         """List issued SSL certificates.
 
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
+
         Args:
             status: Filter by status ("valid", "expired", "revoked",
                 "pending", "replaced").
