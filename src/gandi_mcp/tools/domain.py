@@ -1169,6 +1169,68 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        tags={"gandi", "domain", "write", "purchase"},
+        annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
+    )
+    async def gandi_domain_restore(
+        ctx: Context,
+        fqdn: str,
+        duration: int = 1,
+        currency: str | None = None,
+    ) -> dict[str, Any]:
+        """Restore a deleted domain within its redemption period (SPENDS MONEY).
+
+        Requires GANDI_MODE=readwrite AND GANDI_ALLOW_PURCHASES=true. Use
+        `gandi_domain_get_restore_info` first to confirm eligibility and price.
+
+        Args:
+            fqdn: Fully-qualified domain name to restore.
+            duration: Registration duration in years applied on restore.
+            currency: ISO currency code (defaults to org default).
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "restore domain")
+            assert_purchases_allowed(ctx, "restore domain")
+            payload: dict[str, Any] = {"duration": duration}
+            if currency is not None:
+                payload["currency"] = currency
+            return await get_client(ctx).restore_domain(fqdn, payload)
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
+        tags={"gandi", "domain", "write", "purchase"},
+        annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
+    )
+    async def gandi_domain_update_owner_contact(
+        ctx: Context,
+        fqdn: str,
+        owner: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Change the registrant (owner) contact on a domain (SPENDS MONEY).
+
+        Requires GANDI_MODE=readwrite AND GANDI_ALLOW_PURCHASES=true. A paid
+        registry trade — distinct from `gandi_domain_update_contacts`, which
+        only touches admin/tech/bill contacts.
+
+        Args:
+            fqdn: Fully-qualified domain name.
+            owner: New owner contact block per the Gandi contacts schema.
+
+        Returns:
+            Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
+        """
+        try:
+            assert_readwrite(ctx, "update owner contact")
+            assert_purchases_allowed(ctx, "update owner contact")
+            return await get_client(ctx).update_owner_contact(fqdn, {"owner": owner})
+        except Exception as e:
+            handle_client_error(e)
+
+    @mcp.tool(
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )

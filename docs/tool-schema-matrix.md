@@ -13,7 +13,7 @@ Tiers follow the three-tier safety model: **read** (always visible), **write**
 (needs `GANDI_MODE=readwrite`), **purchase** (also needs `GANDI_ALLOW_PURCHASES=true`).
 Destructive and open-world columns reflect the tool's MCP annotation hints.
 
-**179 tools** — 78 read, 87 write, 14 purchase.
+**181 tools** — 78 read, 87 write, 16 purchase.
 
 | Area | Tier | Tool | Destructive | Open-world | Client method | Gandi v5 endpoint |
 |------|------|------|:-----------:|:----------:|---------------|-------------------|
@@ -88,7 +88,9 @@ Destructive and open-world columns reflect the tool's MCP annotation hints.
 | domain | write | `gandi_domain_update_web_redirection` | no | no | `update_web_redirection` | `PATCH /v5/domain/domains/{fqdn}/webredirs/{host}` |
 | domain | purchase | `gandi_domain_register` | no | yes | `register_domain` | `POST /v5/domain/domains` |
 | domain | purchase | `gandi_domain_renew` | no | yes | `renew_domain` | `POST /v5/domain/domains/{fqdn}/renew` |
+| domain | purchase | `gandi_domain_restore` | no | yes | `restore_domain` | `POST /v5/domain/domains/{fqdn}/restore` |
 | domain | purchase | `gandi_domain_transfer_in` | no | yes | `transfer_in` | `POST /v5/domain/transferin/{fqdn}` |
+| domain | purchase | `gandi_domain_update_owner_contact` | no | yes | `update_owner_contact` | `PUT /v5/domain/domains/{fqdn}/contacts/owner` |
 | email | read | `gandi_email_get_mailbox` | no | no | `email_get_mailbox` | `GET /v5/email/mailboxes/{domain}/{mailbox_id}` |
 | email | read | `gandi_email_get_offer` | no | no | `email_get_offer` | `GET /v5/email/offers/{domain}` |
 | email | read | `gandi_email_get_slot` | no | no | `email_get_slot` | `GET /v5/email/slots/{domain}/{slot_id}` |
