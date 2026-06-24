@@ -197,6 +197,18 @@ class TestUpdateRecord:
         assert json.loads(request.content) == {"rrset_values": ["5.6.7.8"]}
         assert result == payload
 
+    async def test_omits_ttl_when_none(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        route = respx_mock.patch("/v5/livedns/domains/example.com/records/www/A").mock(
+            return_value=httpx.Response(200, json={})
+        )
+
+        handler = await _get_handler(server, "gandi_livedns_update_record")
+        await handler(ctx, fqdn="example.com", name="www", rrset_type="A", values=["5.6.7.8"], ttl=None)
+
+        request = route.calls.last.request
+        assert request.method == "PATCH"
+        assert "rrset_ttl" not in json.loads(request.content)
+
     async def test_maps_404_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
         respx_mock.patch("/v5/livedns/domains/example.com/records/www/A").mock(
             return_value=httpx.Response(404, json={})
