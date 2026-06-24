@@ -32,7 +32,6 @@ def register_template_read_tools(mcp: FastMCP) -> None:
         Args:
             template_id: Template UUID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -47,7 +46,6 @@ def register_template_read_tools(mcp: FastMCP) -> None:
 
         Args:
             dispatch_id: Dispatch UUID returned when a template is applied.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -71,7 +69,6 @@ def register_template_write_tools(mcp: FastMCP) -> None:
         Args:
             data: Template payload per the Gandi template schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -91,7 +88,6 @@ def register_template_write_tools(mcp: FastMCP) -> None:
         Args:
             template_id: Template UUID.
             data: Partial template payload (fields to update).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -113,7 +109,6 @@ def register_template_write_tools(mcp: FastMCP) -> None:
             template_id: Template UUID to apply.
             data: Dispatch payload (target domains and options) per the Gandi
                 template schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

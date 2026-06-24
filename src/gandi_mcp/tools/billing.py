@@ -35,7 +35,6 @@ def register_billing_read_tools(mcp: FastMCP) -> None:
         Args:
             sharing_id: Organization UUID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -65,7 +64,6 @@ def register_billing_read_tools(mcp: FastMCP) -> None:
             currency: ISO currency code ("USD", "EUR").
             country: ISO country code — affects tax-inclusive prices.
             grid: Pricing grid level ("A", "B", "C", "D", "E").
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

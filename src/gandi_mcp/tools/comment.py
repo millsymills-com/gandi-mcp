@@ -20,7 +20,6 @@ def register_comment_read_tools(mcp: FastMCP) -> None:
         Args:
             comment_id: ID of the comment (object-scoped).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -44,7 +43,6 @@ def register_comment_write_tools(mcp: FastMCP) -> None:
             comment_id: ID of the comment (object-scoped).
             data: Comment payload per the Gandi comment schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -63,7 +61,6 @@ def register_comment_write_tools(mcp: FastMCP) -> None:
 
         Args:
             comment_id: ID of the comment (object-scoped).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

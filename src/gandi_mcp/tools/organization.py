@@ -63,7 +63,6 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
         Args:
             org_id: Organization UUID (aka sharing_id).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -86,7 +85,6 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
             per_page: Page size.
             page: Page number.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -102,7 +100,6 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
         Args:
             org_id: Reseller organization UUID.
             customer_id: Customer UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -126,7 +123,6 @@ def register_organization_write_tools(mcp: FastMCP) -> None:
         Args:
             org_id: Reseller organization UUID.
             data: Customer payload per the Gandi organization schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -154,7 +150,6 @@ def register_organization_write_tools(mcp: FastMCP) -> None:
             customer_id: Customer UUID.
             data: Partial customer payload (fields to update).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -175,7 +170,6 @@ def register_organization_write_tools(mcp: FastMCP) -> None:
             org_id: Organization UUID.
             data: Partial organization payload (fields to update).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -194,7 +188,6 @@ def register_organization_write_tools(mcp: FastMCP) -> None:
 
         Args:
             data: Token-renewal payload per the Gandi access-token schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

@@ -32,7 +32,6 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
             per_page: Page size.
             page: Page number.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -48,7 +47,6 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
         Args:
             cert_id: Certificate UUID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -63,7 +61,6 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
 
         Args:
             cert_id: Certificate UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -92,7 +89,6 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
         Args:
             name: Package identifier (e.g. "cert_std_1_0_0").
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -107,7 +103,6 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
 
         Args:
             cert_id: Certificate UUID.
-
 
         Returns:
             The PEM-encoded certificate as a raw text string (not JSON).
@@ -131,7 +126,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
         Args:
             cert_id: Certificate UUID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -151,7 +145,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
         Args:
             cert_id: Certificate UUID.
             name: Tag to add.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -173,7 +166,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             cert_id: Certificate UUID.
             tags: New full tag list (replaces all existing tags).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -194,7 +186,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             cert_id: Certificate UUID.
             tags: Tags to add.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -213,7 +204,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
 
         Args:
             cert_id: Certificate UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -240,7 +230,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             data: DCV-params request payload per the Gandi certificate schema
                 (typically ``csr``, ``package``, ``dcv_method``).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -264,7 +253,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             cert_id: Certificate UUID.
             data: DCV-params request payload per the Gandi certificate schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -283,7 +271,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
 
         Args:
             cert_id: Certificate UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -306,7 +293,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             data: DCV-method payload (typically ``dcv_method``: "dns", "email",
                 "file", or "http").
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -326,7 +312,6 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
         Args:
             cert_id: Certificate UUID.
             data: Partial update payload per the Gandi certificate schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -358,7 +343,6 @@ def register_certificate_purchase_tools(mcp: FastMCP) -> None:
                 must include ``cn``, ``package``, ``duration``, a CSR, and a
                 DCV method.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -381,7 +365,6 @@ def register_certificate_purchase_tools(mcp: FastMCP) -> None:
         Args:
             cert_id: Certificate UUID.
             data: Renewal payload (new CSR, duration, DCV method).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

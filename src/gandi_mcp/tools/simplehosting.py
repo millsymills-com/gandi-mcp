@@ -32,7 +32,6 @@ def register_simplehosting_read_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -47,7 +46,6 @@ def register_simplehosting_read_tools(mcp: FastMCP) -> None:
 
         Args:
             instance_id: Instance UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -65,7 +63,6 @@ def register_simplehosting_read_tools(mcp: FastMCP) -> None:
             instance_id: Instance UUID.
             fqdn: Vhost fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -80,7 +77,6 @@ def register_simplehosting_read_tools(mcp: FastMCP) -> None:
 
         Args:
             instance_id: Instance UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -104,7 +100,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -127,7 +122,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             instance_id: Instance UUID.
             data: Action payload per the Gandi Simple Hosting schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -148,7 +142,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             instance_id: Instance UUID.
             data: Vhost payload per the Gandi Simple Hosting schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -168,7 +161,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
             fqdn: Vhost fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -193,7 +185,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             fqdn: Vhost fully-qualified domain name.
             data: Partial vhost payload (fields to update).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -213,7 +204,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
             fqdn: Vhost fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -243,7 +233,6 @@ def register_simplehosting_purchase_tools(mcp: FastMCP) -> None:
         Args:
             data: Instance payload (plan, datacenter, etc.) per the Gandi schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -268,7 +257,6 @@ def register_simplehosting_purchase_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
             data: Partial instance payload (e.g. new plan/size).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

@@ -32,7 +32,6 @@ def register_linkedzone_read_tools(mcp: FastMCP) -> None:
         Args:
             domain: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -59,7 +58,6 @@ def register_linkedzone_read_tools(mcp: FastMCP) -> None:
 
         Args:
             zone_id: Linked-zone UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -88,7 +86,6 @@ def register_linkedzone_read_tools(mcp: FastMCP) -> None:
         Args:
             task_id: Task UUID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -111,7 +108,6 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
         Args:
             data: Zone payload per the Gandi linked-zone schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -131,7 +127,6 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
         Args:
             zone_id: Linked-zone UUID.
             data: Attachment payload (domain to attach) per the Gandi schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -153,7 +148,6 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
             zone_id: Linked-zone UUID.
             data: Partial zone payload (fields to update).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -172,7 +166,6 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
 
         Args:
             zone_id: Linked-zone UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -194,7 +187,6 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
             zone_id: Linked-zone UUID.
             data: Payload listing the domains to link.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -213,7 +205,6 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
 
         Args:
             data: Payload listing the domains to unlink.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

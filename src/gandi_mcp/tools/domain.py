@@ -50,7 +50,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
             per_page: Page size (default 100, max 1000).
             page: Page number (1-based).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -65,7 +64,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name (e.g. "example.com").
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -146,7 +144,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Candidate domain to check for trademark conflicts.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -161,7 +158,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -178,7 +174,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -193,7 +188,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -211,7 +205,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
             fqdn: Parent domain.
             name: Short label of the glue host (e.g. "ns1").
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -226,7 +219,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -243,7 +235,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -258,7 +249,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -275,7 +265,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -290,7 +279,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -307,7 +295,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -322,7 +309,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -340,7 +326,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             host: Source host of the redirection (e.g. "www").
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -355,7 +340,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -372,7 +356,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -388,7 +371,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -403,7 +385,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -432,7 +413,6 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         Args:
             name: TLD without a leading dot (e.g. "com").
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -455,7 +435,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name being transferred in.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -476,7 +455,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name being transferred in.
             authinfo: New authorization/transfer code from the losing registrar.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -496,7 +474,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name being transferred in.
             email: Address to resend the FOA confirmation to.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -519,7 +496,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             data: Full DS-record payload per the Gandi dnskeys schema (replaces
                 the existing set).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -540,7 +516,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             fqdn: Candidate domain name.
             data: Claim-acceptance payload per the Gandi claims schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -559,7 +534,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -580,7 +554,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -600,7 +573,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -619,7 +591,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -641,7 +612,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             name: Tag to add.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -661,7 +631,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             tags: Full list of tags to set (replaces the existing set).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -683,7 +652,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             tags: Tags to add to the existing set.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -702,7 +670,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -731,7 +698,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             duration: Renewal duration in years — TLD-specific; use
                 `gandi_domain_get_renew_info` to preview valid durations. Required
                 when enabling.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -764,7 +730,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             tech: Tech contact block.
             bill: Billing contact block.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -796,7 +761,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             nameservers: Full list of nameservers (replaces any existing set).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -822,7 +786,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             fqdn: Parent domain (must be owned by this account).
             name: Short label for the glue host (e.g. "ns1").
             ips: List of IPs (IPv4 and/or IPv6) the glue host resolves to.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -850,7 +813,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             name: Short label of the glue host.
             ips: New list of IPs (replaces any existing entries).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -870,7 +832,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Parent domain.
             name: Short label of the glue host.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -902,7 +863,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             digest: Hex-encoded digest.
             keytag: Key tag (16-bit identifier).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -926,7 +886,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             key_id: ID of the DS record to delete.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -945,7 +904,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -973,7 +931,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             owner: New owner contact block per Gandi schema.
             notify_former_owner: Email the prior owner about the change.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -995,7 +952,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -1098,7 +1054,6 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
                 typically ``admin``/``tech``/``bill`` contacts plus optional
                 ``nameservers``, ``tld_period``, ``extra_parameters``.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -1129,7 +1084,6 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
                 `gandi_domain_get_renew_info` to preview valid durations.
             currency: ISO currency code (defaults to org default).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -1156,7 +1110,6 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             data: Transfer payload (``authinfo``, ``duration``, ``owner``,
                 optional contacts and nameservers).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -1239,7 +1192,6 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
