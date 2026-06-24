@@ -30,6 +30,10 @@ from gandi_mcp.server import ServerContext, create_server
 from gandi_mcp.tools._common import assert_purchases_allowed, assert_readwrite
 from gandi_mcp.tools.comment import register_comment_tools
 from gandi_mcp.tools.organization import register_organization_tools
+from gandi_mcp.tools.simplehosting import (
+    register_simplehosting_purchase_tools,
+    register_simplehosting_write_tools,
+)
 
 
 def _ctx(config: GandiConfig) -> Any:
@@ -113,6 +117,22 @@ _ORG_WRITE_TOOLS: list[tuple[str, dict[str, Any]]] = [
     ("gandi_org_update_organization", {"org_id": "o1", "data": {}}),
     ("gandi_org_renew_access_token", {"data": {}}),
 ]
+_SIMPLEHOSTING_WRITE_TOOLS: list[tuple[str, dict[str, Any]]] = [
+    ("gandi_simplehosting_delete_instance", {"instance_id": "i1"}),
+    ("gandi_simplehosting_perform_instance_action", {"instance_id": "i1", "data": {}}),
+    ("gandi_simplehosting_create_vhost", {"instance_id": "i1", "data": {}}),
+    ("gandi_simplehosting_delete_vhost", {"instance_id": "i1", "fqdn": "x.example.com"}),
+    ("gandi_simplehosting_update_vhost", {"instance_id": "i1", "fqdn": "x.example.com", "data": {}}),
+    ("gandi_simplehosting_purge_vhost_cache", {"instance_id": "i1", "fqdn": "x.example.com"}),
+]
+# (tool name, handler kwargs) for purchase tools, gated by both assert_readwrite
+# and assert_purchases_allowed. ``assert_readwrite`` fires first, so in readonly
+# mode the read-only message wins; in readwrite-without-purchases the
+# purchases-disabled message surfaces.
+_SIMPLEHOSTING_PURCHASE_TOOLS: list[tuple[str, dict[str, Any]]] = [
+    ("gandi_simplehosting_create_instance", {"data": {}}),
+    ("gandi_simplehosting_update_instance", {"instance_id": "i1", "data": {}}),
+]
 
 
 class TestWriteToolRuntimeGate:
@@ -128,7 +148,8 @@ class TestWriteToolRuntimeGate:
     @pytest.mark.parametrize(
         ("register", "name", "kwargs"),
         [(register_comment_tools, n, k) for n, k in _COMMENT_WRITE_TOOLS]
-        + [(register_organization_tools, n, k) for n, k in _ORG_WRITE_TOOLS],
+        + [(register_organization_tools, n, k) for n, k in _ORG_WRITE_TOOLS]
+        + [(register_simplehosting_write_tools, n, k) for n, k in _SIMPLEHOSTING_WRITE_TOOLS],
     )
     async def test_readonly_handler_raises(
         self, readonly_ctx: Any, register: Any, name: str, kwargs: dict[str, Any]
@@ -138,6 +159,34 @@ class TestWriteToolRuntimeGate:
         handler = await _get_handler(server, name)
         with pytest.raises(ToolError, match="read-only mode"):
             await handler(readonly_ctx, **kwargs)
+
+
+class TestPurchaseToolRuntimeGate:
+    """Each purchase tool must refuse to run at runtime when purchases are off.
+
+    Restores per-handler coverage for the Simple Hosting purchase tools: both
+    gates are exercised — readonly surfaces the read-only message (``assert_readwrite``
+    fires first), and readwrite-without-purchases surfaces the purchases-disabled
+    message (``assert_purchases_allowed``). A stale tool cache cannot spend money.
+    """
+
+    @pytest.mark.parametrize(("name", "kwargs"), _SIMPLEHOSTING_PURCHASE_TOOLS)
+    async def test_readonly_handler_raises(self, readonly_ctx: Any, name: str, kwargs: dict[str, Any]) -> None:
+        server = FastMCP(name="t")
+        register_simplehosting_purchase_tools(server)
+        handler = await _get_handler(server, name)
+        with pytest.raises(ToolError, match="read-only mode"):
+            await handler(readonly_ctx, **kwargs)
+
+    @pytest.mark.parametrize(("name", "kwargs"), _SIMPLEHOSTING_PURCHASE_TOOLS)
+    async def test_readwrite_without_purchases_raises(
+        self, readwrite_ctx: Any, name: str, kwargs: dict[str, Any]
+    ) -> None:
+        server = FastMCP(name="t")
+        register_simplehosting_purchase_tools(server)
+        handler = await _get_handler(server, name)
+        with pytest.raises(ToolError, match="purchases are disabled"):
+            await handler(readwrite_ctx, **kwargs)
 
 
 class TestTagInvariants:

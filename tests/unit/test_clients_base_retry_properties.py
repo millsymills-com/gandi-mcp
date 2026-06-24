@@ -30,6 +30,17 @@ IDEMPOTENT = frozenset({"GET", "HEAD"})
 NON_IDEMPOTENT = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 ALL_METHODS = IDEMPOTENT | NON_IDEMPOTENT
 
+# Timeout subtypes where request bytes may already have reached the server, so a
+# retry on a non-idempotent method could double-execute. ``ConnectTimeout`` is
+# deliberately excluded: the connection was never established, so it is the one
+# timeout that IS safe to retry (see test_connect_timeout_is_retried_for_every_method).
+NON_CONNECT_TIMEOUTS = (
+    httpx.TimeoutException,
+    httpx.ReadTimeout,
+    httpx.WriteTimeout,
+    httpx.PoolTimeout,
+)
+
 
 @pytest.fixture(autouse=True)
 def _no_real_sleep(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -46,22 +57,28 @@ def _no_real_sleep(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(asyncio, "sleep", _instant)
 
 
-@settings(suppress_health_check=[HealthCheck.function_scoped_fixture], max_examples=20, deadline=None)
-@given(method=st.sampled_from(sorted(NON_IDEMPOTENT)))
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture], max_examples=40, deadline=None)
+@given(
+    method=st.sampled_from(sorted(NON_IDEMPOTENT)),
+    timeout_cls=st.sampled_from(NON_CONNECT_TIMEOUTS),
+)
 @pytest.mark.asyncio
-async def test_non_idempotent_timeout_is_never_retried(method: str) -> None:
-    """A ``TimeoutException`` on POST/PUT/PATCH/DELETE must surface immediately.
+async def test_non_idempotent_timeout_is_never_retried(method: str, timeout_cls: type[httpx.TimeoutException]) -> None:
+    """A non-connect timeout on POST/PUT/PATCH/DELETE must surface immediately.
 
-    The respx route is configured to always timeout; if tenacity were to retry
-    on a non-idempotent timeout, the route would be hit more than once. We
-    assert exactly one call regardless of ``max_retries``.
+    Pins the double-spend boundary against every dangerous timeout subtype —
+    ``ReadTimeout``/``WriteTimeout``/``PoolTimeout`` (where the server may have
+    received the request) as well as the base ``TimeoutException``. The respx
+    route always times out; if tenacity retried, it would be hit more than once.
+    We assert exactly one call regardless of ``max_retries``, and that it
+    surfaces as ``GandiTimeoutError`` (not the retried ``GandiConnectionError``).
     """
     client = BaseGandiClient(base_url="https://api.gandi.net", token="t", max_retries=5)
     with respx.mock(base_url="https://api.gandi.net") as mock:
-        route = mock.request(method, "/v5/dummy").mock(side_effect=httpx.TimeoutException("timeout"))
+        route = mock.request(method, "/v5/dummy").mock(side_effect=timeout_cls("timeout"))
         with pytest.raises(GandiTimeoutError):
             await client._request(method, "/v5/dummy")
-        assert route.call_count == 1, f"{method} retried on timeout: {route.call_count} calls"
+        assert route.call_count == 1, f"{method} retried on {timeout_cls.__name__}: {route.call_count} calls"
     await client.close()
 
 
