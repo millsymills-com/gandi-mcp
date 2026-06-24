@@ -1156,7 +1156,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
 
     @mcp.tool(
         tags={"gandi", "domain", "write", "purchase"},
-        annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
+        annotations={"readOnlyHint": False, "destructiveHint": True, "openWorldHint": True},
     )
     async def gandi_domain_update_owner_contact(
         ctx: Context,
