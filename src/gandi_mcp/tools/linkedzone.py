@@ -13,7 +13,7 @@ from gandi_mcp.tools._common import assert_readwrite, get_client
 def register_linkedzone_read_tools(mcp: FastMCP) -> None:
     """Register read-only linked-zone tools on the server."""
 
-    @mcp.tool(tags={"gandi", "linkedzone"})
+    @mcp.tool(title="LinkedZone: List Domains", tags={"gandi", "linkedzone"})
     async def gandi_linkedzone_list_domains(ctx: Context) -> list[dict[str, Any]]:
         """List domains that can use linked zones.
 
@@ -25,7 +25,7 @@ def register_linkedzone_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "linkedzone"})
+    @mcp.tool(title="LinkedZone: Get Domain", tags={"gandi", "linkedzone"})
     async def gandi_linkedzone_get_domain(ctx: Context, domain: str) -> dict[str, Any]:
         """Get linked-zone info for a single domain.
 
@@ -40,7 +40,7 @@ def register_linkedzone_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "linkedzone"})
+    @mcp.tool(title="LinkedZone: List Zones", tags={"gandi", "linkedzone"})
     async def gandi_linkedzone_list_zones(ctx: Context) -> list[dict[str, Any]]:
         """List linked zones.
 
@@ -52,7 +52,7 @@ def register_linkedzone_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "linkedzone"})
+    @mcp.tool(title="LinkedZone: Get Zone", tags={"gandi", "linkedzone"})
     async def gandi_linkedzone_get_zone(ctx: Context, zone_id: str) -> dict[str, Any]:
         """Get a single linked zone by id.
 
@@ -67,7 +67,7 @@ def register_linkedzone_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "linkedzone"})
+    @mcp.tool(title="LinkedZone: List Tasks", tags={"gandi", "linkedzone"})
     async def gandi_linkedzone_list_tasks(ctx: Context) -> list[dict[str, Any]]:
         """List linked-zone background tasks.
 
@@ -79,7 +79,7 @@ def register_linkedzone_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "linkedzone"})
+    @mcp.tool(title="LinkedZone: Get Task", tags={"gandi", "linkedzone"})
     async def gandi_linkedzone_get_task(ctx: Context, task_id: str) -> dict[str, Any]:
         """Get a single linked-zone task by id.
 
@@ -99,6 +99,7 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write linked-zone tools on the server."""
 
     @mcp.tool(
+        title="LinkedZone: Create Zone",
         tags={"gandi", "linkedzone", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -118,6 +119,7 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="LinkedZone: Attach Domain",
         tags={"gandi", "linkedzone", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -138,6 +140,7 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="LinkedZone: Update Zone",
         tags={"gandi", "linkedzone", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -158,6 +161,7 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="LinkedZone: Delete Zone",
         tags={"gandi", "linkedzone", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -177,6 +181,7 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="LinkedZone: Link Domains",
         tags={"gandi", "linkedzone", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -197,6 +202,7 @@ def register_linkedzone_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="LinkedZone: Unlink Domains",
         tags={"gandi", "linkedzone", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
