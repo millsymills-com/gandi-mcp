@@ -97,3 +97,24 @@ async def test_connect_error_is_retried_for_every_method(method: str) -> None:
             await client._request(method, "/v5/dummy")
         assert route.call_count == 3, f"{method} did not retry on ConnectError: {route.call_count} calls"
     await client.close()
+
+
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture], max_examples=20, deadline=None)
+@given(method=st.sampled_from(sorted(ALL_METHODS)))
+@pytest.mark.asyncio
+async def test_connect_timeout_is_retried_for_every_method(method: str) -> None:
+    """A ``ConnectTimeout`` is always retried, even on non-idempotent methods.
+
+    ``ConnectTimeout`` subclasses ``TimeoutException`` (not ``ConnectError``),
+    but the connection was never established so the request never reached the
+    server — retrying cannot double-execute. It surfaces as
+    ``GandiConnectionError``, NOT ``GandiTimeoutError`` (closes #215).
+    """
+    client = BaseGandiClient(base_url="https://api.gandi.net", token="t", max_retries=3)
+    with respx.mock(base_url="https://api.gandi.net") as mock:
+        route = mock.request(method, "/v5/dummy").mock(side_effect=httpx.ConnectTimeout("connect timed out"))
+        with pytest.raises(GandiConnectionError) as exc_info:
+            await client._request(method, "/v5/dummy")
+        assert not isinstance(exc_info.value, GandiTimeoutError)
+        assert route.call_count == 3, f"{method} did not retry on ConnectTimeout: {route.call_count} calls"
+    await client.close()

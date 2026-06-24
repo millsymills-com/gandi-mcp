@@ -12,6 +12,62 @@ if TYPE_CHECKING:
     from gandi_mcp.clients.gandi import GandiClient
     from gandi_mcp.server import ServerContext
 
+# First name segment (after the ``gandi_`` prefix) → display label for the area.
+# Acronyms and CamelCase product names that ``str.capitalize`` would mangle.
+_AREA_LABELS = {
+    "billing": "Billing",
+    "cert": "Cert",
+    "comment": "Comment",
+    "domain": "Domain",
+    "email": "Email",
+    "linkedzone": "LinkedZone",
+    "livedns": "LiveDNS",
+    "mailbox": "Mailbox",
+    "org": "Org",
+    "simplehosting": "SimpleHosting",
+    "template": "Template",
+}
+
+# Verb/entity words whose canonical casing differs from ``str.capitalize``.
+_WORD_LABELS = {
+    "dns": "DNS",
+    "dnssec": "DNSSEC",
+    "dcv": "DCV",
+    "crt": "CRT",
+    "foa": "FOA",
+    "tld": "TLD",
+    "tlds": "TLDs",
+    "tsig": "TSIG",
+    "rrtypes": "RRTypes",
+    "livedns": "LiveDNS",
+    "vhost": "VHost",
+    "transferin": "TransferIn",
+    "authinfo": "AuthInfo",
+    "autorenew": "AutoRenew",
+}
+
+
+def title_for_tool(name: str) -> str:
+    """Derive a human-readable display title from a snake_case tool name.
+
+    Strips the ``gandi_`` prefix, maps the leading segment to an area label,
+    and Title-Cases the remaining verb/entity words (with acronym overrides).
+    For example ``gandi_domain_list_domains`` becomes ``"Domain: List Domains"``.
+
+    Args:
+        name: The tool's protocol name (e.g. ``gandi_cert_get_crt``).
+
+    Returns:
+        A display title of the form ``"Area: Verb Entity"``.
+    """
+    body = name.removeprefix("gandi_")
+    area, _, rest = body.partition("_")
+    area_label = _AREA_LABELS.get(area, area.capitalize())
+    if not rest:
+        return area_label
+    words = " ".join(_WORD_LABELS.get(word, word.capitalize()) for word in rest.split("_"))
+    return f"{area_label}: {words}"
+
 
 def get_server_context(ctx: Context) -> ServerContext:
     """Return the typed lifespan context for a tool call."""

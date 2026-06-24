@@ -21,6 +21,7 @@ from gandi_mcp.tools._common import (
     assert_readwrite,
     get_client,
     get_server_context,
+    title_for_tool,
 )
 
 if TYPE_CHECKING:
@@ -131,6 +132,40 @@ class TestAssertReadwrite:
             with pytest.raises(GandiReadOnlyError) as exc_info:
                 assert_readwrite(ctx, action)
             assert str(exc_info.value) == f"Cannot {action} in read-only mode (GANDI_MODE=readonly)"
+
+
+class TestTitleForTool:
+    """``title_for_tool`` derives the PROTO-020 display label from a tool name."""
+
+    @pytest.mark.parametrize(
+        ("name", "expected"),
+        [
+            ("gandi_domain_list_domains", "Domain: List Domains"),
+            ("gandi_livedns_create_record", "LiveDNS: Create Record"),
+            ("gandi_org_get_user_info", "Org: Get User Info"),
+            ("gandi_cert_get_crt", "Cert: Get CRT"),
+            ("gandi_cert_get_dcv_params", "Cert: Get DCV Params"),
+            ("gandi_domain_list_tlds", "Domain: List TLDs"),
+            ("gandi_livedns_list_rrtypes", "LiveDNS: List RRTypes"),
+            ("gandi_livedns_create_tsig_key", "LiveDNS: Create TSIG Key"),
+            ("gandi_domain_activate_livedns_dnssec", "Domain: Activate LiveDNS DNSSEC"),
+            ("gandi_simplehosting_purge_vhost_cache", "SimpleHosting: Purge VHost Cache"),
+            ("gandi_domain_update_transferin_authinfo", "Domain: Update TransferIn AuthInfo"),
+            ("gandi_domain_set_autorenew", "Domain: Set AutoRenew"),
+            ("gandi_domain_resend_foa", "Domain: Resend FOA"),
+            ("gandi_linkedzone_link_domains", "LinkedZone: Link Domains"),
+            ("gandi_comment_set", "Comment: Set"),
+        ],
+    )
+    def test_derives_expected_title(self, name: str, expected: str) -> None:
+        """The scheme is ``Area: Verb Entity`` with acronym-aware casing."""
+        assert title_for_tool(name) == expected
+
+    def test_title_differs_from_snake_case_name(self) -> None:
+        """A title must be a friendly label, never the raw identifier (PROTO-020)."""
+        name = "gandi_domain_get_status"
+        assert title_for_tool(name) != name
+        assert title_for_tool(name) == "Domain: Get Status"
 
 
 class TestAssertPurchasesAllowed:

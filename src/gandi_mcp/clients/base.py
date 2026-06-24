@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import httpx
@@ -24,6 +25,8 @@ from gandi_mcp.errors import (
     GandiServerError,
     GandiTimeoutError,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class BaseGandiClient:
@@ -150,11 +153,13 @@ class BaseGandiClient:
     async def _request(self, method: str, path: str, **kwargs: Any) -> httpx.Response:
         """Execute an HTTP request with retry on transient errors.
 
-        ConnectError is always retried (the request never reached the server).
-        TimeoutException is only retried for GET/HEAD — for POST/PUT/DELETE/PATCH
-        the server may have processed the write before the response was lost,
-        and a retry would cause double-execution (a particularly bad outcome
-        for purchase-bearing endpoints).
+        ConnectError and ConnectTimeout are always retried (the connection was
+        never established, so the request never reached the server). The remaining
+        TimeoutException cases (ReadTimeout / WriteTimeout) are only retried for
+        GET/HEAD — for POST/PUT/DELETE/PATCH the server may have processed the
+        write before the response was lost, and a retry would cause
+        double-execution (a particularly bad outcome for purchase-bearing
+        endpoints).
 
         ``path`` must start with ``/v5/``. httpx would otherwise treat an
         absolute URL as a base-URL override and forward the
@@ -165,7 +170,7 @@ class BaseGandiClient:
             raise ValueError(f"client request path must start with '/v5/': {path!r}")
         kwargs["params"] = self._merge_sharing_id(kwargs.get("params"))
 
-        retry_on: tuple[type[BaseException], ...] = (httpx.ConnectError,)
+        retry_on: tuple[type[BaseException], ...] = (httpx.ConnectError, httpx.ConnectTimeout)
         if method.upper() in ("GET", "HEAD"):
             retry_on = (httpx.ConnectError, httpx.TimeoutException)
 
@@ -180,6 +185,12 @@ class BaseGandiClient:
 
         try:
             response = await _do()
+        except httpx.ConnectTimeout as exc:
+            # Connection-phase timeout: the TCP connection was never established,
+            # so the request never reached the server. Surface it as a plain
+            # connection error — never the partial-write warning that read/write
+            # phase timeouts (below) carry.
+            raise GandiConnectionError(str(exc)) from exc
         except httpx.TimeoutException as exc:
             raise GandiTimeoutError(str(exc), method=method) from exc
         except httpx.ConnectError as exc:
@@ -222,7 +233,22 @@ class BaseGandiClient:
     async def get(self, path: str, **kwargs: Any) -> Any:
         """HTTP GET, returns parsed JSON."""
         response = await self._request("GET", path, **kwargs)
+        self._log_total_count(path, response)
         return self._parse_json(response)
+
+    @staticmethod
+    def _log_total_count(path: str, response: httpx.Response) -> None:
+        """Log Gandi's ``Total-Count`` to stderr for paginated list responses.
+
+        Gandi returns the full collection size in the ``Total-Count`` header on
+        list endpoints while the body holds only the requested page. The tools
+        pass the page through but return only that page, so without this an
+        operator has no signal that more records exist beyond it. Only emitted
+        when the header is present (i.e. for collection responses).
+        """
+        total = response.headers.get("total-count")
+        if total is not None:
+            logger.info("Gandi list response for %s has Total-Count=%s", path, total)
 
     async def get_text(self, path: str, **kwargs: Any) -> str:
         """HTTP GET that returns the raw response body as text.
