@@ -393,6 +393,23 @@ async def test_matrix_matches_registered_surface(readwrite_with_purchases_config
     )
 
 
+async def test_every_tool_has_derived_title(readwrite_with_purchases_config: GandiConfig) -> None:
+    """PROTO-020: every registered tool carries the name-derived display title.
+
+    The title is the host-facing label shown in tool lists and permission
+    prompts. It must be present, equal to ``title_for_tool(name)``, and distinct
+    from the snake_case protocol name.
+    """
+    from gandi_mcp.tools._common import title_for_tool
+
+    server = create_server(readwrite_with_purchases_config)
+    tools = await server.list_tools()
+    assert tools, "expected the full-access server to register tools"
+    for tool in tools:
+        assert tool.title == title_for_tool(tool.name), tool.name
+        assert tool.title != tool.name, tool.name
+
+
 if __name__ == "__main__":
     MATRIX_DOC.write_text(render_markdown(build_rows()), encoding="utf-8")
     print(f"wrote {MATRIX_DOC.relative_to(REPO_ROOT)}")  # noqa: T201 — regen CLI feedback

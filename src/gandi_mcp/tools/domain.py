@@ -34,7 +34,7 @@ def _status_view(domain: dict[str, Any], fqdn: str) -> dict[str, Any]:
 def register_domain_read_tools(mcp: FastMCP) -> None:
     """Register read-only domain tools on the server."""
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List Domains", tags={"gandi", "domain"})
     async def gandi_domain_list_domains(
         ctx: Context,
         fqdn_filter: str | None = None,
@@ -44,12 +44,14 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
     ) -> list[dict[str, Any]]:
         """List domains owned by the authenticated user / org.
 
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
+
         Args:
             fqdn_filter: Substring filter on FQDN (e.g. "example").
             tld: Filter by TLD (e.g. "com").
             per_page: Page size (default 100, max 1000).
             page: Page number (1-based).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -59,13 +61,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Domain", tags={"gandi", "domain"})
     async def gandi_domain_get_domain(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Retrieve full details for a domain (contacts, nameservers, status, dates).
 
         Args:
             fqdn: Fully-qualified domain name (e.g. "example.com").
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -75,7 +76,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Status", tags={"gandi", "domain"})
     async def gandi_domain_get_status(ctx: Context, fqdn: str) -> dict[str, Any]:
         """EPP status flags for a domain — focused view of the lock state.
 
@@ -100,7 +101,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Check Availability", tags={"gandi", "domain"})
     async def gandi_domain_check_availability(
         ctx: Context,
         name: str,
@@ -139,13 +140,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Claims", tags={"gandi", "domain"})
     async def gandi_domain_get_claims(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Trademark claims (TMCH) for a candidate registration.
 
         Args:
             fqdn: Candidate domain to check for trademark conflicts.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -155,13 +155,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Contacts", tags={"gandi", "domain"})
     async def gandi_domain_get_contacts(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Current contact block (admin/tech/bill/owner) for a domain.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -171,13 +170,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Nameservers", tags={"gandi", "domain"})
     async def gandi_domain_get_nameservers(ctx: Context, fqdn: str) -> list[str]:
         """Configured nameservers for a domain.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -187,13 +185,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List Glue Records", tags={"gandi", "domain"})
     async def gandi_domain_list_glue_records(ctx: Context, fqdn: str) -> list[dict[str, Any]]:
         """List glue records (in-bailiwick host records) for a domain.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -203,14 +200,13 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Glue Record", tags={"gandi", "domain"})
     async def gandi_domain_get_glue_record(ctx: Context, fqdn: str, name: str) -> dict[str, Any]:
         """Get a specific glue record by hostname label.
 
         Args:
             fqdn: Parent domain.
             name: Short label of the glue host (e.g. "ns1").
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -220,13 +216,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List DNSSEC Keys", tags={"gandi", "domain"})
     async def gandi_domain_list_dnssec_keys(ctx: Context, fqdn: str) -> list[dict[str, Any]]:
         """List DS records registered at the registry for DNSSEC.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -236,13 +231,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Renew Info", tags={"gandi", "domain"})
     async def gandi_domain_get_renew_info(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Price and eligibility preview for a domain renewal (no charge).
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -252,13 +246,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get TransferIn Info", tags={"gandi", "domain"})
     async def gandi_domain_get_transferin_info(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Check transfer-in availability and price preview (no charge).
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -268,13 +261,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Ownership Change Status", tags={"gandi", "domain"})
     async def gandi_domain_get_ownership_change_status(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Status of a pending ownership change.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -284,13 +276,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List Tags", tags={"gandi", "domain"})
     async def gandi_domain_list_tags(ctx: Context, fqdn: str) -> list[str]:
         """List the operator-defined tags on a domain.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -300,13 +291,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Restore Info", tags={"gandi", "domain"})
     async def gandi_domain_get_restore_info(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Restore eligibility and price preview for a deleted domain (no charge).
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -316,13 +306,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List Web Redirections", tags={"gandi", "domain"})
     async def gandi_domain_list_web_redirections(ctx: Context, fqdn: str) -> list[dict[str, Any]]:
         """List web redirections configured for a domain.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -332,14 +321,13 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Web Redirection", tags={"gandi", "domain"})
     async def gandi_domain_get_web_redirection(ctx: Context, fqdn: str, host: str) -> dict[str, Any]:
         """Get a single web redirection by host.
 
         Args:
             fqdn: Fully-qualified domain name.
             host: Source host of the redirection (e.g. "www").
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -349,13 +337,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Check TransferIn Available", tags={"gandi", "domain"})
     async def gandi_domain_check_transferin_available(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Check whether a domain is eligible for transfer-in (no charge).
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -365,13 +352,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Create Status", tags={"gandi", "domain"})
     async def gandi_domain_get_create_status(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Status of a pending domain creation.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -381,13 +367,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get LiveDNS", tags={"gandi", "domain"})
     async def gandi_domain_get_livedns(ctx: Context, fqdn: str) -> dict[str, Any]:
         """LiveDNS enablement state for a domain (registry-side view).
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -397,13 +382,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get LiveDNS DNSSEC", tags={"gandi", "domain"})
     async def gandi_domain_get_livedns_dnssec(ctx: Context, fqdn: str) -> dict[str, Any]:
         """LiveDNS-managed DNSSEC state for a domain.
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -413,7 +397,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List TLDs", tags={"gandi", "domain"})
     async def gandi_domain_list_tlds(ctx: Context) -> list[dict[str, Any]]:
         """List the TLDs Gandi supports.
 
@@ -425,13 +409,12 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get TLD", tags={"gandi", "domain"})
     async def gandi_domain_get_tld(ctx: Context, name: str) -> dict[str, Any]:
         """Get details and policy for a single TLD.
 
         Args:
             name: TLD without a leading dot (e.g. "com").
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -446,6 +429,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write domain tools on the server."""
 
     @mcp.tool(
+        title="Domain: Relaunch TransferIn",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -454,7 +438,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name being transferred in.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -466,6 +449,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update TransferIn AuthInfo",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -475,7 +459,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name being transferred in.
             authinfo: New authorization/transfer code from the losing registrar.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -487,6 +470,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Resend TransferIn FOA",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -496,7 +480,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name being transferred in.
             email: Address to resend the FOA confirmation to.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -508,6 +491,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Replace DNSSEC Keys",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -519,7 +503,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             data: Full DS-record payload per the Gandi dnskeys schema (replaces
                 the existing set).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -530,6 +513,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Accept Claim",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -539,7 +523,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Candidate domain name.
             data: Claim-acceptance payload per the Gandi claims schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -551,6 +534,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Relaunch Reachability",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -559,7 +543,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -571,6 +554,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Enable LiveDNS",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -579,7 +563,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -591,6 +574,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Activate LiveDNS DNSSEC",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -599,7 +583,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -611,6 +594,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Disable LiveDNS DNSSEC",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -619,7 +603,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -631,6 +614,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Create Tag",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -640,7 +624,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             name: Tag to add.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -652,6 +635,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Replace Tags",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -661,7 +645,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             tags: Full list of tags to set (replaces the existing set).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -673,6 +656,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Tags",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -682,7 +666,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             tags: Tags to add to the existing set.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -694,6 +677,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete Tags",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -702,7 +686,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -714,6 +697,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Set AutoRenew",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -732,7 +716,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
                 `gandi_domain_get_renew_info` to preview valid durations. Required
                 when enabling.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -746,6 +729,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Contacts",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -764,7 +748,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             tech: Tech contact block.
             bill: Billing contact block.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -782,6 +765,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Set Nameservers",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -796,7 +780,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             nameservers: Full list of nameservers (replaces any existing set).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -807,6 +790,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Create Glue Record",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -823,7 +807,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             name: Short label for the glue host (e.g. "ns1").
             ips: List of IPs (IPv4 and/or IPv6) the glue host resolves to.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -834,6 +817,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Glue Record",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -850,7 +834,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             name: Short label of the glue host.
             ips: New list of IPs (replaces any existing entries).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -861,6 +844,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete Glue Record",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -870,7 +854,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Parent domain.
             name: Short label of the glue host.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -882,6 +865,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Create DNSSEC Key",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -902,7 +886,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             digest: Hex-encoded digest.
             keytag: Key tag (16-bit identifier).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -916,6 +899,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete DNSSEC Key",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -925,7 +909,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             key_id: ID of the DS record to delete.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -937,6 +920,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Reset AuthInfo",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -945,7 +929,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -957,6 +940,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Initiate Ownership Change",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -973,7 +957,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             owner: New owner contact block per Gandi schema.
             notify_former_owner: Email the prior owner about the change.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -987,6 +970,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Resend FOA",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -995,7 +979,6 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -1007,6 +990,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Create Web Redirection",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -1032,6 +1016,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Web Redirection",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -1058,6 +1043,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete Web Redirection",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -1084,6 +1070,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
     DOUBLE-GATED: requires GANDI_MODE=readwrite AND GANDI_ALLOW_PURCHASES=true."""
 
     @mcp.tool(
+        title="Domain: Register",
         tags={"gandi", "domain", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -1098,7 +1085,6 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
                 typically ``admin``/``tech``/``bill`` contacts plus optional
                 ``nameservers``, ``tld_period``, ``extra_parameters``.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -1110,6 +1096,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Renew",
         tags={"gandi", "domain", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -1129,7 +1116,6 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
                 `gandi_domain_get_renew_info` to preview valid durations.
             currency: ISO currency code (defaults to org default).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -1144,6 +1130,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Transfer In",
         tags={"gandi", "domain", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -1157,7 +1144,6 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             data: Transfer payload (``authinfo``, ``duration``, ``owner``,
                 optional contacts and nameservers).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -1169,6 +1155,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Restore",
         tags={"gandi", "domain", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -1202,8 +1189,9 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Owner Contact",
         tags={"gandi", "domain", "write", "purchase"},
-        annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
+        annotations={"readOnlyHint": False, "destructiveHint": True, "openWorldHint": True},
     )
     async def gandi_domain_update_owner_contact(
         ctx: Context,
@@ -1231,6 +1219,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -1239,7 +1228,6 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
