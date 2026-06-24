@@ -122,6 +122,14 @@ class TestCertUpdateTags:
         assert json.loads(request.content) == {"tags": ["staging"]}
         assert result == payload
 
+    async def test_handles_204(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        respx_mock.patch("/v5/certificate/issued-certs/cert-1/tags").mock(return_value=httpx.Response(204))
+
+        handler = await _get_handler(server, "gandi_cert_update_tags")
+        result = await handler(ctx, cert_id="cert-1", tags=["staging"])
+
+        assert result == {}
+
     async def test_maps_404_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
         respx_mock.patch("/v5/certificate/issued-certs/missing/tags").mock(return_value=httpx.Response(404, json={}))
 
