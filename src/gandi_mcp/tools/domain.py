@@ -44,6 +44,9 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
     ) -> list[dict[str, Any]]:
         """List domains owned by the authenticated user / org.
 
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
+
         Args:
             fqdn_filter: Substring filter on FQDN (e.g. "example").
             tld: Filter by TLD (e.g. "com").

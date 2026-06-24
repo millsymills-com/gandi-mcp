@@ -39,6 +39,9 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
     ) -> list[dict[str, Any]]:
         """List organizations the token can access.
 
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
+
         Returns: Gandi organization list — see `https://api.gandi.net/docs`.
 
         Args:
@@ -79,6 +82,9 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
         page: int = 1,
     ) -> list[dict[str, Any]]:
         """List customers under a reseller org.
+
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
 
         Args:
             org_id: Reseller organization UUID.
