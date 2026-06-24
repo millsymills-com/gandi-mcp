@@ -305,7 +305,7 @@ def register_mailbox_purchase_tools(mcp: FastMCP) -> None:
 
         Args:
             email: Mailbox address.
-            data: Renewal payload (duration) per the Gandi schema.
+            data: Renewal payload. `duration` is the renewal duration in months (Gandi accepts 1 or 12).
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

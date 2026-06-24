@@ -470,13 +470,13 @@ class TestEmailRenewMailbox:
             ctx,
             domain="example.com",
             email="info@example.com",
-            duration=2,
+            duration=12,
         )
 
         assert route.called
         assert route.calls.last.request.method == "POST"
         sent = json.loads(route.calls.last.request.content)
-        assert sent == {"duration": 2}
+        assert sent == {"duration": 12}
         assert result == payload
 
     async def test_url_encodes_email_with_slashes(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
@@ -508,12 +508,12 @@ class TestEmailRenewAllMailboxes:
         )
 
         handler = await _get_handler(server, "gandi_email_renew_all_mailboxes")
-        result = await handler(ctx, domain="example.com", duration=3)
+        result = await handler(ctx, domain="example.com", duration=12)
 
         assert route.called
         assert route.calls.last.request.method == "POST"
         sent = json.loads(route.calls.last.request.content)
-        assert sent == {"duration": 3}
+        assert sent == {"duration": 12}
         assert result == payload
 
     async def test_default_duration_is_one(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
