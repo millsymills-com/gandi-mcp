@@ -19,7 +19,7 @@ from gandi_mcp.tools._common import assert_purchases_allowed, assert_readwrite, 
 def register_mailbox_read_tools(mcp: FastMCP) -> None:
     """Register read-only mailbox tools on the server."""
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: List Domains", tags={"gandi", "mailbox"})
     async def gandi_mailbox_list_domains(ctx: Context) -> list[dict[str, Any]]:
         """List domains enabled for the current mailbox product (not legacy email).
 
@@ -31,7 +31,7 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: Get Domain", tags={"gandi", "mailbox"})
     async def gandi_mailbox_get_domain(ctx: Context, domain: str) -> dict[str, Any]:
         """Get mailbox-product configuration for a domain (not legacy email).
 
@@ -46,7 +46,7 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: List Mailboxes", tags={"gandi", "mailbox"})
     async def gandi_mailbox_list_mailboxes(ctx: Context, per_page: int = 100, page: int = 1) -> list[dict[str, Any]]:
         """List mailboxes on the current mailbox product (not legacy email).
 
@@ -62,7 +62,7 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: Get Mailbox", tags={"gandi", "mailbox"})
     async def gandi_mailbox_get_mailbox(ctx: Context, email: str) -> dict[str, Any]:
         """Get a single mailbox by address (current mailbox product).
 
@@ -77,7 +77,7 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: List Forwards", tags={"gandi", "mailbox"})
     async def gandi_mailbox_list_forwards(ctx: Context, per_page: int = 100, page: int = 1) -> list[dict[str, Any]]:
         """List mailbox forwards (current mailbox product).
 
@@ -93,7 +93,7 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: List Slots", tags={"gandi", "mailbox"})
     async def gandi_mailbox_list_slots(ctx: Context) -> list[dict[str, Any]]:
         """List mailbox slots (purchased capacity for the mailbox product).
 
@@ -105,7 +105,7 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: Get Slot", tags={"gandi", "mailbox"})
     async def gandi_mailbox_get_slot(ctx: Context, slot_id: str) -> dict[str, Any]:
         """Get a single mailbox slot by id.
 
@@ -120,7 +120,7 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: Get Quotas", tags={"gandi", "mailbox"})
     async def gandi_mailbox_get_quotas(ctx: Context) -> dict[str, Any]:
         """Get mailbox quota usage for the account (current mailbox product).
 
@@ -132,7 +132,7 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "mailbox"})
+    @mcp.tool(title="Mailbox: List Products", tags={"gandi", "mailbox"})
     async def gandi_mailbox_list_products(ctx: Context) -> list[dict[str, Any]]:
         """List mailbox products available for purchase (current mailbox product).
 
@@ -149,6 +149,7 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write mailbox tools on the server."""
 
     @mcp.tool(
+        title="Mailbox: Validate Domain",
         tags={"gandi", "mailbox", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -169,6 +170,7 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Mailbox: Update Mailbox",
         tags={"gandi", "mailbox", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -189,6 +191,7 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Mailbox: Delete Mailbox",
         tags={"gandi", "mailbox", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -208,6 +211,7 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Mailbox: Create Forward",
         tags={"gandi", "mailbox", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -227,6 +231,7 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Mailbox: Update Forward",
         tags={"gandi", "mailbox", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -247,6 +252,7 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Mailbox: Delete Forward",
         tags={"gandi", "mailbox", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -273,6 +279,7 @@ def register_mailbox_purchase_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool(
+        title="Mailbox: Create Mailbox",
         tags={"gandi", "mailbox", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -295,6 +302,7 @@ def register_mailbox_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Mailbox: Renew Mailbox",
         tags={"gandi", "mailbox", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -318,6 +326,7 @@ def register_mailbox_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Mailbox: Buy Product",
         tags={"gandi", "mailbox", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )

@@ -13,7 +13,7 @@ from gandi_mcp.tools._common import assert_readwrite, get_client
 def register_organization_read_tools(mcp: FastMCP) -> None:
     """Register read-only organization tools on the server."""
 
-    @mcp.tool(tags={"gandi", "organization"})
+    @mcp.tool(title="Org: Get User Info", tags={"gandi", "organization"})
     async def gandi_org_get_user_info(ctx: Context) -> dict[str, Any]:
         """Profile info for the token owner (name, email, lang, scope).
 
@@ -28,7 +28,7 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "organization"})
+    @mcp.tool(title="Org: List Organizations", tags={"gandi", "organization"})
     async def gandi_org_list_organizations(
         ctx: Context,
         name: str | None = None,
@@ -56,7 +56,7 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "organization"})
+    @mcp.tool(title="Org: Get Organization", tags={"gandi", "organization"})
     async def gandi_org_get_organization(ctx: Context, org_id: str) -> dict[str, Any]:
         """Retrieve one organization by UUID.
 
@@ -71,7 +71,7 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "organization"})
+    @mcp.tool(title="Org: List Customers", tags={"gandi", "organization"})
     async def gandi_org_list_customers(
         ctx: Context,
         org_id: str,
@@ -93,7 +93,7 @@ def register_organization_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "organization"})
+    @mcp.tool(title="Org: Get Customer", tags={"gandi", "organization"})
     async def gandi_org_get_customer(ctx: Context, org_id: str, customer_id: str) -> dict[str, Any]:
         """Retrieve a specific customer of a reseller org.
 
@@ -114,6 +114,7 @@ def register_organization_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write organization tools on the server."""
 
     @mcp.tool(
+        title="Org: Create Customer",
         tags={"gandi", "organization", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -134,6 +135,7 @@ def register_organization_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Org: Update Customer",
         tags={"gandi", "organization", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -160,6 +162,7 @@ def register_organization_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Org: Update Organization",
         tags={"gandi", "organization", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -180,6 +183,7 @@ def register_organization_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Org: Renew Access Token",
         tags={"gandi", "organization", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
