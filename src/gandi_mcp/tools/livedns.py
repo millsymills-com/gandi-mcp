@@ -35,7 +35,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -50,7 +49,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -89,7 +87,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
             name: Optional record name (e.g. "www", "@").
             rrset_type: Optional record type (e.g. "A", "TXT", "MX").
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -104,7 +101,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -122,7 +118,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             key_id: ID of the DNSSEC key.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -137,7 +132,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -155,7 +149,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             snapshot_id: ID of the snapshot.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -170,7 +163,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -199,7 +191,6 @@ def register_livedns_read_tools(mcp: FastMCP) -> None:
         Args:
             tsig_id: ID of the TSIG key.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -221,7 +212,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name (must be registered in this account).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -246,7 +236,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             automatic_snapshots: Enable/disable auto snapshot on edits.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -283,7 +272,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
                 zonefile-style embedded quotes).
             ttl: Time-to-live in seconds (300-2592000). Zone default if omitted.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -314,7 +302,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             values: New values (fully replaces existing values).
             ttl: New TTL. Zone default if omitted.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -339,7 +326,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             items: Full list of records — each item must have ``rrset_name``,
                 ``rrset_type``, ``rrset_values`` and optionally ``rrset_ttl``.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -367,7 +353,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             name: Record name.
             rrset_type: Record type.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -386,7 +371,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
 
         Args:
             fqdn: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -418,7 +402,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             values: Record values — for MX include priority ("10 mail.example.com").
             ttl: Time-to-live in seconds (300-2592000). Zone default if omitted.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -446,7 +429,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             items: Full list of records for the name — each item must have
                 ``rrset_type``, ``rrset_values`` and optionally ``rrset_ttl``.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -466,7 +448,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             name: Record name whose records are all removed.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -498,7 +479,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             values: Record values.
             ttl: Time-to-live in seconds. Zone default if omitted.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -529,7 +509,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             values: New values for the record set.
             ttl: New TTL. Zone default if omitted.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -554,7 +533,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             fqdn: Fully-qualified domain name.
             flags: Key flags — 257 (KSK, default) or 256 (ZSK).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -574,7 +552,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             key_id: ID of the DNSSEC key to delete.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -599,7 +576,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             name: Optional label for the snapshot. Gandi auto-names it if omitted.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -627,7 +603,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
             snapshot_id: ID of the snapshot to rename.
             name: New label for the snapshot.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -647,7 +622,6 @@ def register_livedns_write_tools(mcp: FastMCP) -> None:
         Args:
             fqdn: Fully-qualified domain name.
             snapshot_id: ID of the snapshot to delete.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

@@ -31,7 +31,6 @@ def register_email_read_tools(mcp: FastMCP) -> None:
             per_page: Page size.
             page: Page number.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -47,7 +46,6 @@ def register_email_read_tools(mcp: FastMCP) -> None:
         Args:
             domain: Fully-qualified domain name.
             mailbox_id: Mailbox UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -71,7 +69,6 @@ def register_email_read_tools(mcp: FastMCP) -> None:
             per_page: Page size.
             page: Page number.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -86,7 +83,6 @@ def register_email_read_tools(mcp: FastMCP) -> None:
 
         Args:
             domain: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -104,7 +100,6 @@ def register_email_read_tools(mcp: FastMCP) -> None:
             domain: Fully-qualified domain name.
             slot_id: Slot ID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -119,7 +114,6 @@ def register_email_read_tools(mcp: FastMCP) -> None:
 
         Args:
             domain: Fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -154,7 +148,6 @@ def register_email_write_tools(mcp: FastMCP) -> None:
             aliases: Full list of aliases (replaces existing).
             responder: Autoresponder block (``enabled``, ``subject``, ``message``).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -182,7 +175,6 @@ def register_email_write_tools(mcp: FastMCP) -> None:
             domain: Fully-qualified domain name.
             mailbox_id: Mailbox UUID.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -202,7 +194,6 @@ def register_email_write_tools(mcp: FastMCP) -> None:
         Args:
             domain: Fully-qualified domain name.
             mailbox_id: Mailbox UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -230,7 +221,6 @@ def register_email_write_tools(mcp: FastMCP) -> None:
             source: Local part on the domain (e.g. "info").
             destinations: Full email addresses to forward to.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -257,7 +247,6 @@ def register_email_write_tools(mcp: FastMCP) -> None:
             source: Local part on the domain.
             destinations: Full email addresses to forward to.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -277,7 +266,6 @@ def register_email_write_tools(mcp: FastMCP) -> None:
         Args:
             domain: Fully-qualified domain name.
             source: Local part of the forward.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -299,7 +287,6 @@ def register_email_write_tools(mcp: FastMCP) -> None:
             domain: Fully-qualified domain name.
             data: Offer update payload (e.g. ``{"mailbox_type": "premium_2023"}``).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -319,7 +306,6 @@ def register_email_write_tools(mcp: FastMCP) -> None:
         Args:
             domain: Fully-qualified domain name.
             slot_id: Slot ID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -359,7 +345,6 @@ def register_email_purchase_tools(mcp: FastMCP) -> None:
             mailbox_type: "standard" or "premium".
             aliases: Optional list of aliases.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -394,7 +379,6 @@ def register_email_purchase_tools(mcp: FastMCP) -> None:
             domain: Fully-qualified domain name.
             mailbox_type: "standard" or "premium".
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -422,8 +406,7 @@ def register_email_purchase_tools(mcp: FastMCP) -> None:
         Args:
             domain: Fully-qualified domain name.
             email: Full email address to renew.
-            duration: Renewal duration in years.
-
+            duration: Renewal duration in months (Gandi accepts 1 or 12).
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -450,8 +433,7 @@ def register_email_purchase_tools(mcp: FastMCP) -> None:
 
         Args:
             domain: Fully-qualified domain name.
-            duration: Renewal duration in years.
-
+            duration: Renewal duration in months (Gandi accepts 1 or 12).
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

@@ -38,7 +38,6 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
         Args:
             domain: Fully-qualified domain name.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -69,7 +68,6 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
 
         Args:
             email: Mailbox address.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -113,7 +111,6 @@ def register_mailbox_read_tools(mcp: FastMCP) -> None:
 
         Args:
             slot_id: Slot identifier.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -162,7 +159,6 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
             domain: Fully-qualified domain name.
             data: Validation payload per the Gandi mailbox schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -183,7 +179,6 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
             email: Mailbox address.
             data: Partial mailbox payload (fields to update).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -203,7 +198,6 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
         Args:
             email: Mailbox address.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -222,7 +216,6 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
 
         Args:
             data: Forward payload (source + destinations) per the Gandi schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -244,7 +237,6 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
             source: Source address of the forward.
             data: New forward payload (destinations) per the Gandi schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -263,7 +255,6 @@ def register_mailbox_write_tools(mcp: FastMCP) -> None:
 
         Args:
             source: Source address of the forward.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -293,7 +284,6 @@ def register_mailbox_purchase_tools(mcp: FastMCP) -> None:
         Args:
             data: Mailbox payload (address, slot/product, password) per the Gandi schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -317,7 +307,6 @@ def register_mailbox_purchase_tools(mcp: FastMCP) -> None:
             email: Mailbox address.
             data: Renewal payload (duration) per the Gandi schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -339,7 +328,6 @@ def register_mailbox_purchase_tools(mcp: FastMCP) -> None:
 
         Args:
             data: Product purchase payload per the Gandi mailbox schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
