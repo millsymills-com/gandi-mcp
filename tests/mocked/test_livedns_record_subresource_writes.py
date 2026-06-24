@@ -101,6 +101,16 @@ class TestReplaceNamedRecords:
         assert json.loads(request.content) == {"items": items}
         assert result == payload
 
+    async def test_url_encodes_name(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
+        route = respx_mock.put("/v5/livedns/domains/example.com/records/a%2Fb").mock(
+            return_value=httpx.Response(200, json={})
+        )
+
+        handler = await _get_handler(server, "gandi_livedns_replace_named_records")
+        await handler(ctx, fqdn="example.com", name="a/b", items=[])
+
+        assert route.calls.last.request.url.raw_path == b"/v5/livedns/domains/example.com/records/a%2Fb"
+
     async def test_maps_404_to_tool_error(self, ctx: AsyncMock, respx_mock: Any, server: FastMCP) -> None:
         respx_mock.put("/v5/livedns/domains/example.com/records/www").mock(return_value=httpx.Response(404, json={}))
 

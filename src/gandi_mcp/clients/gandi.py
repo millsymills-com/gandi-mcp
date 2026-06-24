@@ -228,6 +228,11 @@ class GandiClient(BaseGandiClient):
         result: dict[str, Any] = await self.patch(f"/v5/domain/domains/{_seg(fqdn)}/contacts", json=data)
         return result
 
+    async def update_owner_contact(self, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Change the owner (registrant) contact on a domain (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.put(f"/v5/domain/domains/{_seg(fqdn)}/contacts/owner", json=data)
+        return result
+
     # ── Nameservers / Glue records ──────────────────────────────────────
 
     async def get_nameservers(self, fqdn: str) -> list[str]:
@@ -374,6 +379,11 @@ class GandiClient(BaseGandiClient):
     async def get_restore_info(self, fqdn: str) -> dict[str, Any]:
         """Restore eligibility / price preview for a deleted domain (no charge)."""
         result: dict[str, Any] = await self.get(f"/v5/domain/domains/{_seg(fqdn)}/restore")
+        return result
+
+    async def restore_domain(self, fqdn: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Restore a deleted domain still within its redemption period (SPENDS MONEY)."""
+        result: dict[str, Any] = await self.post(f"/v5/domain/domains/{_seg(fqdn)}/restore", json=data)
         return result
 
     async def list_web_redirections(self, fqdn: str) -> list[dict[str, Any]]:
@@ -814,6 +824,16 @@ class GandiClient(BaseGandiClient):
     async def email_get_offer(self, domain: str) -> dict[str, Any]:
         """Get the email offer (plan / quotas) for a domain."""
         result: dict[str, Any] = await self.get(f"/v5/email/offers/{_seg(domain)}")
+        return result
+
+    async def email_update_offer(self, domain: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Update the email offer for a domain (pass-through payload, e.g. ``mailbox_type``)."""
+        result: dict[str, Any] = await self.patch(f"/v5/email/offers/{_seg(domain)}", json=data)
+        return result
+
+    async def email_renew_all_mailboxes(self, domain: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Renew every mailbox on a domain (SPENDS MONEY, pass-through payload)."""
+        result: dict[str, Any] = await self.post(f"/v5/email/mailboxes/{_seg(domain)}/renew", json=data)
         return result
 
     # ═════════════════════════════════════════════════════════════════════
