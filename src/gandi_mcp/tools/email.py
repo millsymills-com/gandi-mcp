@@ -406,7 +406,7 @@ def register_email_purchase_tools(mcp: FastMCP) -> None:
         Args:
             domain: Fully-qualified domain name.
             email: Full email address to renew.
-            duration: Renewal duration in years.
+            duration: Renewal duration in months (Gandi accepts 1 or 12).
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -433,7 +433,7 @@ def register_email_purchase_tools(mcp: FastMCP) -> None:
 
         Args:
             domain: Fully-qualified domain name.
-            duration: Renewal duration in years.
+            duration: Renewal duration in months (Gandi accepts 1 or 12).
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
