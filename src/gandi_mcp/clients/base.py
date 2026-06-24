@@ -153,11 +153,13 @@ class BaseGandiClient:
     async def _request(self, method: str, path: str, **kwargs: Any) -> httpx.Response:
         """Execute an HTTP request with retry on transient errors.
 
-        ConnectError is always retried (the request never reached the server).
-        TimeoutException is only retried for GET/HEAD — for POST/PUT/DELETE/PATCH
-        the server may have processed the write before the response was lost,
-        and a retry would cause double-execution (a particularly bad outcome
-        for purchase-bearing endpoints).
+        ConnectError and ConnectTimeout are always retried (the connection was
+        never established, so the request never reached the server). The remaining
+        TimeoutException cases (ReadTimeout / WriteTimeout) are only retried for
+        GET/HEAD — for POST/PUT/DELETE/PATCH the server may have processed the
+        write before the response was lost, and a retry would cause
+        double-execution (a particularly bad outcome for purchase-bearing
+        endpoints).
 
         ``path`` must start with ``/v5/``. httpx would otherwise treat an
         absolute URL as a base-URL override and forward the
@@ -168,7 +170,7 @@ class BaseGandiClient:
             raise ValueError(f"client request path must start with '/v5/': {path!r}")
         kwargs["params"] = self._merge_sharing_id(kwargs.get("params"))
 
-        retry_on: tuple[type[BaseException], ...] = (httpx.ConnectError,)
+        retry_on: tuple[type[BaseException], ...] = (httpx.ConnectError, httpx.ConnectTimeout)
         if method.upper() in ("GET", "HEAD"):
             retry_on = (httpx.ConnectError, httpx.TimeoutException)
 
@@ -183,6 +185,12 @@ class BaseGandiClient:
 
         try:
             response = await _do()
+        except httpx.ConnectTimeout as exc:
+            # Connection-phase timeout: the TCP connection was never established,
+            # so the request never reached the server. Surface it as a plain
+            # connection error — never the partial-write warning that read/write
+            # phase timeouts (below) carry.
+            raise GandiConnectionError(str(exc)) from exc
         except httpx.TimeoutException as exc:
             raise GandiTimeoutError(str(exc), method=method) from exc
         except httpx.ConnectError as exc:
