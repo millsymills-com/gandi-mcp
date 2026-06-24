@@ -34,7 +34,7 @@ def _status_view(domain: dict[str, Any], fqdn: str) -> dict[str, Any]:
 def register_domain_read_tools(mcp: FastMCP) -> None:
     """Register read-only domain tools on the server."""
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List Domains", tags={"gandi", "domain"})
     async def gandi_domain_list_domains(
         ctx: Context,
         fqdn_filter: str | None = None,
@@ -43,6 +43,9 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         page: int = 1,
     ) -> list[dict[str, Any]]:
         """List domains owned by the authenticated user / org.
+
+        Paginated: returns one page (``per_page``, default 100). If a full page comes back, more may
+        exist — page via ``page``/``per_page``. The total count is logged to stderr when Gandi reports it.
 
         Args:
             fqdn_filter: Substring filter on FQDN (e.g. "example").
@@ -58,7 +61,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Domain", tags={"gandi", "domain"})
     async def gandi_domain_get_domain(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Retrieve full details for a domain (contacts, nameservers, status, dates).
 
@@ -73,7 +76,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Status", tags={"gandi", "domain"})
     async def gandi_domain_get_status(ctx: Context, fqdn: str) -> dict[str, Any]:
         """EPP status flags for a domain — focused view of the lock state.
 
@@ -98,7 +101,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Check Availability", tags={"gandi", "domain"})
     async def gandi_domain_check_availability(
         ctx: Context,
         name: str,
@@ -137,7 +140,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Claims", tags={"gandi", "domain"})
     async def gandi_domain_get_claims(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Trademark claims (TMCH) for a candidate registration.
 
@@ -152,7 +155,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Contacts", tags={"gandi", "domain"})
     async def gandi_domain_get_contacts(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Current contact block (admin/tech/bill/owner) for a domain.
 
@@ -167,7 +170,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Nameservers", tags={"gandi", "domain"})
     async def gandi_domain_get_nameservers(ctx: Context, fqdn: str) -> list[str]:
         """Configured nameservers for a domain.
 
@@ -182,7 +185,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List Glue Records", tags={"gandi", "domain"})
     async def gandi_domain_list_glue_records(ctx: Context, fqdn: str) -> list[dict[str, Any]]:
         """List glue records (in-bailiwick host records) for a domain.
 
@@ -197,7 +200,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Glue Record", tags={"gandi", "domain"})
     async def gandi_domain_get_glue_record(ctx: Context, fqdn: str, name: str) -> dict[str, Any]:
         """Get a specific glue record by hostname label.
 
@@ -213,7 +216,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List DNSSEC Keys", tags={"gandi", "domain"})
     async def gandi_domain_list_dnssec_keys(ctx: Context, fqdn: str) -> list[dict[str, Any]]:
         """List DS records registered at the registry for DNSSEC.
 
@@ -228,7 +231,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Renew Info", tags={"gandi", "domain"})
     async def gandi_domain_get_renew_info(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Price and eligibility preview for a domain renewal (no charge).
 
@@ -243,7 +246,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get TransferIn Info", tags={"gandi", "domain"})
     async def gandi_domain_get_transferin_info(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Check transfer-in availability and price preview (no charge).
 
@@ -258,7 +261,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Ownership Change Status", tags={"gandi", "domain"})
     async def gandi_domain_get_ownership_change_status(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Status of a pending ownership change.
 
@@ -273,7 +276,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List Tags", tags={"gandi", "domain"})
     async def gandi_domain_list_tags(ctx: Context, fqdn: str) -> list[str]:
         """List the operator-defined tags on a domain.
 
@@ -288,7 +291,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Restore Info", tags={"gandi", "domain"})
     async def gandi_domain_get_restore_info(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Restore eligibility and price preview for a deleted domain (no charge).
 
@@ -303,7 +306,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List Web Redirections", tags={"gandi", "domain"})
     async def gandi_domain_list_web_redirections(ctx: Context, fqdn: str) -> list[dict[str, Any]]:
         """List web redirections configured for a domain.
 
@@ -318,7 +321,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Web Redirection", tags={"gandi", "domain"})
     async def gandi_domain_get_web_redirection(ctx: Context, fqdn: str, host: str) -> dict[str, Any]:
         """Get a single web redirection by host.
 
@@ -334,7 +337,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Check TransferIn Available", tags={"gandi", "domain"})
     async def gandi_domain_check_transferin_available(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Check whether a domain is eligible for transfer-in (no charge).
 
@@ -349,7 +352,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get Create Status", tags={"gandi", "domain"})
     async def gandi_domain_get_create_status(ctx: Context, fqdn: str) -> dict[str, Any]:
         """Status of a pending domain creation.
 
@@ -364,7 +367,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get LiveDNS", tags={"gandi", "domain"})
     async def gandi_domain_get_livedns(ctx: Context, fqdn: str) -> dict[str, Any]:
         """LiveDNS enablement state for a domain (registry-side view).
 
@@ -379,7 +382,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get LiveDNS DNSSEC", tags={"gandi", "domain"})
     async def gandi_domain_get_livedns_dnssec(ctx: Context, fqdn: str) -> dict[str, Any]:
         """LiveDNS-managed DNSSEC state for a domain.
 
@@ -394,7 +397,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: List TLDs", tags={"gandi", "domain"})
     async def gandi_domain_list_tlds(ctx: Context) -> list[dict[str, Any]]:
         """List the TLDs Gandi supports.
 
@@ -406,7 +409,7 @@ def register_domain_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "domain"})
+    @mcp.tool(title="Domain: Get TLD", tags={"gandi", "domain"})
     async def gandi_domain_get_tld(ctx: Context, name: str) -> dict[str, Any]:
         """Get details and policy for a single TLD.
 
@@ -426,6 +429,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write domain tools on the server."""
 
     @mcp.tool(
+        title="Domain: Relaunch TransferIn",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -445,6 +449,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update TransferIn AuthInfo",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -465,6 +470,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Resend TransferIn FOA",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -485,6 +491,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Replace DNSSEC Keys",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -506,6 +513,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Accept Claim",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -526,6 +534,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Relaunch Reachability",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -545,6 +554,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Enable LiveDNS",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -564,6 +574,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Activate LiveDNS DNSSEC",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -583,6 +594,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Disable LiveDNS DNSSEC",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -602,6 +614,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Create Tag",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -622,6 +635,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Replace Tags",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -642,6 +656,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Tags",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -662,6 +677,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete Tags",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -681,6 +697,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Set AutoRenew",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -712,6 +729,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Contacts",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -747,6 +765,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Set Nameservers",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -771,6 +790,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Create Glue Record",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -797,6 +817,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Glue Record",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -823,6 +844,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete Glue Record",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -843,6 +865,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Create DNSSEC Key",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -876,6 +899,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete DNSSEC Key",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -896,6 +920,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Reset AuthInfo",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -915,6 +940,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Initiate Ownership Change",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -944,6 +970,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Resend FOA",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -963,6 +990,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Create Web Redirection",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -988,6 +1016,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Web Redirection",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -1014,6 +1043,7 @@ def register_domain_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete Web Redirection",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -1040,6 +1070,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
     DOUBLE-GATED: requires GANDI_MODE=readwrite AND GANDI_ALLOW_PURCHASES=true."""
 
     @mcp.tool(
+        title="Domain: Register",
         tags={"gandi", "domain", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -1065,6 +1096,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Renew",
         tags={"gandi", "domain", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -1098,6 +1130,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Transfer In",
         tags={"gandi", "domain", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -1122,6 +1155,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Restore",
         tags={"gandi", "domain", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -1155,8 +1189,9 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Update Owner Contact",
         tags={"gandi", "domain", "write", "purchase"},
-        annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
+        annotations={"readOnlyHint": False, "destructiveHint": True, "openWorldHint": True},
     )
     async def gandi_domain_update_owner_contact(
         ctx: Context,
@@ -1184,6 +1219,7 @@ def register_domain_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Domain: Delete",
         tags={"gandi", "domain", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )

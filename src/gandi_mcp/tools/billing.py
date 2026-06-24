@@ -13,7 +13,7 @@ from gandi_mcp.tools._common import get_client
 def register_billing_read_tools(mcp: FastMCP) -> None:
     """Register read-only billing tools on the server."""
 
-    @mcp.tool(tags={"gandi", "billing"})
+    @mcp.tool(title="Billing: Get Info", tags={"gandi", "billing"})
     async def gandi_billing_get_info(ctx: Context) -> dict[str, Any]:
         """Billing summary for the token owner (prepaid balance, annual spend, tier).
 
@@ -28,7 +28,7 @@ def register_billing_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "billing"})
+    @mcp.tool(title="Billing: Get Info For Org", tags={"gandi", "billing"})
     async def gandi_billing_get_info_for_org(ctx: Context, sharing_id: str) -> dict[str, Any]:
         """Billing summary for a specific organization.
 
@@ -43,7 +43,7 @@ def register_billing_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "billing"})
+    @mcp.tool(title="Billing: Get Price Catalog", tags={"gandi", "billing"})
     async def gandi_billing_get_price_catalog(
         ctx: Context,
         product_type: str,
