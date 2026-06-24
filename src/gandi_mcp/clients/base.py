@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import httpx
@@ -24,6 +25,8 @@ from gandi_mcp.errors import (
     GandiServerError,
     GandiTimeoutError,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class BaseGandiClient:
@@ -230,7 +233,22 @@ class BaseGandiClient:
     async def get(self, path: str, **kwargs: Any) -> Any:
         """HTTP GET, returns parsed JSON."""
         response = await self._request("GET", path, **kwargs)
+        self._log_total_count(path, response)
         return self._parse_json(response)
+
+    @staticmethod
+    def _log_total_count(path: str, response: httpx.Response) -> None:
+        """Log Gandi's ``Total-Count`` to stderr for paginated list responses.
+
+        Gandi returns the full collection size in the ``Total-Count`` header on
+        list endpoints while the body holds only the requested page. The tools
+        pass the page through but return only that page, so without this an
+        operator has no signal that more records exist beyond it. Only emitted
+        when the header is present (i.e. for collection responses).
+        """
+        total = response.headers.get("total-count")
+        if total is not None:
+            logger.info("Gandi list response for %s has Total-Count=%s", path, total)
 
     async def get_text(self, path: str, **kwargs: Any) -> str:
         """HTTP GET that returns the raw response body as text.

@@ -13,13 +13,12 @@ from gandi_mcp.tools._common import assert_readwrite, get_client
 def register_comment_read_tools(mcp: FastMCP) -> None:
     """Register read-only comment tools on the server."""
 
-    @mcp.tool(tags={"gandi", "comment"})
+    @mcp.tool(title="Comment: Get", tags={"gandi", "comment"})
     async def gandi_comment_get(ctx: Context, comment_id: str) -> dict[str, Any]:
         """Get the comment attached to a Gandi object.
 
         Args:
             comment_id: ID of the comment (object-scoped).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -34,6 +33,7 @@ def register_comment_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write comment tools on the server."""
 
     @mcp.tool(
+        title="Comment: Set",
         tags={"gandi", "comment", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -43,7 +43,6 @@ def register_comment_write_tools(mcp: FastMCP) -> None:
         Args:
             comment_id: ID of the comment (object-scoped).
             data: Comment payload per the Gandi comment schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -55,6 +54,7 @@ def register_comment_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Comment: Delete",
         tags={"gandi", "comment", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -63,7 +63,6 @@ def register_comment_write_tools(mcp: FastMCP) -> None:
 
         Args:
             comment_id: ID of the comment (object-scoped).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).

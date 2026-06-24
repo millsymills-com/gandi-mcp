@@ -13,7 +13,7 @@ from gandi_mcp.tools._common import assert_purchases_allowed, assert_readwrite, 
 def register_simplehosting_read_tools(mcp: FastMCP) -> None:
     """Register read-only Simple Hosting tools on the server."""
 
-    @mcp.tool(tags={"gandi", "simplehosting"})
+    @mcp.tool(title="SimpleHosting: List Instances", tags={"gandi", "simplehosting"})
     async def gandi_simplehosting_list_instances(ctx: Context) -> list[dict[str, Any]]:
         """List Simple Hosting instances.
 
@@ -25,13 +25,12 @@ def register_simplehosting_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "simplehosting"})
+    @mcp.tool(title="SimpleHosting: Get Instance", tags={"gandi", "simplehosting"})
     async def gandi_simplehosting_get_instance(ctx: Context, instance_id: str) -> dict[str, Any]:
         """Get a single Simple Hosting instance by id.
 
         Args:
             instance_id: Instance UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -41,13 +40,12 @@ def register_simplehosting_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "simplehosting"})
+    @mcp.tool(title="SimpleHosting: List Vhosts", tags={"gandi", "simplehosting"})
     async def gandi_simplehosting_list_vhosts(ctx: Context, instance_id: str) -> list[dict[str, Any]]:
         """List vhosts on a Simple Hosting instance.
 
         Args:
             instance_id: Instance UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -57,14 +55,13 @@ def register_simplehosting_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "simplehosting"})
+    @mcp.tool(title="SimpleHosting: Get VHost", tags={"gandi", "simplehosting"})
     async def gandi_simplehosting_get_vhost(ctx: Context, instance_id: str, fqdn: str) -> dict[str, Any]:
         """Get a single vhost on a Simple Hosting instance.
 
         Args:
             instance_id: Instance UUID.
             fqdn: Vhost fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -74,13 +71,12 @@ def register_simplehosting_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "simplehosting"})
+    @mcp.tool(title="SimpleHosting: Get Instance Usage", tags={"gandi", "simplehosting"})
     async def gandi_simplehosting_get_instance_usage(ctx: Context, instance_id: str) -> dict[str, Any]:
         """Get resource-usage metrics for a Simple Hosting instance.
 
         Args:
             instance_id: Instance UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -95,6 +91,7 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write Simple Hosting tools on the server."""
 
     @mcp.tool(
+        title="SimpleHosting: Delete Instance",
         tags={"gandi", "simplehosting", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -103,7 +100,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
 
         Args:
             instance_id: Instance UUID.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -115,6 +111,7 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="SimpleHosting: Perform Instance Action",
         tags={"gandi", "simplehosting", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -127,7 +124,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             instance_id: Instance UUID.
             data: Action payload per the Gandi Simple Hosting schema.
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -138,6 +134,7 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="SimpleHosting: Create VHost",
         tags={"gandi", "simplehosting", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -147,7 +144,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
             data: Vhost payload per the Gandi Simple Hosting schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -159,6 +155,7 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="SimpleHosting: Delete VHost",
         tags={"gandi", "simplehosting", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -168,7 +165,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
             fqdn: Vhost fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -180,6 +176,7 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="SimpleHosting: Update VHost",
         tags={"gandi", "simplehosting", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -193,7 +190,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             fqdn: Vhost fully-qualified domain name.
             data: Partial vhost payload (fields to update).
 
-
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
         """
@@ -204,6 +200,7 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="SimpleHosting: Purge VHost Cache",
         tags={"gandi", "simplehosting", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -213,7 +210,6 @@ def register_simplehosting_write_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
             fqdn: Vhost fully-qualified domain name.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -232,6 +228,7 @@ def register_simplehosting_purchase_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool(
+        title="SimpleHosting: Create Instance",
         tags={"gandi", "simplehosting", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -242,7 +239,6 @@ def register_simplehosting_purchase_tools(mcp: FastMCP) -> None:
 
         Args:
             data: Instance payload (plan, datacenter, etc.) per the Gandi schema.
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
@@ -255,6 +251,7 @@ def register_simplehosting_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="SimpleHosting: Update Instance",
         tags={"gandi", "simplehosting", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -268,7 +265,6 @@ def register_simplehosting_purchase_tools(mcp: FastMCP) -> None:
         Args:
             instance_id: Instance UUID.
             data: Partial instance payload (e.g. new plan/size).
-
 
         Returns:
             Gandi API response payload (see `https://api.gandi.net/docs` for the schema).
