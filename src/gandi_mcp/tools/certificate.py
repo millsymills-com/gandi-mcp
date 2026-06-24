@@ -17,7 +17,7 @@ from gandi_mcp.tools._common import (
 def register_certificate_read_tools(mcp: FastMCP) -> None:
     """Register read-only certificate tools on the server."""
 
-    @mcp.tool(tags={"gandi", "certificate"})
+    @mcp.tool(title="Cert: List", tags={"gandi", "certificate"})
     async def gandi_cert_list(
         ctx: Context,
         status: str | None = None,
@@ -43,7 +43,7 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "certificate"})
+    @mcp.tool(title="Cert: Get", tags={"gandi", "certificate"})
     async def gandi_cert_get(ctx: Context, cert_id: str) -> dict[str, Any]:
         """Retrieve details for a specific certificate.
 
@@ -58,7 +58,7 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "certificate"})
+    @mcp.tool(title="Cert: List Tags", tags={"gandi", "certificate"})
     async def gandi_cert_list_tags(ctx: Context, cert_id: str) -> list[str]:
         """List the operator-defined tags on a certificate.
 
@@ -73,7 +73,7 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "certificate"})
+    @mcp.tool(title="Cert: List Packages", tags={"gandi", "certificate"})
     async def gandi_cert_list_packages(ctx: Context) -> list[dict[str, Any]]:
         """List available certificate packages (product offerings).
 
@@ -85,7 +85,7 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "certificate"})
+    @mcp.tool(title="Cert: Get Package", tags={"gandi", "certificate"})
     async def gandi_cert_get_package(ctx: Context, name: str) -> dict[str, Any]:
         """Get a single certificate package by name.
 
@@ -100,7 +100,7 @@ def register_certificate_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "certificate"})
+    @mcp.tool(title="Cert: Get CRT", tags={"gandi", "certificate"})
     async def gandi_cert_get_crt(ctx: Context, cert_id: str) -> str:
         """Fetch the raw issued certificate (PEM document) for a certificate.
 
@@ -120,6 +120,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write certificate tools on the server."""
 
     @mcp.tool(
+        title="Cert: Revoke",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -139,6 +140,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Add Tag",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -159,6 +161,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Replace Tags",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -179,6 +182,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Update Tags",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -199,6 +203,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Delete Tags",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
@@ -218,6 +223,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Get DCV Params",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -243,6 +249,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Get Cert DCV Params",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -266,6 +273,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Resend DCV",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -285,6 +293,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Update DCV Method",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -306,6 +315,7 @@ def register_certificate_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Update",
         tags={"gandi", "certificate", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -333,6 +343,7 @@ def register_certificate_purchase_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool(
+        title="Cert: Issue",
         tags={"gandi", "certificate", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )
@@ -357,6 +368,7 @@ def register_certificate_purchase_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Cert: Renew",
         tags={"gandi", "certificate", "write", "purchase"},
         annotations={"readOnlyHint": False, "destructiveHint": False, "openWorldHint": True},
     )

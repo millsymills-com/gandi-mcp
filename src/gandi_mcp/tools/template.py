@@ -13,7 +13,7 @@ from gandi_mcp.tools._common import assert_readwrite, get_client
 def register_template_read_tools(mcp: FastMCP) -> None:
     """Register read-only template tools on the server."""
 
-    @mcp.tool(tags={"gandi", "template"})
+    @mcp.tool(title="Template: List Templates", tags={"gandi", "template"})
     async def gandi_template_list_templates(ctx: Context) -> list[dict[str, Any]]:
         """List domain-configuration templates.
 
@@ -25,7 +25,7 @@ def register_template_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "template"})
+    @mcp.tool(title="Template: Get Template", tags={"gandi", "template"})
     async def gandi_template_get_template(ctx: Context, template_id: str) -> dict[str, Any]:
         """Get a single domain-configuration template by id.
 
@@ -40,7 +40,7 @@ def register_template_read_tools(mcp: FastMCP) -> None:
         except Exception as e:
             handle_client_error(e)
 
-    @mcp.tool(tags={"gandi", "template"})
+    @mcp.tool(title="Template: Get Dispatch", tags={"gandi", "template"})
     async def gandi_template_get_dispatch(ctx: Context, dispatch_id: str) -> dict[str, Any]:
         """Get the status of a template dispatch (application) operation.
 
@@ -60,6 +60,7 @@ def register_template_write_tools(mcp: FastMCP) -> None:
     """Register non-purchasing write template tools on the server."""
 
     @mcp.tool(
+        title="Template: Create Template",
         tags={"gandi", "template", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -79,6 +80,7 @@ def register_template_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Template: Update Template",
         tags={"gandi", "template", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": False},
     )
@@ -99,6 +101,7 @@ def register_template_write_tools(mcp: FastMCP) -> None:
             handle_client_error(e)
 
     @mcp.tool(
+        title="Template: Apply Template",
         tags={"gandi", "template", "write"},
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
