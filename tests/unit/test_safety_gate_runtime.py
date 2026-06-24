@@ -150,6 +150,8 @@ class TestTagInvariants:
         "gandi_domain_register",
         "gandi_domain_renew",
         "gandi_domain_transfer_in",
+        "gandi_domain_restore",
+        "gandi_domain_update_owner_contact",
         "gandi_email_create_mailbox",
         "gandi_email_create_slot",
         "gandi_email_renew_mailbox",
