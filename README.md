@@ -12,7 +12,7 @@ Production-grade Python MCP server for the [Gandi v5 API](https://api.gandi.net/
 
 ## Features
 
-- **71 MCP tools** covering Gandi Domains, LiveDNS, Email, Billing, Organization, and Certificates (34 read / 29 write / 8 purchase)
+- **187 MCP tools** covering Gandi Domains, LiveDNS, Email, Billing, Organization, and Certificates (77 read / 94 write / 16 purchase)
 - **Three-tier safety model**: readonly (default) → readwrite → readwrite + purchases, gated at both tool-visibility and handler-runtime layers
 - **No-purchasing mode**: tools that spend money (domain registration, renewal, transfer-in, cert issuance, mailbox slots) are hidden by default even in readwrite mode
 - **Bearer auth** with optional `sharing_id` scoping for reseller / multi-org accounts
