@@ -1,4 +1,4 @@
-"""Schema-drift guard for ``docs/tool-schema-matrix.md``.
+"""Schema-drift guard for ``docs/tool-schema-matrix.md`` and the README tool count.
 
 The matrix is a generated, checked-in catalogue of every MCP tool this server
 exposes: its safety tier, MCP annotation hints, the ``GandiClient`` method it
@@ -11,7 +11,7 @@ client method from each handler's ``get_client(ctx).<method>`` call, and the
 HTTP verb/path from the ``self.<verb>(<path>)`` call inside that client method.
 No network, no event loop.
 
-Two invariants are pinned:
+Three invariants are pinned:
 
 1. :func:`test_matrix_doc_in_sync` — the committed markdown equals a fresh
    render. A new, removed, or retagged tool fails the test until the doc is
@@ -20,6 +20,8 @@ Two invariants are pinned:
    equal the names the live FastMCP server registers under a full-access
    config. This catches a tool that is declared but never wired into
    ``register_all_tools`` (or vice versa).
+3. :func:`test_readme_counts_match_tool_surface` — the ``README.md`` headline
+   totals equal the per-tier counts of the same rows.
 
 Regenerate after changing the tool surface::
 
@@ -30,6 +32,7 @@ from __future__ import annotations
 
 import ast
 import pathlib
+import re
 import textwrap
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -45,6 +48,14 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 TOOLS_DIR = REPO_ROOT / "src" / "gandi_mcp" / "tools"
 CLIENT_FILE = REPO_ROOT / "src" / "gandi_mcp" / "clients" / "gandi.py"
 MATRIX_DOC = REPO_ROOT / "docs" / "tool-schema-matrix.md"
+README_DOC = REPO_ROOT / "README.md"
+
+# The README headline is prose, not a generated file, so it is pinned by regex
+# rather than a full re-render. Editing the sentence around the numbers is fine;
+# changing their format means updating this pattern too.
+README_COUNTS = re.compile(
+    r"\*\*(?P<total>\d+) MCP tools\*\* \((?P<read>\d+) read / (?P<write>\d+) write / (?P<purchase>\d+) purchase\)"
+)
 
 SKIP_FILES = frozenset({"__init__.py", "_common.py"})
 STRUCTURAL_TAGS = frozenset({"gandi", "write", "purchase"})
@@ -311,6 +322,33 @@ def test_matrix_doc_in_sync() -> None:
     assert actual == expected, (
         "docs/tool-schema-matrix.md is stale — regenerate with:\n"
         "    uv run python tests/unit/test_tool_schema_matrix.py"
+    )
+
+
+def test_readme_counts_match_tool_surface() -> None:
+    """The README headline totals must equal the live per-tier tool counts.
+
+    The README figure is quoted outside this repo, so a stale one is worth a
+    CI failure. Adding or retagging a tool fails here until it is updated.
+
+    Exactly one headline may match: a second copy — a badge, a quickstart
+    blurb — would leave whichever one came later silently unguarded.
+    """
+    matches = list(README_COUNTS.finditer(README_DOC.read_text(encoding="utf-8")))
+    assert len(matches) == 1, (
+        f"expected exactly one README.md tool-count headline matching "
+        f"'**<n> MCP tools** (<n> read / <n> write / <n> purchase)', found {len(matches)} — "
+        "restore it, de-duplicate it, or update README_COUNTS"
+    )
+    match = matches[0]
+
+    rows = build_rows()
+    expected = {tier: sum(1 for r in rows if r.tier == tier) for tier in TIER_ORDER}
+    expected["total"] = len(rows)
+    documented = {key: int(value) for key, value in match.groupdict().items()}
+    assert documented == expected, (
+        f"README.md tool counts are stale: documented {documented}, actual {expected}. "
+        "Update the headline in README.md."
     )
 
 
