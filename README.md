@@ -81,7 +81,9 @@ Defense-in-depth: every write tool *also* checks the mode at handler time, and e
 Use the local stdio transport. Install and review the checkout first, then run
 `uv sync --frozen` there. Replace the absolute paths below with your checkout and
 `uv` executable (`command -v uv`). These examples pin readonly mode and keep
-purchases disabled. Keep your PAT in the launching process's environment or the
+purchases disabled. They explicitly select `user_info`; for a LiveDNS-scoped PAT,
+change `GANDI_STARTUP_PROBE` to `livedns` in the chosen client configuration
+before connecting. Keep your PAT in the launching process's environment or the
 checkout's ignored `.env`; never commit real credentials to client configuration.
 
 ### Claude Code
@@ -89,7 +91,7 @@ checkout's ignored `.env`; never commit real credentials to client configuration
 Register a server for the current project in local scope:
 
 ```bash
-claude mcp add --env GANDI_MODE=readonly GANDI_ALLOW_PURCHASES=false --transport stdio --scope local gandi -- /absolute/path/to/uv --directory /absolute/path/to/gandi-mcp run --frozen gandi-mcp
+claude mcp add --env GANDI_MODE=readonly GANDI_ALLOW_PURCHASES=false GANDI_STARTUP_PROBE=user_info --transport stdio --scope local gandi -- /absolute/path/to/uv --directory /absolute/path/to/gandi-mcp run --frozen gandi-mcp
 ```
 
 `--scope user` makes the server available across projects. `--scope project`
@@ -110,7 +112,8 @@ For a shared configuration, use environment references rather than literal PATs:
       "env": {
         "GANDI_TOKEN": "${GANDI_TOKEN}",
         "GANDI_MODE": "readonly",
-        "GANDI_ALLOW_PURCHASES": "false"
+        "GANDI_ALLOW_PURCHASES": "false",
+        "GANDI_STARTUP_PROBE": "user_info"
       }
     }
   }
@@ -118,7 +121,7 @@ For a shared configuration, use environment references rather than literal PATs:
 ```
 
 Export `GANDI_TOKEN` before starting Claude Code when using this JSON form.
-The registration command stores only the two non-secret safety flags; the PAT
+The registration command stores only the non-secret safety flags and probe choice; the PAT
 is inherited from the launching shell or read from the checkout's ignored `.env`.
 Inspect connection status with `claude mcp get gandi` and `/mcp`.
 
@@ -137,6 +140,7 @@ env_vars = ["GANDI_TOKEN", "GANDI_SHARING_ID"]
 [mcp_servers.gandi.env]
 GANDI_MODE = "readonly"
 GANDI_ALLOW_PURCHASES = "false"
+GANDI_STARTUP_PROBE = "user_info"
 ```
 
 Inspect registration with `codex mcp get gandi`, then check connection and tool
@@ -145,11 +149,23 @@ availability with `/mcp` inside Codex. Registration alone does not test a server
 ### Verification and limits
 
 Confirm that initialization succeeds, read tools are listed, and write/purchase
-tools are absent. With an authorized PAT, make one read-only
-`gandi_org_get_user_info` call and inspect its result privately. Startup itself
-checks the configured authenticated startup read (user-info by default). Missing or rejected credentials
-can produce a healthy MCP connection with an empty tool list; that is not a
-successful authenticated integration test.
+tools are absent. Startup itself performs the selected authenticated read:
+
+| `GANDI_STARTUP_PROBE` | Startup read | Optional separately authorized tool-call check |
+|---|---|---|
+| `user_info` (default) | `GET /v5/organization/user-info` | `gandi_org_get_user_info` |
+| `livedns` | `GET /v5/livedns/domains?page=1&per_page=1` | `gandi_livedns_list_domains` |
+
+Both modes apply the configured `GANDI_SHARING_ID`. Do not call the user-info
+tool to verify a LiveDNS-only PAT, broaden its permissions, or switch probe modes
+after a denial. The optional LiveDNS tool call returns the API's default page;
+it does not use the startup probe's one-item limit. Authorize any additional live
+read separately and inspect account/domain results privately. Initialization and
+tool discovery alone do not establish a successful tool-call round trip.
+
+Missing or rejected credentials can produce a healthy MCP connection with an
+empty tool list; that is not a successful authenticated integration test. A
+successful selected read establishes only its own access, not every product scope.
 
 Configuration guidance was checked against [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
 and [OpenAI MCP documentation](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)
