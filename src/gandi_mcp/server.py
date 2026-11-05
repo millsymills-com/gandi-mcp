@@ -37,7 +37,13 @@ class ServerContext:
 def _classify_startup_error(exc: BaseException) -> str:
     """Convert a startup exception into a short, actionable operator hint."""
     if isinstance(exc, GandiAuthError):
-        return "authentication rejected by Gandi — regenerate GANDI_TOKEN"
+        hint = "authentication rejected by Gandi — regenerate GANDI_TOKEN"
+        if exc.status_code == 403:
+            hint = (
+                "Gandi user-info access denied (403) — check PAT validity, expiration, and resource permissions; "
+                "403 does not establish token validity; do not broaden permissions just for this probe"
+            )
+        return hint
     if isinstance(exc, GandiTimeoutError):
         return "Gandi API did not respond in time — check network / GANDI_REQUEST_TIMEOUT"
     if isinstance(exc, GandiConnectionError):
