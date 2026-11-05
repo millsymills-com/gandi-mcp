@@ -187,3 +187,18 @@ uv run pre-commit install
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).
+
+### Startup authentication troubleshooting
+
+Startup probes `GET /v5/organization/user-info`. A successful probe verifies
+access to that endpoint, not permission for every product operation. All tools
+remain disabled if the probe fails, including for HTTP 401 or 403.
+
+Gandi [PATs](https://docs.gandi.net/en/managing_an_organization/organizations/personal_access_token.html)
+can restrict organizations and products. Its [bearer authentication](https://api.gandi.net/docs/organization/)
+also uses 403 for expired or nonexistent tokens, so 403 alone does not prove
+that a PAT is valid or merely lacks scope. Check the existing token's validity,
+expiration and intended resource permissions in Gandi. Do not broaden permissions
+or regenerate a token solely to satisfy this probe. Scoped-token startup support
+requires a separate validation design; the server does not try other endpoints
+or bypass the failed probe automatically.

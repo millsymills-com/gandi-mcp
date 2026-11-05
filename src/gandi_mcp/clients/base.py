@@ -299,10 +299,10 @@ class BaseGandiClient:
         failure so the caller can distinguish between auth failures, network
         problems, and upstream 5xx. Returns ``None`` on success.
 
-        ``/v5/organization/user-info`` is a tiny GET commonly reachable with
-        a valid PAT; scoped PATs may not reach it, in which case startup
-        falsely reports a disabled server. Revisit if that becomes a real
-        operator complaint.
+        This probes access to ``/v5/organization/user-info``, not every
+        product permission. Scoped PATs may not reach it. Gandi also uses
+        bearer-token 403 for expired/nonexistent tokens, so a denial cannot
+        establish token validity; propagate it rather than bypass validation.
         """
         await self.get("/v5/organization/user-info")
 
