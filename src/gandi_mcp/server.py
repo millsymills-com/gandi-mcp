@@ -40,7 +40,7 @@ def _classify_startup_error(exc: BaseException) -> str:
         hint = "authentication rejected by Gandi — regenerate GANDI_TOKEN"
         if exc.status_code == 403:
             hint = (
-                "Gandi user-info access denied (403) — check PAT validity, expiration, and resource permissions; "
+                "Gandi startup probe access denied (403) — check PAT validity, expiration, and resource permissions; "
                 "403 does not establish token validity; do not broaden permissions just for this probe"
             )
         return hint
@@ -96,7 +96,7 @@ def _build_lifespan(config: GandiConfig):  # type: ignore[no-untyped-def]
         )
 
         try:
-            await client.validate_connection()
+            await client.validate_connection(config.gandi_startup_probe)
         except (GandiError, httpx.HTTPError) as exc:
             reason = _classify_startup_error(exc)
             logger.error("Gandi tools disabled: %s (%s)", reason, exc)
@@ -107,7 +107,8 @@ def _build_lifespan(config: GandiConfig):  # type: ignore[no-untyped-def]
 
         context.client = client
         logger.info(
-            "Gandi MCP ready — mode=%s, purchases=%s",
+            "Gandi MCP ready — probe=%s, mode=%s, purchases=%s",
+            config.gandi_startup_probe.value,
             config.gandi_mode.value,
             "allowed" if config.purchases_enabled else "BLOCKED",
         )

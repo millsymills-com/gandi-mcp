@@ -49,7 +49,7 @@ class TestClassifyStartupError:
 
     def test_forbidden_does_not_establish_token_validity(self) -> None:
         hint = _classify_startup_error(GandiAuthError("denied", status_code=403))
-        assert "user-info access denied (403)" in hint
+        assert "startup probe access denied (403)" in hint
         assert "validity, expiration, and resource permissions" in hint
         assert "403 does not establish token validity" in hint
         assert "do not broaden permissions" in hint

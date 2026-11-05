@@ -57,6 +57,7 @@ See [.env.example](.env.example) for every option.
 |---|---|---|
 | `GANDI_TOKEN` | - | **Required.** Personal Access Token from https://admin.gandi.net/ |
 | `GANDI_SHARING_ID` | - | Optional organization UUID to scope all requests to |
+| `GANDI_STARTUP_PROBE` | `user_info` | Startup read: `user_info` or opt-in `livedns` |
 | `GANDI_MODE` | `readonly` | `readonly` hides all write tools; `readwrite` exposes them |
 | `GANDI_ALLOW_PURCHASES` | `false` | When `true` AND `GANDI_MODE=readwrite`, exposes tools that spend money |
 | `GANDI_API_BASE_URL` | `https://api.gandi.net` | Override only for testing |
@@ -146,7 +147,7 @@ availability with `/mcp` inside Codex. Registration alone does not test a server
 Confirm that initialization succeeds, read tools are listed, and write/purchase
 tools are absent. With an authorized PAT, make one read-only
 `gandi_org_get_user_info` call and inspect its result privately. Startup itself
-validates the PAT using Gandi's user-info endpoint. Missing or rejected credentials
+checks the configured authenticated startup read (user-info by default). Missing or rejected credentials
 can produce a healthy MCP connection with an empty tool list; that is not a
 successful authenticated integration test.
 
@@ -190,7 +191,7 @@ Apache-2.0. See [LICENSE](LICENSE).
 
 ### Startup authentication troubleshooting
 
-Startup probes `GET /v5/organization/user-info`. A successful probe verifies
+By default, startup probes `GET /v5/organization/user-info`. A successful probe verifies
 access to that endpoint, not permission for every product operation. All tools
 remain disabled if the probe fails, including for HTTP 401 or 403.
 
@@ -199,6 +200,12 @@ can restrict organizations and products. Its [bearer authentication](https://api
 also uses 403 for expired or nonexistent tokens, so 403 alone does not prove
 that a PAT is valid or merely lacks scope. Check the existing token's validity,
 expiration and intended resource permissions in Gandi. Do not broaden permissions
-or regenerate a token solely to satisfy this probe. Scoped-token startup support
-requires a separate validation design; the server does not try other endpoints
-or bypass the failed probe automatically.
+or regenerate a token solely to satisfy this probe. For a PAT intended for LiveDNS, explicitly set
+`GANDI_STARTUP_PROBE=livedns` to probe the documented
+[`GET /v5/livedns/domains`](https://api.gandi.net/docs/livedns/) operation instead,
+with `page=1`, `per_page=1` and the configured `GANDI_SHARING_ID`. An empty
+HTTP 200 array is a successful read, not proof that a particular domain exists.
+This choice does not grant permissions, change write/purchase gates, or validate
+other product scopes. Other tools may still return permission errors.
+The server never tries a different endpoint after failure or treats 403 as success.
+This opt-in path has synthetic test coverage; a scoped live PAT has not been tested.
