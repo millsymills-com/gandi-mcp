@@ -92,8 +92,11 @@ claude mcp add --transport stdio --scope local gandi -- /absolute/path/to/uv --d
 ```
 
 `--scope user` makes the server available across projects. `--scope project`
-writes a shared `.mcp.json` at the project root and requires approval before use;
-`.claude/settings.json` is not the project MCP server configuration file.
+writes a shared `.mcp.json` at the project root. Interactive terminal sessions
+prompt for approval of project servers; noninteractive, SDK, and cloud sessions
+can load them without that prompt. Review the configuration before launching
+those sessions. `.claude/settings.json` is not the project MCP server
+configuration file.
 For a shared configuration, use environment references rather than literal PATs:
 
 ```json
