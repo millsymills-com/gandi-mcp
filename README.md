@@ -88,7 +88,7 @@ checkout's ignored `.env`; never commit real credentials to client configuration
 Register a server for the current project in local scope:
 
 ```bash
-claude mcp add --transport stdio --scope local gandi -- /absolute/path/to/uv --directory /absolute/path/to/gandi-mcp run --frozen gandi-mcp
+claude mcp add --env GANDI_MODE=readonly GANDI_ALLOW_PURCHASES=false --transport stdio --scope local gandi -- /absolute/path/to/uv --directory /absolute/path/to/gandi-mcp run --frozen gandi-mcp
 ```
 
 `--scope user` makes the server available across projects. `--scope project`
@@ -117,8 +117,8 @@ For a shared configuration, use environment references rather than literal PATs:
 ```
 
 Export `GANDI_TOKEN` before starting Claude Code when using this JSON form.
-For the registration command, set `GANDI_MODE=readonly` and
-`GANDI_ALLOW_PURCHASES=false` in the environment or checkout `.env` as well.
+The registration command stores only the two non-secret safety flags; the PAT
+is inherited from the launching shell or read from the checkout's ignored `.env`.
 Inspect connection status with `claude mcp get gandi` and `/mcp`.
 
 ### Codex CLI / IDE
