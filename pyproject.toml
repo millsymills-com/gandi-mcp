@@ -40,7 +40,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "fastmcp>=3.4.4,<4.0.0",
+    "fastmcp>=3.4.10,<4.0.0",
     "httpx>=0.27.0",
     "pydantic>=2.13.3",
     "pydantic-settings>=2.14.1",
@@ -77,17 +77,26 @@ Changelog = "https://github.com/millsymills-com/gandi-mcp/releases"
 # uv — constrain transitive deps (CVE patches)
 # =============================================================================
 [tool.uv]
-# python-multipart < 0.0.27 has CVE-2026-42561 (DoS via multipart parser).
-# pyjwt < 2.13.0 has PYSEC-2026-175/177/178/179. fastmcp pins both
-# transitively; lift the floors here so pip-audit is clean without a direct
-# runtime dependency on them.
-#
-# vcrpy 8.x intercepts httpx via socket-level patching. vcrpy 9.x may change
-# this. Lock the working range now (pytest-recording is the direct dep).
+# Patched transitive versions for the reproducible uv environment. These
+# constraints do not replace package metadata for other installers.
+# Preserve the tested vcrpy 8.x replay range; do not record live fixtures.
 constraint-dependencies = [
     "python-multipart>=0.0.27",
-    "pyjwt>=2.13.0",
     "vcrpy>=8.1,<9",
+    "anyio>=4.14.2",
+    "authlib>=1.9.1",
+    "certifi>=2026.10.18",
+    "cryptography>=50.0.2",
+    "dnspython>=2.9.0",
+    "filelock>=4.2.9",
+    "joserfc>=1.7.6",
+    "mcp>=1.30.0,<2",
+    "msgpack>=1.2.3",
+    "opentelemetry-api>=1.45.1",
+    "pip>=26.2",
+    "pyjwt>=2.15.1",
+    "urllib3>=2.8.0",
+    "virtualenv>=21.14.13",
 ]
 
 # =============================================================================
