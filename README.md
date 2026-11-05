@@ -75,19 +75,39 @@ Three tiers, two orthogonal gates:
 
 Defense-in-depth: every write tool *also* checks the mode at handler time, and every purchase tool *also* checks the purchase flag, so a stale tool list cached by an MCP client can't slip a write through.
 
-## Claude Code integration
+## Codex and Claude Code integration
 
-Register the server in `~/.claude.json` (global) or `.claude/settings.json` (project).
+Use the local stdio transport. Install and review the checkout first, then run
+`uv sync --frozen` there. Replace the absolute paths below with your checkout and
+`uv` executable (`command -v uv`). These examples pin readonly mode and keep
+purchases disabled. Keep your PAT in the launching process's environment or the
+checkout's ignored `.env`; never commit real credentials to client configuration.
 
-**With a global install** (`uv tool install`, recommended for global config; no project directory required):
+### Claude Code
+
+Register a server for the current project in local scope:
+
+```bash
+claude mcp add --env GANDI_MODE=readonly GANDI_ALLOW_PURCHASES=false --transport stdio --scope local gandi -- /absolute/path/to/uv --directory /absolute/path/to/gandi-mcp run --frozen gandi-mcp
+```
+
+`--scope user` makes the server available across projects. `--scope project`
+writes a shared `.mcp.json` at the project root. Interactive terminal sessions
+prompt for approval of project servers; noninteractive, SDK, and cloud sessions
+can load them without that prompt. Review the configuration before launching
+those sessions. `.claude/settings.json` is not the project MCP server
+configuration file.
+For a shared configuration, use environment references rather than literal PATs:
 
 ```json
 {
   "mcpServers": {
     "gandi": {
-      "command": "gandi-mcp",
+      "type": "stdio",
+      "command": "/absolute/path/to/uv",
+      "args": ["--directory", "/absolute/path/to/gandi-mcp", "run", "--frozen", "gandi-mcp"],
       "env": {
-        "GANDI_TOKEN": "your-bearer-pat-here",
+        "GANDI_TOKEN": "${GANDI_TOKEN}",
         "GANDI_MODE": "readonly",
         "GANDI_ALLOW_PURCHASES": "false"
       }
@@ -96,22 +116,44 @@ Register the server in `~/.claude.json` (global) or `.claude/settings.json` (pro
 }
 ```
 
-**From a working copy** (picks up local edits live):
+Export `GANDI_TOKEN` before starting Claude Code when using this JSON form.
+The registration command stores only the two non-secret safety flags; the PAT
+is inherited from the launching shell or read from the checkout's ignored `.env`.
+Inspect connection status with `claude mcp get gandi` and `/mcp`.
 
-```json
-{
-  "mcpServers": {
-    "gandi": {
-      "command": "uv",
-      "args": ["--directory", "/absolute/path/to/gandi-mcp", "run", "gandi-mcp"]
-    }
-  }
-}
+### Codex CLI / IDE
+
+Add this table to `~/.codex/config.toml`, or `.codex/config.toml` in a trusted
+project. Export the token before launching Codex; `env_vars` forwards it without
+storing it in the TOML file.
+
+```toml
+[mcp_servers.gandi]
+command = "/absolute/path/to/uv"
+args = ["--directory", "/absolute/path/to/gandi-mcp", "run", "--frozen", "gandi-mcp"]
+env_vars = ["GANDI_TOKEN", "GANDI_SHARING_ID"]
+
+[mcp_servers.gandi.env]
+GANDI_MODE = "readonly"
+GANDI_ALLOW_PURCHASES = "false"
 ```
 
-In the working-copy form, environment variables are read from `.env` in the project directory. In the global-install form, set them under `env` in the JSON or via your shell environment.
+Inspect registration with `codex mcp get gandi`, then check connection and tool
+availability with `/mcp` inside Codex. Registration alone does not test a server.
 
-Default the global config to `GANDI_MODE=readonly` until you actively need writes; every session inherits the mode you set here.
+### Verification and limits
+
+Confirm that initialization succeeds, read tools are listed, and write/purchase
+tools are absent. With an authorized PAT, make one read-only
+`gandi_org_get_user_info` call and inspect its result privately. Startup itself
+validates the PAT using Gandi's user-info endpoint. Missing or rejected credentials
+can produce a healthy MCP connection with an empty tool list; that is not a
+successful authenticated integration test.
+
+Configuration guidance was checked against [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+and [OpenAI MCP documentation](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)
+on 2026-11-05. Client runtime tests and live API tests must be recorded separately;
+these examples do not assert compatibility with every client or protocol revision.
 
 ## Limitations
 
