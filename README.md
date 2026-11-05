@@ -209,7 +209,9 @@ Apache-2.0. See [LICENSE](LICENSE).
 
 By default, startup probes `GET /v5/organization/user-info`. A successful probe verifies
 access to that endpoint, not permission for every product operation. All tools
-remain disabled if the probe fails, including for HTTP 401 or 403.
+remain disabled if the probe fails, including for HTTP 401 or 403. Startup
+diagnostics retain a failure hint, exception type and available HTTP status;
+they do not include upstream response bodies or exception text.
 
 Gandi [PATs](https://docs.gandi.net/en/managing_an_organization/organizations/personal_access_token.html)
 can restrict organizations and products. Its [bearer authentication](https://api.gandi.net/docs/organization/)

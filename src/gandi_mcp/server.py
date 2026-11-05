@@ -99,7 +99,15 @@ def _build_lifespan(config: GandiConfig):  # type: ignore[no-untyped-def]
             await client.validate_connection(config.gandi_startup_probe)
         except (GandiError, httpx.HTTPError) as exc:
             reason = _classify_startup_error(exc)
-            logger.error("Gandi tools disabled: %s (%s)", reason, exc)
+            # HTTP error strings may include upstream bodies, domains or echoed
+            # credentials. Preserve failure visibility without copying those
+            # strings (or a traceback) into startup diagnostics.
+            logger.error(
+                "Gandi tools disabled: %s (type=%s, status=%s)",
+                reason,
+                type(exc).__name__,
+                getattr(exc, "status_code", None),
+            )
             await client.close()
             _disable_all_tools(server)
             yield context

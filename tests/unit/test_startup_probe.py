@@ -49,7 +49,20 @@ async def test_livedns_success_preserves_gates_and_scope(body, mode, purchases):
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     ("status", "body"),
-    [(401, {}), (403, {}), (404, {}), (429, {}), (500, {}), (302, []), (204, None), (200, {}), (200, ["invalid"])],
+    [
+        (401, {}),
+        (403, {}),
+        (404, {}),
+        (429, {}),
+        (500, {}),
+        (302, []),
+        (204, None),
+        (201, []),
+        (202, []),
+        (206, []),
+        (200, {}),
+        (200, ["invalid"]),
+    ],
 )
 async def test_livedns_failure_disables_all_tools_without_fallback(status, body):
     server = create_server(
@@ -88,3 +101,48 @@ async def test_default_probe_stays_user_info_and_never_falls_back():
             assert ctx.client is None
             assert await server.list_tools() == []
         assert len(mock.calls) == 1
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("probe", "path"),
+    [
+        (GandiStartupProbe.USER_INFO, "/v5/organization/user-info"),
+        (GandiStartupProbe.LIVEDNS, "/v5/livedns/domains"),
+    ],
+)
+@pytest.mark.parametrize("status", [200, 401, 403, 500])
+async def test_startup_diagnostics_exclude_response_contents(probe, path, status, caplog):
+    """Shared HTTP errors may hold a body; startup logs must never copy it."""
+    credential_marker = "fixture-pat-never-log"
+    private_domain = "private-domain.example.test"
+    server = create_server(
+        GandiConfig(
+            _env_file=None,
+            gandi_token=credential_marker,
+            gandi_startup_probe=probe,
+            gandi_mode=GandiMode.READWRITE,
+            gandi_allow_purchases=True,
+            gandi_max_retries=1,
+        )
+    )
+    # HTTP 200 carries malformed JSON; denial and upstream errors carry valid
+    # JSON with sensitive-looking fields that the inherited parser preserves.
+    response = (
+        httpx.Response(status, text=f'{{"domain":"{private_domain}","token":"{credential_marker}"')
+        if status == 200
+        else httpx.Response(status, json={"message": f"{private_domain} {credential_marker}"})
+    )
+    with respx.mock(assert_all_called=True) as mock, caplog.at_level("ERROR", logger="gandi_mcp.server"):
+        mock.get("https://api.gandi.net" + path).mock(return_value=response)
+        async with server._lifespan(server) as ctx:
+            assert ctx.client is None
+            assert await server.list_tools() == []
+        assert len(mock.calls) == 1
+    assert private_domain not in caplog.text
+    assert credential_marker not in caplog.text
+    assert "Gandi tools disabled" in caplog.text
+    assert "type=Gandi" in caplog.text
+    if status != 200:
+        assert f"status={status}" in caplog.text
+    assert all(record.exc_info is None for record in caplog.records)
