@@ -18,6 +18,13 @@ class GandiMode(enum.StrEnum):
     READWRITE = "readwrite"
 
 
+class GandiStartupProbe(enum.StrEnum):
+    """Explicit authenticated operation used to establish startup readiness."""
+
+    USER_INFO = "user_info"
+    LIVEDNS = "livedns"
+
+
 class GandiConfig(BaseSettings):
     """Configuration loaded from environment variables and .env file."""
 
@@ -36,6 +43,7 @@ class GandiConfig(BaseSettings):
     # Authentication
     gandi_token: SecretStr | None = None
     gandi_sharing_id: str | None = None
+    gandi_startup_probe: GandiStartupProbe = GandiStartupProbe.USER_INFO
 
     # Safety gates
     gandi_mode: GandiMode = GandiMode.READONLY

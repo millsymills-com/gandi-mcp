@@ -14,6 +14,7 @@ from tenacity import (
 )
 
 from gandi_mcp import __version__
+from gandi_mcp.config import GandiStartupProbe
 from gandi_mcp.errors import (
     GandiAuthError,
     GandiBadRequestError,
@@ -292,19 +293,24 @@ class BaseGandiClient:
 
     # ── Lifecycle ───────────────────────────────────────────────────────
 
-    async def validate_connection(self) -> None:
-        """Validate connectivity + authentication by fetching user info.
+    async def validate_connection(self, probe: GandiStartupProbe = GandiStartupProbe.USER_INFO) -> None:
+        """Verify access to one explicitly selected authenticated read operation.
 
-        Raises the underlying typed ``GandiError`` (or ``httpx.HTTPError``) on
-        failure so the caller can distinguish between auth failures, network
-        problems, and upstream 5xx. Returns ``None`` on success.
-
-        ``/v5/organization/user-info`` is a tiny GET commonly reachable with
-        a valid PAT; scoped PATs may not reach it, in which case startup
-        falsely reports a disabled server. Revisit if that becomes a real
-        operator complaint.
+        No failure triggers a fallback. In particular, Gandi's bearer 403 may
+        mean an expired/nonexistent PAT or insufficient permissions. Success
+        proves access only to the selected operation, not every product scope.
         """
-        await self.get("/v5/organization/user-info")
+        if probe == GandiStartupProbe.USER_INFO:
+            await self.get("/v5/organization/user-info")
+        elif probe == GandiStartupProbe.LIVEDNS:
+            response = await self._request("GET", "/v5/livedns/domains", params={"page": 1, "per_page": 1})
+            if response.status_code != 200:
+                raise GandiError("LiveDNS startup probe requires HTTP 200", status_code=response.status_code)
+            result = self._parse_json(response)
+            if not isinstance(result, list) or any(not isinstance(item, dict) for item in result):
+                raise GandiError("LiveDNS startup probe requires an array of domain objects")
+        else:
+            raise ValueError("Unsupported startup probe")
 
     async def close(self) -> None:
         """Close the underlying HTTP client."""
