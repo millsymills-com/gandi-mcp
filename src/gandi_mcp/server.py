@@ -37,7 +37,13 @@ class ServerContext:
 def _classify_startup_error(exc: BaseException) -> str:
     """Convert a startup exception into a short, actionable operator hint."""
     if isinstance(exc, GandiAuthError):
-        return "authentication rejected by Gandi — regenerate GANDI_TOKEN"
+        hint = "authentication rejected by Gandi — regenerate GANDI_TOKEN"
+        if exc.status_code == 403:
+            hint = (
+                "Gandi startup probe access denied (403) — check PAT validity, expiration, and resource permissions; "
+                "403 does not establish token validity; do not broaden permissions just for this probe"
+            )
+        return hint
     if isinstance(exc, GandiTimeoutError):
         return "Gandi API did not respond in time — check network / GANDI_REQUEST_TIMEOUT"
     if isinstance(exc, GandiConnectionError):
@@ -90,10 +96,18 @@ def _build_lifespan(config: GandiConfig):  # type: ignore[no-untyped-def]
         )
 
         try:
-            await client.validate_connection()
+            await client.validate_connection(config.gandi_startup_probe)
         except (GandiError, httpx.HTTPError) as exc:
             reason = _classify_startup_error(exc)
-            logger.error("Gandi tools disabled: %s (%s)", reason, exc)
+            # HTTP error strings may include upstream bodies, domains or echoed
+            # credentials. Preserve failure visibility without copying those
+            # strings (or a traceback) into startup diagnostics.
+            logger.error(
+                "Gandi tools disabled: %s (type=%s, status=%s)",
+                reason,
+                type(exc).__name__,
+                getattr(exc, "status_code", None),
+            )
             await client.close()
             _disable_all_tools(server)
             yield context
@@ -101,7 +115,8 @@ def _build_lifespan(config: GandiConfig):  # type: ignore[no-untyped-def]
 
         context.client = client
         logger.info(
-            "Gandi MCP ready — mode=%s, purchases=%s",
+            "Gandi MCP ready — probe=%s, mode=%s, purchases=%s",
+            config.gandi_startup_probe.value,
             config.gandi_mode.value,
             "allowed" if config.purchases_enabled else "BLOCKED",
         )
