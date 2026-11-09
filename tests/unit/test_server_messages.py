@@ -47,6 +47,14 @@ class TestClassifyStartupError:
             == "authentication rejected by Gandi — regenerate GANDI_TOKEN"
         )
 
+    def test_forbidden_does_not_establish_token_validity(self) -> None:
+        hint = _classify_startup_error(GandiAuthError("denied", status_code=403))
+        assert "startup probe access denied (403)" in hint
+        assert "validity, expiration, and resource permissions" in hint
+        assert "403 does not establish token validity" in hint
+        assert "do not broaden permissions" in hint
+        assert "regenerate" not in hint
+
     def test_timeout_error(self) -> None:
         assert (
             _classify_startup_error(GandiTimeoutError("slow"))
@@ -191,13 +199,16 @@ class TestLifespanDisablesGandiTagOnly:
             )
 
     @pytest.mark.asyncio
-    async def test_auth_failure_disables_every_gandi_tool(self) -> None:
+    @pytest.mark.parametrize("status", [401, 403])
+    async def test_auth_failure_disables_every_gandi_tool(self, status: int) -> None:
         config = _config(gandi_token="t", gandi_mode=GandiMode.READWRITE, gandi_allow_purchases=True)
         server = create_server(config)
         lifespan = _build_lifespan(config)
         with respx.mock(base_url="https://api.gandi.net") as mock:
-            mock.get("/v5/organization/user-info").mock(return_value=httpx.Response(401, text="bad"))
+            route = mock.get("/v5/organization/user-info").mock(return_value=httpx.Response(status, text="denied"))
             async with lifespan(server):
+                assert route.call_count == 1
+                assert len(mock.calls) == 1
                 visible = await server.list_tools()
                 gandi_tools = [t for t in visible if "gandi" in (t.tags or set())]
                 assert gandi_tools == [], (
